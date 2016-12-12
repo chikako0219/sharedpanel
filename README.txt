@@ -52,11 +52,12 @@ Please check following instructions.
 (a) Make your application  
 https://apps.twitter.com/
 
-(b) Write necessary information in view.php file
-$consumerKey = "your Consumer Key";
-$consumerSecret = "yourComsumer Secret Key";
-$accessToken = "your Access Token";
-$accessTokenSecret = "your Access Token Secret";
+(b) Write necessary information on
+Dashboard / Site administration / Plugins / Activity modules / SharedPanel
+Twitter consumerKey
+Twitter consumerSecret
+Twitter accessToken
+Twitter accessTokenSecret
 
 4) Setup your activity
 When you add the activity "SharedPanel" on your course, you have to setup items on "Edit settings".
