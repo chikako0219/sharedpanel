@@ -7,15 +7,30 @@ function add_card_from_evernote($sharedpanel){
   global $DB, $USER;
 
   $GMAIL_ACCOUNT=  $sharedpanel->emailadr2;
-  $GMAIL_PASSWORD= $sharedpanel->emailpas2;
+//  $GMAIL_PASSWORD= $sharedpanel->emailpas2;
   $andkey=         $sharedpanel->emailkey2;
+
+  $key = 'くまモンくまモンくまモンくまモンくまもんくまモンくまもんくまモンくまモン１２１０';
+  $GMAIL_PASSWORD= openssl_decrypt($sharedpanel->emailpas2, 'AES-128-ECB', $key);
 
   echo "<br/><hr>importing evernote ($GMAIL_ACCOUNT; $andkey) ...  ";  ob_flush(); flush();
 
+  if ( preg_match('/([^@]+)@gmail[.]com/',$GMAIL_ACCOUNT,$ma) ){
+    $GMAIL_HOST= 'imap.googlemail.com';
+  }elseif ( preg_match('/([^@]+)@yahoo[.]co[.]jp/',$GMAIL_ACCOUNT,$ma) ){
+    $GMAIL_HOST= 'imap.mail.yahoo.co.jp';
+  }elseif ( preg_match('/([^@]+)@yahoo[.]com/',$GMAIL_ACCOUNT,$ma) ){
+    $GMAIL_HOST= 'imap.mail.yahoo.com';
+  }else{
+    if( preg_match('/([^@]+)@([^@]+)/',$GMAIL_ACCOUNT,$ma) ){
+      $GMAIL_HOST= 'imap.'.$ma[2];
+    }
+  }
+  // echo $GMAIL_HOST; //debug
+
 // 必要な定数を設定
-define('GMAIL_HOST','imap.googlemail.com');
 define('GMAIL_PORT',993);
-define('SERVER','{'.GMAIL_HOST.':'.GMAIL_PORT.'/novalidate-cert/imap/ssl}');
+define('SERVER','{'.$GMAIL_HOST.':'.GMAIL_PORT.'/novalidate-cert/imap/ssl}');
 
 // メールボックスへの IMAP ストリームをオープン
 if (($mbox = imap_open(SERVER."INBOX", $GMAIL_ACCOUNT, $GMAIL_PASSWORD)) == false) {

@@ -54,9 +54,6 @@ $string['sortbylike1'] = 'Sort by interesting';
 $string['important'] =  'Important';
 $string['interesting'] =  'Interesting';
 
-$string['facebook'] =  'Facebook';
-$string['twitter'] =  'Twitter';
-
 $string['FBappID'] = 'Facebook app ID';
 $string['FBappID_help'] = 'Write your Facebook app ID.';
 $string['FBsecret'] = 'Facebook secret';

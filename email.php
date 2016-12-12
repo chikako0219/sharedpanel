@@ -13,19 +13,38 @@ function add_card_from_email($sharedpanel, $compressimage = -1){
   $maxnumatatime = 5;  // only $maxnumatatime tweets are imported at a time
 
   $GMAIL_ACCOUNT=  $sharedpanel->emailadr1;
-  $GMAIL_PASSWORD= $sharedpanel->emailpas1;
   $andkey=         $sharedpanel->emailkey1;
+
+  $key = 'くまモンくまモンくまモンくまモンくまもんくまモンくまもんくまモンくまモン１２１０';
+  $GMAIL_PASSWORD= openssl_decrypt($sharedpanel->emailpas1, 'AES-128-ECB', $key);
 
   echo "<br/><hr>importing emails ($GMAIL_ACCOUNT; $andkey) ...  ";  ob_flush(); flush();
 
+  if ( preg_match('/([^@]+)@gmail[.]com/',$GMAIL_ACCOUNT,$ma) ){
+    $GMAIL_HOST= 'imap.googlemail.com';
+  }elseif ( preg_match('/([^@]+)@yahoo[.]co[.]jp/',$GMAIL_ACCOUNT,$ma) ){
+    $GMAIL_HOST= 'imap.mail.yahoo.co.jp';
+  }elseif ( preg_match('/([^@]+)@yahoo[.]com/',$GMAIL_ACCOUNT,$ma) ){
+    $GMAIL_HOST= 'imap.mail.yahoo.com';
+  }else{
+    if( preg_match('/([^@]+)@([^@]+)/',$GMAIL_ACCOUNT,$ma) ){
+      $GMAIL_HOST= 'imap.'.$ma[2];
+    }
+  }
+  // echo $GMAIL_HOST; //debug
+
 // 必要な定数を設定
-define('GMAIL_HOST','imap.googlemail.com');
 define('GMAIL_PORT',993);
-define('SERVER','{'.GMAIL_HOST.':'.GMAIL_PORT.'/novalidate-cert/imap/ssl}');
- 
+define('SERVER','{'.$GMAIL_HOST.':'.GMAIL_PORT.'/novalidate-cert/imap/ssl}');
+//define('SERVER','{'.$GMAIL_HOST.':'.GMAIL_PORT.'/imap/ssl}');
+
+//    Gmail {imap.gmail.com:993/imap/ssl}INBOX
+//    Yahoo {imap.mail.yahoo.co.jp:993/imap/ssl}INBOX
+//    AOL {imap.aol.com:993/imap/ssl}INBOX
+
 // メールボックスへの IMAP ストリームをオープン
 if (($mbox = imap_open(SERVER."INBOX", $GMAIL_ACCOUNT, $GMAIL_PASSWORD)) == false) {
-  echo "GMAIL connection failed... <br/>"; exit;
+  echo "IMAP connection failed. <br/>"; exit;
 }
 // メールボックスの情報を取得
 $mboxes=imap_mailboxmsginfo($mbox);
@@ -78,7 +97,7 @@ if( $mboxes->Nmsgs != 0 ) {
         $info= imap_fetchstructure($mbox, $mailno);  // ここでエラー？
 	if (!$info){  // re-connect to mail server
           if (($mbox = imap_open(SERVER."INBOX", $GMAIL_ACCOUNT, $GMAIL_PASSWORD)) == false) {
-            echo "GMAIL conection failed... <br/>"; exit;
+            echo "IMAP connection failed... <br/>"; exit;
           }
           $info= imap_fetchstructure($mbox, $mailno);
         }

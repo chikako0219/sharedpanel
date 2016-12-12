@@ -54,3 +54,23 @@ $string['sortbylike1'] = '面白いね!の多い順でソート';
 $string['important'] =  '重要だね';
 $string['interesting'] =  '面白いね';
 
+$string['facebook'] =  'Facebook';
+$string['twitter'] =  'Twitter';
+
+$string['FBappID'] = 'Facebook app ID';
+$string['FBappID_help'] = '取得した Facebook app ID を書いてください.';
+$string['FBsecret'] = 'Facebook secret';
+$string['FBsecret_help'] = 'Facebook secret';
+$string['FBredirectUrl'] = 'Facebook redirect URL';
+$string['FBredirectUrl_help'] = 'Facebook redirect URL';
+$string['FBtoken'] = 'Facebook token';
+$string['FBtoken_help'] = 'Facebook token';
+
+$string['TWconsumerKey'] = 'Twitter consumerKey';
+$string['TWconsumerKey_help'] = 'Write your Twitter consumerKey.';
+$string['TWconsumerSecret'] = 'Twitter consumerSecret';
+$string['TWconsumerSecret_help'] = 'Twitter consumerSecret';
+$string['TWaccessToken'] = 'Twitter accessToken';
+$string['TWaccessToken_help'] = 'Twitter accessToken';
+$string['TWaccessTokenSecret'] = 'Twitter accessTokenSecret';
+$string['TWaccessTokenSecret_help'] = 'Twitter accessTokenSecret';

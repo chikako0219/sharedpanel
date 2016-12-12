@@ -13,13 +13,21 @@ function add_card_from_twitter($sharedpanel){
   $andkey= $sharedpanel->hashtag1;
   echo "<br/><hr>importing twitter ($andkey) ...  ";  ob_flush(); flush();
 
+
+  $config = get_config('sharedpanel');
+
   //TwitterAPI利用の承認情報
   require_once("twitteroauth.php");
+  $consumerKey = $config->TWconsumerKey;
+  $consumerSecret = $config->TWconsumerSecret;
+  $accessToken = $config->TWaccessToken;
+  $accessTokenSecret = $config->TWaccessTokenSecret;
+  /*
   $consumerKey = "your consumer key";
   $consumerSecret = "your consumer secret";
   $accessToken = "your access token";
   $accessTokenSecret = "your access token secret";
- 
+  */ 
   $twObj = new TwitterOAuth($consumerKey,$consumerSecret,$accessToken,$accessTokenSecret);
   $options = array('q'=>$andkey,'count'=>'100', "include_entities"=>true);
   $json = $twObj->OAuthRequest(
@@ -31,7 +39,7 @@ function add_card_from_twitter($sharedpanel){
 
 // 古いTwitterの情報は取れないようだ。 t-kita
 
-//  echo "<pre>"; var_dump($jset); echo "</pre>";   // debug
+  // echo "<pre>"; var_dump($jset); echo "</pre>";   // debug
  
   $co= 0;
   foreach ($jset['statuses'] as $result){
@@ -51,10 +59,12 @@ function add_card_from_twitter($sharedpanel){
    $updated = $result['created_at'];
    $time = date("Y-m-d H:i:s",strtotime($updated));
 
+/*
    if (preg_match('/^RT/',$content)){
      echo "Retweets not imported : by $name ($time).<br>\n";  ob_flush(); flush();
      continue;
    }  // ignore retweets
+*/
 
    if ($postinguserinfo){
      $ret1 .= "<img src='data:image/gif;base64,".base64_encode(file_get_contents($link))."'>"." ".$name.'<br>'.'<hr>';

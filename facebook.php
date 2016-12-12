@@ -18,12 +18,21 @@ function add_card_from_facebook($sharedpanel){
 //echo '<h2> Facebook API Testプログラム (PHP) 2015/09/10</h2>';
 //echo "* 初期処理　開始<br>\n";
 
+
+$config = get_config('sharedpanel');
+
 // Facebook App情報&アクセストークンの設定
+$appId =  $config->FBappID;
+$secret = $config->FBsecret;
+$redirectUrl = $config->FBredirectUrl;
+$token = $config->FBtoken;
+/*
 $appId = 'your App id';
 $secret = 'your App secret';
 $redirectUrl = 'your redirect URI';
 $pageid = 'FACEBOOK PAGE ID';
 $token = 'your Access Token';
+*/
 
 //echo "* 初期処理　終了<br>\n";
 
