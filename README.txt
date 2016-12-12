@@ -16,7 +16,7 @@ Input texts and pictures to Moodle directly without logging in Moodle.
 
 ------------------------------------------------------------------------------------------------------
 
-How to install:
+How to install
 
 1) Download SharedPanel plugin to your Moodle server from following URI.
 
@@ -25,7 +25,7 @@ How to install:
 3) Get Access Token
 If you want to import post from Facebook and Twitter, you need to get Access Token.
 
-FacebookÅF
+Facebook
 If you would like to get information from Facebook, you need to get access token on Facebook Graph API.
 Please check following instructions.
 
@@ -47,7 +47,7 @@ Facebook redirect URL
 Facebook token
 
 
-TwitterÅF
+Twitter
 If you would like to get posts from Twitter, you need to get access token on Twitter API.
 Please check following instructions.
 
