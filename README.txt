@@ -19,9 +19,7 @@ Input texts and pictures to Moodle directly without logging in Moodle.
 How to install
 
 1) Download SharedPanel plugin to your Moodle server from following URI.
-
 2) Unzip sharedpanel.zip and move sharedpanel folder into Moodle mod/ folder, and as admin click 'Site administration - Notifications' to let Moodle install sharedpanel (like a typical module installation).
-
 3) Get Access Token
 If you want to import post from Facebook and Twitter, you need to get Access Token.
 
@@ -31,7 +29,6 @@ Please check following instructions.
 
 (a) Make your application
 https://developers.facebook.com/apps/
-
 (b) Get "User Access Token"
 https://developers.facebook.com/tools/accesstoken/
 
@@ -40,7 +37,6 @@ Basically, Access Token will expire in 1 hour, so please extend it to 2 months b
 
 (c) Write necessary information on
 Dashboard / Site administration / Plugins / Activity modules / SharedPanel
-
 Facebook app ID
 Facebook secret
 Facebook redirect URL
@@ -53,13 +49,13 @@ Please check following instructions.
 
 (a) Make your application  
 https://apps.twitter.com/
-
 (b) Write necessary information on
 Dashboard / Site administration / Plugins / Activity modules / SharedPanel
 Twitter consumerKey
 Twitter consumerSecret
 Twitter accessToken
 Twitter accessTokenSecret
+
 
 4) Setup your activity
 When you add the activity "SharedPanel" on your course, you have to setup items on "Edit settings".

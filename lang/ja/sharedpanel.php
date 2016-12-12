@@ -40,10 +40,10 @@ $string['pluginname'] = 'SharedPanel';
 
 $string['print'] = '印刷する';
 $string['backtopanel'] = 'パネルにもどる';
-$string['import'] = 'メール・Facebook・Twitterの投稿を取り込む';//2016.08.23　長岡が変更
+$string['import'] = 'メール・Facebook・Twitterから新しい情報を取り込む';//2016.12.12　長岡が変更
 $string['sortedas'] = 'いいね!の多い順、投稿日時の新しい順に並んでいます。';
 $string['post'] = 'Moodle上で投稿する';
-$string['postmessage'] = 'スマホ・タブレットなどからメッセージを投稿';
+$string['postmessage'] = 'スマホ・タブレットなどからテキスト・画像を投稿';
 $string['cardcontent'] = 'カードの内容';
 $string['cardsender'] = 'カードの送信者';
 $string['camera'] = '写真を送信';

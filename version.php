@@ -28,10 +28,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2016111800;      // The current module version (Date: YYYYMMDDXX).
+$plugin->version   = 2016121200;      // The current module version (Date: YYYYMMDDXX).
                                       // If version == 0 then module will not be installed.
 $plugin->requires  = 2013111800;      // Requires this Moodle version.
 $plugin->cron      = 0;               // Period for cron to check this module (secs).
 $plugin->component = 'mod_sharedpanel'; // To check on upgrade, that module sits in correct place.
-$plugin->release = 'v1.1';
+$plugin->release = 'v1.2';
 $plugin->maturity = MATURITY_ALPHA;
