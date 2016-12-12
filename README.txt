@@ -38,12 +38,14 @@ https://developers.facebook.com/tools/accesstoken/
 Basically, Access Token will expire in 1 hour, so please extend it to 2 months by clicking "Extend Access Token".
 *You need to extend Access Token every 2 months.
 
-(c) Write necessary information in facebook.php file
-$appId = 'your Application ID';
-$secret = 'your Appication Secret';
-$redirectUrl = 'your redirect URL';
-$pageid = 'FACEBOOK PAGE ID'; // This is variable, don't touch!
-$token = 'your Access Token'
+(c) Write necessary information on
+Dashboard / Site administration / Plugins / Activity modules / SharedPanel
+
+Facebook app ID
+Facebook secret
+Facebook redirect URL
+Facebook token
+
 
 Twitter：
 If you would like to get posts from Twitter, you need to get access token on Twitter API.
@@ -62,10 +64,10 @@ Twitter accessTokenSecret
 4) Setup your activity
 When you add the activity "SharedPanel" on your course, you have to setup items on "Edit settings".
 
-・Facebook Group ID
-・Twitter Hashtag
-・Email address / Password / Subject (email)
-・Email address / Password / Note title (evernote)
+Facebook Group ID
+Twitter Hashtag
+Email address / Password / Subject (email)
+Email address / Password / Note title (evernote)
 
 *When you use Evernote, style will be affected by the style of the note itself.
 *To use the Email/Evernote import feature, you need to have PHP IMAP module installed on your server.
@@ -74,6 +76,5 @@ When you add the activity "SharedPanel" on your course, you have to setup items 
 Chikako Nagaoka & KITA Toshihiro
 
 *Some codes in facebook.php was contributed by Go Ohta from Open University, Japan.
-
 *Some codes in email.php include codes by ming (http://qiita.com/ming/items/ce7b8f394cc9b12a2b49)
 
