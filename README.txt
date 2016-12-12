@@ -25,7 +25,7 @@ How to install:
 3) Get Access Token
 If you want to import post from Facebook and Twitter, you need to get Access Token.
 
-Facebook
+Facebook：
 If you would like to get information from Facebook, you need to get access token on Facebook Graph API.
 Please check following instructions.
 
@@ -45,7 +45,7 @@ $redirectUrl = 'your redirect URL';
 $pageid = 'FACEBOOK PAGE ID'; // This is variable, don't touch!
 $token = 'your Access Token'
 
-Twitter
+Twitter：
 If you would like to get posts from Twitter, you need to get access token on Twitter API.
 Please check following instructions.
 
@@ -61,10 +61,10 @@ $accessTokenSecret = "your Access Token Secret";
 4) Setup your activity
 When you add the activity "SharedPanel" on your course, you have to setup items on "Edit settings".
 
-Facebook Group ID
-Twitter Hashtag
-Email address / Password / Subject (email)
-Email address / Password / Note title (evernote)
+・Facebook Group ID
+・Twitter Hashtag
+・Email address / Password / Subject (email)
+・Email address / Password / Note title (evernote)
 
 *When you use Evernote, style will be affected by the style of the note itself.
 *To use the Email/Evernote import feature, you need to have PHP IMAP module installed on your server.
