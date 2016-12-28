@@ -248,7 +248,7 @@ if( $mboxes->Nmsgs != 0 ) {
             $data->content = $ret1;
             $data->id = $DB->insert_record('sharedpanel_cards', $data);
 
-	    foreach( get_tags($mail2['subject']) as $tagstr ){
+	    foreach( mod_sharedpanel_get_tags($mail2['subject']) as $tagstr ){
               // DBにタグを追加
               $tag = new stdClass;
               $tag->cardid = $data->id;

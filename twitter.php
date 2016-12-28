@@ -98,7 +98,7 @@ function add_card_from_twitter($sharedpanel){
 
    $data->id = $DB->insert_record('sharedpanel_cards', $data);
 
-   foreach( get_tags($content) as $tagstr ){
+   foreach( mod_sharedpanel_get_tags($content) as $tagstr ){
      // DBにタグを追加
       $tag = new stdClass;
       $tag->cardid = $data->id;

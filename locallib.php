@@ -38,7 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 
 
-function get_tags($s){
+function mod_sharedpanel_get_tags($s){
   $manum= preg_match_all('/#\S+/',$s,$match);
   $ta = array();
   for($i=0; $i<$manum; $i++){
