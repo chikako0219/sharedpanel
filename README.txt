@@ -1,8 +1,11 @@
 == SharedPanel plugin version 0.1 ==
 
-Please note that this versin of sharedpanel needs facebook graph API account and Twitter API account if you want to import post from Facebook and Twitter.
+Please note that this versin of sharedpanel needs facebook graph API account
+and Twitter API account if you want to import post from Facebook and Twitter.
 
-This package includes "twitteroauth.php" and "OAuth.php". See the license description in each subdirectory. Except these subdirectories, SharedPanel is licensed under GPL v3 or later.
+This package includes "twitteroauth.php" and "OAuth.php".
+See the license description in each subdirectory.
+Except these subdirectories, SharedPanel is licensed under GPL v3 or later.
 
 http://www.gnu.org/copyleft/gpl.html
 
@@ -19,7 +22,9 @@ Input texts and pictures to Moodle directly without logging in Moodle.
 How to install
 
 1) Download SharedPanel plugin to your Moodle server from following URI.
-2) Unzip sharedpanel.zip and move sharedpanel folder into Moodle mod/ folder, and as admin click 'Site administration - Notifications' to let Moodle install sharedpanel (like a typical module installation).
+2) Unzip sharedpanel.zip and move sharedpanel folder into Moodle mod/ folder,
+   and as admin click 'Site administration - Notifications' to let Moodle install sharedpanel
+   (like a typical module installation).
 3) Get Access Token
 If you want to import post from Facebook and Twitter, you need to get Access Token.
 
@@ -73,4 +78,3 @@ Chikako Nagaoka & KITA Toshihiro
 
 *Some codes in facebook.php was contributed by Go Ohta from Open University, Japan.
 *Some codes in email.php include codes by ming (http://qiita.com/ming/items/ce7b8f394cc9b12a2b49)
-
