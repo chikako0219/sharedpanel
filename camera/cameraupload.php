@@ -13,7 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-require_once ('../../../config.php');
+//
+require_once('../../../config.php');
 $sharedpanelid = $_POST['n'];
 $id = $_POST['id']; // course module id
 $cameracomment = htmlspecialchars($_POST['cameracomment'], ENT_QUOTES);
@@ -34,7 +35,7 @@ if ($CFG->dbtype == "mysqli") {
 } else {
     $dbtype = $CFG->dbtype;
 }
-//    $db = new PDO('mysql:dbname=moodle;host=localhost', $CFG->dbuser, $CFG->dbpass);
+/*    $db = new PDO('mysql:dbname=moodle;host=localhost', $CFG->dbuser, $CFG->dbpass); */
 $db = new PDO($dbtype . ':dbname=' . $CFG->dbname . ';host=' . $CFG->dbhost, $CFG->dbuser, $CFG->dbpass);
 $db->query("SET NAMES utf8");
 $sql = "SELECT max(id) FROM " . $CFG->prefix . "sharedpanel_cards;";
@@ -42,7 +43,7 @@ foreach ($db->query($sql) as $row) {
     $cardid = $row['max(id)'] + 1;
 }
 $sql2 = "insert into " . $CFG->prefix . "sharedpanel_cards " . "(id, sharedpanelid, userid, rating, content, comment, hidden, timeposted, timecreated, timemodified, inputsrc, messageid, sender, positionx, positiony)" . " values (?" . str_repeat(", ?", 14) . ")";
-//    " values (?, ?, ?)";
+/*    " values (?, ?, ?)"; */
 $stmt = $db->prepare($sql2);
 $time = time();
 $z = 0;
@@ -63,19 +64,19 @@ if (is_uploaded_file($_FILES["capture"]["tmp_name"])) {
     //    $fp = fopen($_FILES['file']['tmp_name'], 'rb');
     $stmt->bindParam(1, $cardid);
     $stmt->bindParam(2, $sharedpanelid); // sharedpanelid
-    $stmt->bindParam(3, $z); //userid
+    $stmt->bindParam(3, $z); // userid
     $stmt->bindParam(4, $z); // rating
     $stmt->bindParam(5, $cardid); // content
     //$stmt->bindParam(5, $fp, PDO::PARAM_LOB); // content
     $stmt->bindParam(5, $ret1); // content
     $stmt->bindParam(6, $s); // comment
     $stmt->bindParam(7, $z); // hidden
-    $stmt->bindParam(8, $time); //post
-    $stmt->bindParam(9, $time); //create
+    $stmt->bindParam(8, $time); // post
+    $stmt->bindParam(9, $time); // create
     $stmt->bindParam(10, $time); // modify
     $stmt->bindParam(11, $inputsrc); // inputsrc
     $stmt->bindParam(12, $z); // messageid
-    $stmt->bindParam(13, $name); //sender
+    $stmt->bindParam(13, $name); // sender
     $stmt->bindParam(14, $z); // positionx
     $stmt->bindParam(15, $z); // positiony
     //$stmt->bindParam(3, $fp, PDO::PARAM_LOB);
@@ -91,19 +92,19 @@ if (is_uploaded_file($_FILES["capture"]["tmp_name"])) {
         //      $fp = fopen($_FILES['file']['tmp_name'], 'rb');
         $stmt->bindParam(1, $cardid);
         $stmt->bindParam(2, $sharedpanelid); // sharedpanelid
-        $stmt->bindParam(3, $z); //userid
+        $stmt->bindParam(3, $z); // userid
         $stmt->bindParam(4, $z); // rating
         $stmt->bindParam(5, $cardid); // content
         //$stmt->bindParam(5, $fp, PDO::PARAM_LOB); // content
         $stmt->bindParam(5, $ret1); // content
         $stmt->bindParam(6, $s); // comment
         $stmt->bindParam(7, $z); // hidden
-        $stmt->bindParam(8, $time); //post
-        $stmt->bindParam(9, $time); //create
+        $stmt->bindParam(8, $time); // post
+        $stmt->bindParam(9, $time); // create
         $stmt->bindParam(10, $time); // modify
         $stmt->bindParam(11, $inputsrc); // inputsrc
         $stmt->bindParam(12, $z); // messageid
-        $stmt->bindParam(13, $name); //sender
+        $stmt->bindParam(13, $name); // sender
         $stmt->bindParam(14, $z); // positionx
         $stmt->bindParam(15, $z); // positiony
         $db->beginTransaction();
@@ -137,3 +138,4 @@ function rotatecompress_img($imgname, $width) {
     unlink($jpegfile);
     return $attached;
 }
+?>
