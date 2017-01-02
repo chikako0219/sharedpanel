@@ -15,13 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Internal library of functions for module sharedpanel
- *
- * All the sharedpanel specific functions, needed to implement the module
- * logic, should go here. Never include this file from your lib.php!
- *
  * @package    mod_sharedpanel
- * @copyright  2011 Your Name
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -47,3 +42,44 @@ function mod_sharedpanel_get_tags($s){
   return $ta;
 }
 
+function mod_sharedpanel_compress_img($attached, $width){
+//  $imagea= imap_base64($attached);
+//  $imagea= imagecreatefromstring($imagea);
+  $imagea= imagecreatefromstring($attached);
+  $imagea= imagescale($imagea, $width, -1);  // proportionally compress image with $width
+  $jpegfile= tempnam("/tmp", "email-jpg-");
+  imagejpeg($imagea,$jpegfile);
+  imagedestroy($imagea);
+  $attached= base64_encode(file_get_contents($jpegfile));
+  unlink($jpegfile);
+  return $attached;
+}
+
+// utf8mb4_encode_numericentity
+// utf8mb4_decode_numericentity
+// UTF-8 の4バイト文字を HTML 数値文字参照に変換する
+// MySQL 5.5 で導入された utf8mb4 を使えない場合
+// http://qiita.com/masakielastic/items/ec483b00ff6337a02878
+
+function mod_sharedpanel_utf8mb4_encode_numericentity($str)
+{
+    $re = '/[^\x{0}-\x{FFFF}]/u';
+    return preg_replace_callback($re, function($m) {
+        $char = $m[0];
+        $x = ord($char[0]);
+        $y = ord($char[1]);
+        $z = ord($char[2]);
+        $w = ord($char[3]);
+        $cp = (($x & 0x7) << 18) | (($y & 0x3F) << 12) | (($z & 0x3F) << 6) | ($w & 0x3F);
+        return sprintf("&#x%X;", $cp);
+    }, $str);
+}
+/*
+function utf8mb4_decode_numericentity($str)
+{
+    $re = '/&#(x[0-9a-fA-F]{5,6}|\d{5,7});/';
+    return preg_replace_callback($re, function($m) {
+        return html_entity_decode($m[0]);
+    }, $str);
+}
+*/

@@ -1,4 +1,25 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+//
+/**
+ * @package    mod_sharedpanel
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
 // Twitter ------------------------------------------
 
 require_once("locallib.php");
@@ -49,7 +70,7 @@ function add_card_from_twitter($sharedpanel){
    $photo = $result['entities']['media'][0]['media_url'];
    $content = $result['text'];
    // 絵文字などを変換してDBエラーにならないようにする
-   $content= utf8mb4_encode_numericentity($content);
+   $content= mod_sharedpanel_utf8mb4_encode_numericentity($content);
    // URI を link に
    // http://www.phppro.jp/qa/688 
    $pat_sub= preg_quote('-._~%:/?#[]@!$&\'()*+,;=', '/');
@@ -120,28 +141,3 @@ function add_card_from_twitter($sharedpanel){
 
 
 
-// UTF-8 の4バイト文字を HTML 数値文字参照に変換する
-// MySQL 5.5 で導入された utf8mb4 を使えない場合
-// http://qiita.com/masakielastic/items/ec483b00ff6337a02878
-
-function utf8mb4_encode_numericentity($str)
-{
-    $re = '/[^\x{0}-\x{FFFF}]/u';
-    return preg_replace_callback($re, function($m) {
-        $char = $m[0];
-        $x = ord($char[0]);
-        $y = ord($char[1]);
-        $z = ord($char[2]);
-        $w = ord($char[3]);
-        $cp = (($x & 0x7) << 18) | (($y & 0x3F) << 12) | (($z & 0x3F) << 6) | ($w & 0x3F);
-        return sprintf("&#x%X;", $cp);
-    }, $str);
-}
-
-function utf8mb4_decode_numericentity($str)
-{
-    $re = '/&#(x[0-9a-fA-F]{5,6}|\d{5,7});/';
-    return preg_replace_callback($re, function($m) {
-        return html_entity_decode($m[0]);
-    }, $str);
-}
