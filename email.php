@@ -1,4 +1,25 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_sharedpanel
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 //メール ----------------------------------------------------------------------------
 //エラー表示
 //ini_set( 'display_errors', 1 );
@@ -189,7 +210,7 @@ if( $mboxes->Nmsgs != 0 ) {
                 $mail[$mailno]['attached_file'][$key]['file_name']=$name.'_'.time().'_'.$key.'.'.$ex;
 		// 大きい画像は小さく変換
                 if ( $compressimage>0 and strlen($attached)>200*1000 ){
-                  $attached = compress_img($attached, $compressimage);
+                  $attached = mod_sharedpanel_compress_img_base64($attached, $compressimage);
                   $mail[$mailno]['attached_file'][$key]['imageb']= $attached;
                   $mail[$mailno]['attached_file'][$key]['content_type']='Content-type: image/jpeg';
                 }else{
@@ -269,17 +290,4 @@ if( $mboxes->Nmsgs != 0 ) {
 }
 
 
-}
-
-
-function compress_img($attached, $width){
-  $imagea= imap_base64($attached);
-  $imagea= imagecreatefromstring($imagea);
-  $imagea= imagescale($imagea, $width, -1);  // proportionally compress image with $width
-  $jpegfile= tempnam("/tmp", "email-jpg-");
-  imagejpeg($imagea,$jpegfile);
-  imagedestroy($imagea);
-  $attached= base64_encode(file_get_contents($jpegfile));
-  unlink($jpegfile);
-  return $attached;
 }

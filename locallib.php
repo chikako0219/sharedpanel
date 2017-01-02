@@ -55,6 +55,18 @@ function mod_sharedpanel_compress_img($attached, $width){
   return $attached;
 }
 
+function mod_sharedpanel_compress_img_base64($attached, $width){
+  $imagea= imap_base64($attached);
+  $imagea= imagecreatefromstring($imagea);
+  $imagea= imagescale($imagea, $width, -1);  // proportionally compress image with $width
+  $jpegfile= tempnam("/tmp", "email-jpg-");
+  imagejpeg($imagea,$jpegfile);
+  imagedestroy($imagea);
+  $attached= base64_encode(file_get_contents($jpegfile));
+  unlink($jpegfile);
+  return $attached;
+}
+
 // utf8mb4_encode_numericentity
 // utf8mb4_decode_numericentity
 // UTF-8 の4バイト文字を HTML 数値文字参照に変換する

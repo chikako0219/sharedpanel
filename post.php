@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_sharedpanel
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -7,6 +27,7 @@ require_once(dirname(__FILE__).'/lib.php');
 
 //moodleform is defined in formslib.php
 require_once("$CFG->libdir/formslib.php");
+require_once("locallib.php");
  
 class post_form extends moodleform {
     //Add elements to form
@@ -117,7 +138,7 @@ if ($mform->is_cancelled()) {
 //    if ($name){  $ret1 .= $data->sender.'<br/><hr>';  }
     if ($filecontent){
 //      $ret1 .= "<img src='data:image/gif;base64,".base64_encode($filecontent)."' width=85%><br>";
-      $ret1 .= "<img src='data:image/gif;base64,".compress_img($filecontent,600)."' width=85%><br>";
+      $ret1 .= "<img src='data:image/gif;base64,".mod_sharedpanel_compress_img($filecontent,600)."' width=85%><br>";
 
     }
 //    $ret1 .= $formcontent.'<br/>'.strftime('%c',$time).'<br/> posted on Moodle';
