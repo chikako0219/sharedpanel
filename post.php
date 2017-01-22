@@ -168,17 +168,3 @@ if ($mform->is_cancelled()) {
 } 
 
 echo $OUTPUT->footer();
-
-
-function compress_img($attached, $width){
-//  $imagea= imap_base64($attached);
-//  $imagea= imagecreatefromstring($imagea);
-  $imagea= imagecreatefromstring($attached);
-  $imagea= imagescale($imagea, $width, -1);  // proportionally compress image with $width
-  $jpegfile= tempnam("/tmp", "email-jpg-");
-  imagejpeg($imagea,$jpegfile);
-  imagedestroy($imagea);
-  $attached= base64_encode(file_get_contents($jpegfile));
-  unlink($jpegfile);
-  return $attached;
-}
