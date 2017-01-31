@@ -1,177 +1,160 @@
 <?php
-//error_reporting(E_ALL);
-//ini_set( 'display_errors', 1 );
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// Facebook PHP SDK関連ファイルの読込
-//define('FACEBOOK_SDK_V4_SRC_DIR', '/var/www/html/moodle/mod/sharedpanel/facebook/src/Facebook/');
-define('FACEBOOK_SDK_V4_SRC_DIR', __DIR__ . '/facebook/src/Facebook/');
-require __DIR__ . '/facebook/src/Facebook/autoload.php';
-use Facebook\FacebookClient;
+/**
+ * @package    mod_sharedpanel
+ * @copyright  2017 NAGAOKA Chikako, KITA Toshihiro
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-//関数の作成
-function add_card_from_facebook($sharedpanel){
-  global $DB, $USER;
+//ini_set('display_errors',1);
 
-  $fbgroup1= $sharedpanel->fbgroup1;
-  echo "<br/><hr>importing facebook ($fbgroup1) ... ";  ob_flush(); flush();
+require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(__FILE__).'/lib.php');
+ 
+$id = optional_param('id', 0, PARAM_INT); // course module id
+$c  = optional_param('c', 0, PARAM_INT);  // ... card ID
+ 
+if ($id) {
+    $cm         = get_coursemodule_from_id('sharedpanel', $id, 0, false, MUST_EXIST);
+    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $sharedpanel  = $DB->get_record('sharedpanel', array('id' => $cm->instance), '*', MUST_EXIST);
+} else {
+    error('You must specify a course_module ID or an instance ID');
+}
+ 
+require_login($course, true, $cm);
+$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-//echo '<h2> Facebook API Testプログラム (PHP) 2015/09/10</h2>';
-//echo "* 初期処理　開始<br>\n";
-
+/*
+$event = \mod_sharedpanel\event\course_module_viewed::create(array(
+    'objectid' => $PAGE->cm->instance,
+    'context' => $PAGE->context,
+));
+$event->add_record_snapshot('course', $PAGE->course);
+// In the next line you can use $PAGE->activityrecord if you have set it, or skip this line if you don't have a record.
+$event->add_record_snapshot($PAGE->cm->modname, $activityrecord);
+$event->trigger();
+*/
 
 $config = get_config('sharedpanel');
 
-// Facebook App情報&アクセストークンの設定
-$appId =  $config->FBappID;
-$secret = $config->FBsecret;
-$redirectUrl = $config->FBredirectUrl;
-$token = $config->FBtoken;
+$client_id = $config->FBappID;
+$client_secret = $config->FBsecret;
+// $redirectUrl = $config->FBredirectUrl;
+// $token = $config->FBtoken;
+$Groupid= $sharedpanel->fbgroup1;
+$redirect_uri = $CFG->wwwroot.'/mod/sharedpanel/facebook.php?id='.$id;
+
+$code = $_REQUEST['code'];
+
+if (!$code) {
+//  Graph APIをコール
+    header('Location: https://graph.facebook.com/oauth/authorize'
+	               . '?client_id=' . $client_id
+	               . '&scope=user_managed_groups'
+	               . '&redirect_uri=' . urlencode($redirect_uri));
+    exit(0);		       
+} else {
+//  アクセストークン取得用のURLを生成
+    $token_url = 'https://graph.facebook.com/oauth/access_token' 
+	           . '?client_id=' . $client_id
+	           . '&redirect_uri=' . urlencode($redirect_uri) 
+	           . '&client_secret=' . $client_secret
+	           . '&code=' . $code;
+
+//  アクセストークン取得
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $token_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $token = curl_exec($ch);
+
+    $url = "https://graph.facebook.com/v2.8/".$Groupid."/feed?fields=id,name,created_time,updated_time,message,from,picture,link&".$token."&limit=25";
+    $ret0 = json_decode(file_get_contents($url));
+    $retdata = $ret0->data;    
+
+// Print the page header.
+ 
+    $PAGE->set_url('/mod/sharedpanel/deletecard.php', array('id' => $cm->id));
+    $PAGE->set_title(format_string($sharedpanel->name));
+    $PAGE->set_heading(format_string($course->fullname));
+    $PAGE->set_context($context);
+ 
 /*
-$appId = 'your App id';
-$secret = 'your App secret';
-$redirectUrl = 'your redirect URI';
-$pageid = 'FACEBOOK PAGE ID';
-$token = 'your Access Token';
-*/
+ * Other things you may want to set - remove if not needed.
+ * $PAGE->set_cacheable(false);
+ * $PAGE->set_focuscontrol('some-html-id');
+ * $PAGE->add_body_class('sharedpanel-'.$somevar);
+ */ 
+// Output starts here.
+    echo $OUTPUT->header();
 
-//echo "* 初期処理　終了<br>\n";
-
-// Facebook アクセスクラスの初期化
-//echo "* FBクラス初期化　開始<br>\n";
-$fb = new Facebook\Facebook([
-  'app_id' => $appId,
-  'app_secret' => $secret,
-  'default_graph_version' => 'v2.5',
-  'default_access_token' => $token
-  // . . .
-  ]);
-//echo "IsSet => ", isset($fb),"<br>";
-//echo "* FBクラス初期化　終了<br>\n";
-//echo "* FB.api　開始<br>\n";
-$fbApp = $fb->getApp();
-//echo "IsSet => ", isset($fbApp),"<br>";
-//echo "* FB.api　終了 xxxxxxxxxxxx <br>\n";
-
-//echo "* Send reqest 開始<br>\n";
-
-// リクエスト用条件設定
-$reqLimit = 10;
-$timeS = strtotime("2015-08-18");
-$Groupid = $fbgroup1;
-// $Groupid = "551028761722859";
-$OrgreqStr = "/".$Groupid ."/feed?fields=id,from,message,actions,child_attachments,application,likes, link,object_id,message_tags,created_time,updated_time,comments,picture,source,story,story_tags&limit=".$reqLimit."&since=".$timeS;
-
-//リクエスト実施
-$reqStr = $OrgreqStr;
-$request = $fb->request('GET',$reqStr);
-
-
-try {
-  $response = $fb->getClient()->sendRequest($request);
-} catch(Facebook\Exceptions\FacebookResponseException $e) {
-  echo 'Graph returned an error: ' . $e->getMessage();
-  echo "<br>\n";
-} catch(Facebook\Exceptions\FacebookSDKException $e) {
-  echo 'Facebook SDK returned an error: ' . $e->getMessage();
-  echo "<br>\n";
+    // echo "<pre>"; var_dump($ret); echo "</pre>";  // debug
 }
 
-//echo "* Send reqest 終了)<br>\n";
+echo "<br/>importing facebook ($Groupid) ... <br/>";  ob_flush(); flush();
 
-// リクエスト結果の表示
-if (isset($response)){
-//	echo "<br>Get response <br>\n";
+$n2 = count($retdata);
 
-	$arrayResult = (array)$response;
-	
-// Feed結果全体の表示	
-//	$n = count($arrayResult);
-
-	//echo "<pre>\n";
-	//echo "************* Feed結果全体の表示。**************\n"; 
-    //echo "要素数は{$n}個です。\n";
-	//echo "<br>\n";
-    //var_dump($response);
-	//echo "<br>\n";
-	//echo "</pre>\n";
-
-	// メッセージ内容の取り出しと表示	
-
-	//echo "<pre>\n";
-	//echo "************* メッセージ内容の取り出しと表示の表示。**************\n"; 
-
-	//echo "<br>\n";
-	
-	// 現状トリッキーな方法で ["decodedBody":protected]を取り出しています。
-	// 本当は["decodedBody":protected]文字列をダンプで調べてdatakey$で使用すべき 
-	$bodyResult = array_slice($arrayResult,3, 1, true);
-	$dataky = key($bodyResult);
-	$dataResult = $bodyResult[$dataky]["data"];
-	$n2 = count($dataResult);
-	//echo "メッセージ数は{$n2}個です。<br>\n";
-	
-	for ($index = 0; $index < $n2; $index++){
-		$ret1="";
-		// echo "index ={$index}<br>";
-		//echo "<br>****** {$index}番目のメッセージ<br>\n";
-		$data01Result = $dataResult[$index];
-		if($data01Result["message"]){
-			//下記の部分はview.phpファイルで定義されているので，削除（2016.07.21）
-			//echo '<div-facebook>';
-			//echo "Message ID = ".$data01Result["id"]."<br>\n";
-			// $ret1.= $data01Result["from"] ["name"]."<br>\n<br>";
-			// $ret1.= "<hr><br>";
-			if ($data01Result["picture"]){
-                          $ret1.= "<a href='".$data01Result["link"]."' target='_blank'><img src=".$data01Result["picture"]." width=250px></a><br>\n<br>";
-                        }
-			$ret1.= $data01Result["message"]."<br/>";
-			//clickableにしておく（linkのリンク）
-			//echo $data01Result["link"]."<br>\n";
-			//$ret1.= $data01Result["created_time"]."<br>\n<br><br>from Facebook";
-      		//下記の部分はview.phpファイルで定義されているので，削除（2016.07.21）
-			//echo '</div-facebook>';
-		}
-		else{
-			//echo "<br>****** メッセージ本文を含まない投稿です<br>\n";
-			continue;
-		}
+for ($index = 0; $index < $n2; $index++){
+    $content="";
+    $ret = $retdata[$index];
+    
+    // echo "index ".$index."/".$n2."\n"; var_dump($ret);   // debug
+    if($ret->message){
+        if ($ret->picture){
+            $content.= "<a href='".$ret->link."' target='_blank'><img src=".$ret->picture." width=250px></a><br>\n<br>";
+        }
+        $content.= $ret->message."<br/>";
+    }else{
+        continue;
+    }
 
    // DBにあるカードと重複していれば登録しない（次の投稿の処理へ）
-    $samecard = $DB->get_record('sharedpanel_cards', array('timeposted' => strtotime($data01Result["created_time"]), 'inputsrc' => 'facebook','sharedpanelid' => $sharedpanel->id,'hidden' => 0));
+    $samecard = $DB->get_record('sharedpanel_cards', array('timeposted' => strtotime($ret->created_time), 'inputsrc' => 'facebook','sharedpanelid' => $sharedpanel->id,'hidden' => 0));
     if ($samecard != null){
-      echo "Not imported : same facebook post by ".$data01Result["from"]["name"]." (".$data01Result["created_time"].")<br>\n";
-      ob_flush(); flush();
-      continue;
+        echo "Not imported : same facebook post by ".$ret->from->name." (".$ret->created_time.")<br>\n";
+    ob_flush(); flush();
+        continue;
     }
 		
-	// DBにカードを追加
-	$data = new stdClass;
-        $data->sharedpanelid = $sharedpanel->id;
-        $data->userid = $USER->id;
-        $data->timeposted= strtotime($data01Result["created_time"]);
-        $data->timecreated = time();
-        $data->timemodified = $data->timecreated;
-        $data->inputsrc = "facebook";
-        $data->sender = $data01Result["from"]["name"];
-        $data->content = $ret1;
-        $data->id = $DB->insert_record('sharedpanel_cards', $data);
+// DBにカードを追加
+    $data = new stdClass;
+    $data->sharedpanelid = $sharedpanel->id;
+    $data->userid = $USER->id;
+    $data->timeposted= strtotime($ret->created_time);
+    $data->timecreated = time();
+    $data->timemodified = $data->timecreated;
+    $data->inputsrc = "facebook";
+    $data->sender = $ret->from->name;
+    $data->content = $content;
+    $data->id = $DB->insert_record('sharedpanel_cards', $data);
 
-	// DBにタグを追加
-        $tag = new stdClass;
-        $tag->cardid = $data->id;
-        $tag->userid = $USER->id;
-        $tag->timecreated = $data->timecreated;
-        $tag->tag = $Groupid;
-        $tag->id = $DB->insert_record('sharedpanel_card_tags', $tag);
-        echo "A card imported from facebook : a post by ".$data01Result["from"]["name"]."(".$data01Result["created_time"].")<br>\n";
-        ob_flush(); flush();
-		
-	}
-}
-else{
-	echo "Not get response <br>\n";
+// DBにタグを追加
+    $tag = new stdClass;
+    $tag->cardid = $data->id;
+    $tag->userid = $USER->id;
+    $tag->timecreated = $data->timecreated;
+    $tag->tag = $Groupid;
+    $tag->id = $DB->insert_record('sharedpanel_card_tags', $tag);
+    echo "A card imported from facebook : a post by ".$ret->from->name."(".$ret->created_time.")<br>\n";
+    ob_flush(); flush();
 }
 
-}
+echo "<br/><a href=\"./view.php?id=$id\"><span style='background-color:orange;padding:1ex;color:black;'><b>Importing done.</b></span></a><br/>"; ob_flush(); flush();
 
-//
+// Finish the page.
+echo $OUTPUT->footer();
