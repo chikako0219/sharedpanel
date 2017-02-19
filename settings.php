@@ -29,11 +29,10 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
     //--- general settings -----------------------------------------------------------------------------------
     $settings->add(new admin_setting_configcheckbox('sharedpanel/requiremodintro',
-        get_string('requiremodintro', 'admin'), get_string('configrequiremodintro', 'admin'), 1));
+        get_string('requiremodintro', 'sharedpanel'), get_string('configrequiremodintro', 'sharedpanel'), 1));
 
     //--- original settings -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_heading('sharedpanel/facebook',
-            get_string('facebook', 'sharedpanel')));
+    $settings->add(new admin_setting_heading('sharedpanel/facebook', get_string('facebook', 'sharedpanel')));
 
         $settings->add(new admin_setting_configtext('sharedpanel/FBappID',
                 get_string('FBappID', 'sharedpanel'),
@@ -51,8 +50,7 @@ if ($ADMIN->fulltree) {
                 get_string('FBtoken', 'sharedpanel'),
                 get_string('FBtoken_help', 'sharedpanel'), ''));
 
-    $settings->add(new admin_setting_heading('sharedpanel/twitter',
-            get_string('twitter', 'sharedpanel')));
+    $settings->add(new admin_setting_heading('sharedpanel/twitter', get_string('twitter', 'sharedpanel')));
 
         $settings->add(new admin_setting_configtext('sharedpanel/TWconsumerKey',
                 get_string('TWconsumerKey', 'sharedpanel'),
