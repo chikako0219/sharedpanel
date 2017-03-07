@@ -30,11 +30,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/*
- * Example constant:
- * define('NEWMODULE_ULTIMATE_ANSWER', 42);
- */
-
 /**
  * Moodle core API
  */
@@ -96,11 +91,10 @@ function sharedpanel_update_instance(stdClass $sharedpanel, mod_sharedpanel_mod_
     $sharedpanel->timemodified = time();
     $sharedpanel->id = $sharedpanel->instance;
 
+    //@FIXME
     $key = 'くまモンくまモンくまモンくまモンくまもんくまモンくまもんくまモンくまモン１２１０';
     $sharedpanel->emailpas1 = openssl_encrypt($sharedpanel->emailpas1, 'AES-128-ECB', $key);
     $sharedpanel->emailpas2 = openssl_encrypt($sharedpanel->emailpas2, 'AES-128-ECB', $key);
-
-    // You may have to add extra stuff in here.
 
     return $DB->update_record('sharedpanel', $sharedpanel);
 }
