@@ -99,7 +99,6 @@ function sharedpanel_update_instance(stdClass $sharedpanel, mod_sharedpanel_mod_
     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-128-ecb'));
 
     $sharedpanel->timemodified = time();
-//    $sharedpanel->id = $sharedpanel->instance;
 
     $sharedpanel->emailpas1 = openssl_encrypt($sharedpanel->emailpas1, 'AES-128-ECB', $sharedpanel->encryptionkey, 0, $iv);
     $sharedpanel->emailpas2 = openssl_encrypt($sharedpanel->emailpas2, 'AES-128-ECB', $sharedpanel->encryptionkey, 0, $iv);
