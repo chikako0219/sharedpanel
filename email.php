@@ -36,7 +36,7 @@ function add_card_from_email($sharedpanel, $compressimage = -1){
   $GMAIL_ACCOUNT=  $sharedpanel->emailadr1;
   $andkey=         $sharedpanel->emailkey1;
 
-  $key = 'くまモンくまモンくまモンくまモンくまもんくまモンくまもんくまモンくまモン１２１０';
+  $key = $sharedpanel->encryptionkey;
   $GMAIL_PASSWORD= openssl_decrypt($sharedpanel->emailpas1, 'AES-128-ECB', $key);
 
   echo "<br/><hr>importing emails ($GMAIL_ACCOUNT; $andkey) ...  ";  ob_flush(); flush();
