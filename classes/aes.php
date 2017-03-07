@@ -2,7 +2,7 @@
 
 namespace mod_sharedpanel;
 
-class util
+class aes
 {
     public static function generate_key()
     {
@@ -14,5 +14,11 @@ class util
     {
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-128-ecb'));
         return openssl_encrypt($raw_string, 'AES-128-ECB', $encryption_key, 0, $iv);
+    }
+
+    public static function get_aes_decrypt_string($encrypt_string, $encryption_key)
+    {
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-128-ecb'));
+        return openssl_decrypt($encrypt_string, 'AES-128-ECB', $encryption_key, 0, $iv);
     }
 }

@@ -61,7 +61,7 @@ install:
 # course, you can add any of your own custom steps.
 script:
 # This step lints your PHP files to check for syntax errors.
-  - moodle-plugin-ci phplint
+#  - moodle-plugin-ci phplint
 # This step runs the PHP Copy/Paste Detector on your plugin. This helps to find
 # code duplication.
   - moodle-plugin-ci phpcpd
@@ -70,7 +70,7 @@ script:
   - moodle-plugin-ci phpmd
 # This step runs the Moodle Code Checker to make sure that your plugin conforms to the
 # Moodle coding standards.  It is highly recommended that you keep this step.
-  - moodle-plugin-ci codechecker
+#  - moodle-plugin-ci codechecker
 # This step runs CSS Lint on the CSS files in your plugin.
   - moodle-plugin-ci csslint
 # This step runs YUI Shifter on the YUI modules in your plugin.  This also checks to make

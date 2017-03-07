@@ -25,7 +25,7 @@
  * here will all be database-neutral, using the functions defined in DLL libraries.
  *
  * @package    mod_sharedpanel
- * @copyright  2011 Your Name
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -43,59 +43,19 @@ function xmldb_sharedpanel_upgrade($oldversion)
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
-    if ($oldversion < 2007040101) {
+    if ($oldversion < 2016121200) {
         $table = new xmldb_table('sharedpanel');
-        $field = new xmldb_field('timecreated', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0',
-            'introformat');
+        $field = new xmldb_field('encryptionkey', XMLDB_TYPE_TEXT, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0,
+            'timemodified');
 
-        // Add field timecreated.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
-        // Define field timemodified to be added to sharedpanel.
-        $table = new xmldb_table('sharedpanel');
-        $field = new xmldb_field('timemodified', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0',
-            'timecreated');
+        mod_sharedpanel_upgrade_encryptionkey();
 
-        // Add field timemodified.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Define index course (not unique) to be added to sharedpanel.
-        $table = new xmldb_table('sharedpanel');
-        $index = new xmldb_index('courseindex', XMLDB_INDEX_NOTUNIQUE, array('course'));
-
-        // Add index to course field.
-        if (!$dbman->index_exists($table, $index)) {
-            $dbman->add_index($table, $index);
-        }
-
-        // Another save point reached.
-        upgrade_mod_savepoint(true, 2007040101, 'sharedpanel');
+        upgrade_mod_savepoint(true, 2017030701, 'sharedpanel');
     }
 
-    // Third example, the next day, 2007/04/02 (with the trailing 00),
-    // some actions were performed to install.php related with the module.
-    if ($oldversion < 2007040200) {
-
-        // Insert code here to perform some actions (same as in install.php).
-
-        upgrade_mod_savepoint(true, 2007040200, 'sharedpanel');
-    }
-
-    /*
-     * And that's all. Please, examine and understand the 3 example blocks above. Also
-     * it's interesting to look how other modules are using this script. Remember that
-     * the basic idea is to have "blocks" of code (each one being executed only once,
-     * when the module version (version.php) is updated.
-     *
-     * Lines above (this included) MUST BE DELETED once you get the first version of
-     * yout module working. Each time you need to modify something in the module (DB
-     * related, you'll raise the version and add one upgrade block here.
-     *
-     * Finally, return of upgrade result (true, all went good) to Moodle.
-     */
     return true;
 }

@@ -17,73 +17,30 @@
 /**
  * Upgrade helper functions
  *
- * @package   mod_feedback
+ * @package   mod_sharedpanel
  * @copyright 2016 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once '../classes/aes.php';
+
 /**
  * Fill new field courseid in tables feedback_completed or feedback_completedtmp
  *
  * @param bool $tmp use for temporary table
  */
-function mod_feedback_upgrade_courseid($tmp = false) {
+function mod_sharedpanel_upgrade_encryptionkey($tmp = false) {
     global $DB;
-    $suffix = $tmp ? 'tmp' : '';
 
-    // Part 1. Ensure that each completed record has associated values with only one courseid.
-    $sql = "SELECT c.id
-        FROM {feedback_completed$suffix} c, {feedback_value$suffix} v
-        WHERE c.id = v.completed
-        GROUP by c.id
-        having count(DISTINCT v.course_id) > 1";
-    $problems = $DB->get_fieldset_sql($sql);
-    foreach ($problems as $problem) {
-        $courses = $DB->get_fieldset_sql("SELECT DISTINCT course_id "
-                . "FROM {feedback_value$suffix} WHERE completed = ?", array($problem));
-        $firstcourse = array_shift($courses);
-        $record = $DB->get_record('feedback_completed'.$suffix, array('id' => $problem));
-        unset($record->id);
-        $DB->update_record('feedback_completed'.$suffix, ['id' => $problem, 'courseid' => $firstcourse]);
-        foreach ($courses as $courseid) {
-            $record->courseid = $courseid;
-            $completedid = $DB->insert_record('feedback_completed'.$suffix, $record);
-            $DB->execute("UPDATE {feedback_value$suffix} SET completed = ? WHERE completed = ? AND course_id = ?",
-                    array($completedid, $problem, $courseid));
-        }
-    }
-
-    // Part 2. Update courseid in the completed table.
-    if ($DB->get_dbfamily() !== 'mysql') {
-        $sql = "UPDATE {feedback_completed$suffix} "
-            . "SET courseid = (SELECT COALESCE(MIN(v.course_id), 0) "
-            . "FROM {feedback_value$suffix} v "
-            . "WHERE v.completed = {feedback_completed$suffix}.id)";
-        $DB->execute($sql);
-    } else {
-        $sql = "UPDATE {feedback_completed$suffix} c, {feedback_value$suffix} v "
-            . "SET c.courseid = v.course_id "
-            . "WHERE v.completed = c.id AND v.course_id <> 0";
-        $DB->execute($sql);
-    }
-}
-
-/**
- * Ensure tables feedback_value and feedback_valuetmp have unique entries for each pair (completed,item).
- *
- * @param bool $tmp use for temporary table
- */
-function mod_feedback_upgrade_delete_duplicate_values($tmp = false) {
-    global $DB;
-    $suffix = $tmp ? 'tmp' : '';
-
-    $sql = "SELECT MIN(id) AS id, completed, item, course_id " .
-            "FROM {feedback_value$suffix} GROUP BY completed, item, course_id HAVING count(id)>1";
-    $records = $DB->get_records_sql($sql);
-    foreach ($records as $record) {
-        $DB->delete_records_select("feedback_value$suffix",
-            "completed = :completed AND item = :item AND course_id = :course_id AND id > :id", (array)$record);
+    $sharedpanels = $DB->get_records('sharedpanel', ['encryptionkey' => 0]);
+    foreach ($sharedpanels as $sharedpanel) {
+        $dataobject = new stdClass();
+        $dataobject->id = $sharedpanel->id;
+        $dataobject->encryptionkey = \mod_sharedpanel\aes::generate_key();
+        $dataobject->emailpas1 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas1, $dataobject->encryptionkey);
+        $dataobject->emailpas2 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas2, $dataobject->encryptionkey);
+        $DB->update_record('sharedpanel', $dataobject);
     }
 }

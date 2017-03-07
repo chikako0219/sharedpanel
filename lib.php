@@ -70,13 +70,11 @@ function sharedpanel_add_instance(stdClass $sharedpanel, mod_sharedpanel_mod_for
     global $DB;
 
     $sharedpanel->timecreated = time();
-    $bytes = openssl_random_pseudo_bytes(32);
-    $encryption_key = bin2hex($bytes);
-    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-128-ecb'));
+    $encryption_key = \mod_sharedpanel\aes::generate_key();
 
     $sharedpanel->encryptionkey = $encryption_key;
-    $sharedpanel->emailpas1 = openssl_encrypt($sharedpanel->emailpas1, 'AES-128-ECB', $encryption_key, 0, $iv);
-    $sharedpanel->emailpas2 = openssl_encrypt($sharedpanel->emailpas2, 'AES-128-ECB', $encryption_key, 0, $iv);
+    $sharedpanel->emailpas1 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas1, $sharedpanel->encryptionkey);
+    $sharedpanel->emailpas2 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas2, $sharedpanel->encryptionkey);
 
     return $DB->insert_record('sharedpanel', $sharedpanel);
 }
@@ -96,12 +94,9 @@ function sharedpanel_update_instance(stdClass $sharedpanel, mod_sharedpanel_mod_
 {
     global $DB;
 
-    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-128-ecb'));
-
     $sharedpanel->timemodified = time();
-
-    $sharedpanel->emailpas1 = openssl_encrypt($sharedpanel->emailpas1, 'AES-128-ECB', $sharedpanel->encryptionkey, 0, $iv);
-    $sharedpanel->emailpas2 = openssl_encrypt($sharedpanel->emailpas2, 'AES-128-ECB', $sharedpanel->encryptionkey, 0, $iv);
+    $sharedpanel->emailpas1 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas1, $sharedpanel->encryptionkey);
+    $sharedpanel->emailpas2 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas2, $sharedpanel->encryptionkey);
 
     return $DB->update_record('sharedpanel', $sharedpanel);
 }
@@ -123,8 +118,6 @@ function sharedpanel_delete_instance($id)
     if (!$sharedpanel = $DB->get_record('sharedpanel', array('id' => $id))) {
         return false;
     }
-
-    // Delete any dependent records here.
 
     $DB->delete_records('sharedpanel', array('id' => $sharedpanel->id));
 

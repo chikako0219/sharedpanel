@@ -27,48 +27,50 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/mod/sharedpanel/lib.php');
+require_once($CFG->dirroot . '/mod/sharedpanel/db/upgradelib.php');
 
 /**
  * @copyright  2017 Takayuki Fuwa
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-class mod_sharedpanel_lib_testcase extends advanced_testcase
+class mod_sharedpanel_upgradelib_testcase extends advanced_testcase
 {
 
     /**
      * Test deleting a sharedpanel instance.
      */
-    public function test_sharedpanel_delete_instance()
+    public function test_mod_sharedpanel_upgrade_encryptionkey()
     {
-        global $SITE, $DB;
+        global $DB;
         $this->resetAfterTest(true);
         $this->setAdminUser();
 
-        $sharedpanelgenerator = $this->getDataGenerator()->get_plugin_generator('mod_sharedpanel');
-        $sharedpanel = $sharedpanelgenerator->create_instance(
-            [
-                'course' => $SITE->id,
-                'hashtag1' => 'sharedpanel',
-                'emailadr1' => 'emailadr1@example.com',
-                'emailpas1' => 'emailpas1',
-                'emailkey1' => 'emailkey',
-                'fbgroup1' => 'fbgroup1',
-                'emailadr2' => 'emailadr2@example.com',
-                'emailpas2' => 'emailpas2',
-                'emailkey2' => 'emailkey2',
-                'config0' => 'config0',
-                'config' => 'config'
-            ]
-        );
+        $dataset = $this->createCsvDataSet(['sharedpanel' => __DIR__ . '/fixtures/sharedpanel_update.csv']);
+        $this->loadDataSet($dataset);
 
-        $count = $DB->count_records('sharedpanel', ['id' => $sharedpanel->id]);
-        $this->assertEquals(1, $count);
+        $count = $DB->count_records('sharedpanel', ['encryptionkey' => 0]);
+        $this->assertEquals(10, $count);
+        $count = $DB->count_records('sharedpanel');
+        $this->assertEquals(10, $count);
 
-        sharedpanel_delete_instance($sharedpanel->id);
+        mod_sharedpanel_upgrade_encryptionkey();
 
-        // Check that the sharedpanel was removed.
-        $count = $DB->count_records('sharedpanel', ['id' => $sharedpanel->id]);
+        $count = $DB->count_records('sharedpanel', ['encryptionkey' => 0]);
         $this->assertEquals(0, $count);
+        $count = $DB->count_records('sharedpanel');
+        $this->assertEquals(10, $count);
+
+        $sharedpanels = $DB->get_records('sharedpanel');
+        $i = 0;
+        foreach($sharedpanels as $sharedpanel){
+            $emailpas1 = \mod_sharedpanel\aes::get_aes_decrypt_string($sharedpanel->emailpas1, $sharedpanel->encryptionkey);
+            $emailpas2 = \mod_sharedpanel\aes::get_aes_decrypt_string($sharedpanel->emailpas2, $sharedpanel->encryptionkey);
+
+            $this->assertEquals('emailpas' . $i, $emailpas1);
+            $this->assertEquals('emailpas' . $i, $emailpas2);
+
+            $i++;
+        }
     }
 
     public function test_sharedpanel_add_instance()

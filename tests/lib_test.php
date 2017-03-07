@@ -57,7 +57,8 @@ class mod_sharedpanel_lib_testcase extends advanced_testcase
                 'emailpas2' => 'emailpas2',
                 'emailkey2' => 'emailkey2',
                 'config0' => 'config0',
-                'config' => 'config'
+                'config' => 'config',
+                'encryptionkey' => 'asfdsaf3ewdsaf',
             ]
         );
 

@@ -42,8 +42,7 @@ class mod_sharedpanel_generator extends testing_module_generator
             'emailpas2' => 'emailpas2',
             'emailkey2' => 'emailkey2',
             'config0' => 'config0',
-            'config' => 'config',
-            'encryptionkey' => 'asdfjni2390jdfaskfml'
+            'config' => 'config'
         ];
 
         foreach ($defaultsharedpanelsettings as $name => $value) {
