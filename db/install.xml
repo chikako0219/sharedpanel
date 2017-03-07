@@ -14,6 +14,7 @@
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="introformat" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
 
+        <FIELD NAME="encryptionkey" TYPE="char" LENGTH="256" SEQUENCE="false" NOTNULL="true" />
         <FIELD NAME="hashtag1" TYPE="char" LENGTH="255" SEQUENCE="false"/>
         <FIELD NAME="emailadr1" TYPE="char" LENGTH="255" SEQUENCE="false"/>
         <FIELD NAME="emailpas1" TYPE="char" LENGTH="255" SEQUENCE="false"/>

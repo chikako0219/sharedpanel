@@ -38,13 +38,11 @@ class mod_sharedpanel_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
+        global $CFG;
 
         $mform = $this->_form;
 
-        // Adding the "general" fieldset, where all the common settings are showed.
         $mform->addElement('header', 'general', get_string('general', 'form'));
-
-        // Adding the standard "name" field.
         $mform->addElement('text', 'name', get_string('sharedpanelname', 'sharedpanel'), array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -56,15 +54,12 @@ class mod_sharedpanel_mod_form extends moodleform_mod {
         $mform->addHelpButton('name', 'sharedpanelname', 'sharedpanel');
 
         // Adding the standard "intro" and "introformat" fields.
-        $this->add_intro_editor();
+        if ($CFG->branch >= 29) {
+            $this->standard_intro_elements();
+        } else {
+            $this->add_intro_editor();
+        }
 
-        // Adding the rest of sharedpanel settings, spreeading all them into this fieldset
-        // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        //$mform->addElement('static', 'label1', 'sharedpanelsetting1', 'Your sharedpanel fields go here. Replace me!');
-        //$mform->addElement('header', 'sharedpanelfieldset', get_string('sharedpanelfieldset', 'sharedpanel'));
-        //$mform->addElement('static', 'label2', 'sharedpanelsetting2', 'Your sharedpanel fields go here. Replace me!');
-
-	
         $mform->addElement('header', 'sharedpanelfieldset', 'Twitter');
         $mform->addElement('text', 'hashtag1', 'インポートするTweetのハッシュタグ');
 
@@ -85,10 +80,6 @@ class mod_sharedpanel_mod_form extends moodleform_mod {
 
         $mform->addElement('header', 'sharedpanelfieldset', 'その他');
         $mform->addElement('text', 'config0','config0');
-
-// Add FacebookToken form, unique to this module.
-//        <input type="text" name="name" size="30" value=>$facebooktoken>;
-//        echo $facebooktoken;       	   
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
