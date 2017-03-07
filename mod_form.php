@@ -38,13 +38,11 @@ class mod_sharedpanel_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
+        global $CFG;
 
         $mform = $this->_form;
 
-        // Adding the "general" fieldset, where all the common settings are showed.
         $mform->addElement('header', 'general', get_string('general', 'form'));
-
-        // Adding the standard "name" field.
         $mform->addElement('text', 'name', get_string('sharedpanelname', 'sharedpanel'), array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -56,39 +54,46 @@ class mod_sharedpanel_mod_form extends moodleform_mod {
         $mform->addHelpButton('name', 'sharedpanelname', 'sharedpanel');
 
         // Adding the standard "intro" and "introformat" fields.
-        $this->add_intro_editor();
+        if ($CFG->branch >= 29) {
+            $this->standard_intro_elements();
+        } else {
+            $this->add_intro_editor();
+        }
 
-        // Adding the rest of sharedpanel settings, spreeading all them into this fieldset
-        // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        //$mform->addElement('static', 'label1', 'sharedpanelsetting1', 'Your sharedpanel fields go here. Replace me!');
-        //$mform->addElement('header', 'sharedpanelfieldset', get_string('sharedpanelfieldset', 'sharedpanel'));
-        //$mform->addElement('static', 'label2', 'sharedpanelsetting2', 'Your sharedpanel fields go here. Replace me!');
-
-	
-        $mform->addElement('header', 'sharedpanelfieldset', 'Twitter');
+        $mform->addElement('header', 'sharedpanelfieldset_twitter', 'Twitter');
+        $mform->setExpanded('sharedpanelfieldset_twitter');
         $mform->addElement('text', 'hashtag1', 'インポートするTweetのハッシュタグ');
+        $mform->setType('hashtag1', PARAM_TEXT);
 
-        $mform->addElement('header', 'sharedpanelfieldset', 'Email');
+        $mform->addElement('header', 'sharedpanelfieldset_email', 'Email');
+        $mform->setExpanded('sharedpanelfieldset_email');
         $mform->addElement('text', 'emailadr1','インポート対象のメールアドレス');
+        $mform->setType('emailadr1', PARAM_TEXT);
+
         $mform->addElement('passwordunmask', 'emailpas1','パスワード');
-        $mform->setType('emailpas1', PARAM_RAW);
         $mform->addElement('text', 'emailkey1', 'メール表題に含まれるキーワード');
+        $mform->setType('emailkey1', PARAM_TEXT);
 
-        $mform->addElement('header', 'sharedpanelfieldset', 'Facebook');
+        $mform->addElement('header', 'sharedpanelfieldset_facebook', 'Facebook');
+        $mform->setExpanded('sharedpanelfieldset_facebook');
         $mform->addElement('text', 'fbgroup1','FacebookグループID');
+        $mform->setType('fbgroup1', PARAM_TEXT);
 
-        $mform->addElement('header', 'sharedpanelfieldset', 'Evernote');
+        $mform->addElement('header', 'sharedpanelfieldset_evernote', 'Evernote');
+        $mform->setExpanded('sharedpanelfieldset_evernote');
         $mform->addElement('text', 'emailadr2','インポート対象のメールアドレス(Evernote用)');
+        $mform->setType('emailadr2', PARAM_TEXT);
+
         $mform->addElement('passwordunmask', 'emailpas2','パスワード(Evernote用)');
         $mform->setType('emailpas2', PARAM_RAW);
+
         $mform->addElement('text', 'emailkey2', 'メール表題に含まれるキーワード(Evernote用)');
+        $mform->setType('emailkey2', PARAM_TEXT);
 
-        $mform->addElement('header', 'sharedpanelfieldset', 'その他');
+        $mform->addElement('header', 'sharedpanelfieldset_other', 'その他');
+        $mform->setExpanded('sharedpanelfieldset_other');
         $mform->addElement('text', 'config0','config0');
-
-// Add FacebookToken form, unique to this module.
-//        <input type="text" name="name" size="30" value=>$facebooktoken>;
-//        echo $facebooktoken;       	   
+        $mform->setType('config0', PARAM_TEXT);
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();

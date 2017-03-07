@@ -28,6 +28,8 @@ require_once(dirname(__FILE__).'/lib.php');
 //moodleform is defined in formslib.php
 require_once("$CFG->libdir/formslib.php");
 require_once("locallib.php");
+
+confirm_sesskey();
  
 class post_form extends moodleform {
     //Add elements to form
@@ -82,8 +84,7 @@ if ($id) {
 }
 
 require_login($course, true, $cm);
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
-//$context = context_module::instance($cm->id);
+$context = context_module::instance($cm->id);
  
 $PAGE->set_url('/mod/sharedpanel/post.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($sharedpanel->name));
@@ -98,7 +99,6 @@ $PAGE->set_context($context);
  */
  
 // Output starts here.
-echo $OUTPUT->header();
 
 // mimicing glossary/edit.php glossary/edit_form.php  t-kita
 
@@ -133,11 +133,7 @@ if ($mform->is_cancelled()) {
 
     $name= $USER->lastname . " " . $USER->firstname;
     $data->sender = $name;
-//    if ($email){  $data->sender .= " (".$email.")";  }
-
-//    if ($name){  $ret1 .= $data->sender.'<br/><hr>';  }
     if ($filecontent){
-//      $ret1 .= "<img src='data:image/gif;base64,".base64_encode($filecontent)."' width=85%><br>";
       $ret1 .= "<img src='data:image/gif;base64,".mod_sharedpanel_compress_img($filecontent,600)."' width=85%><br>";
 
     }
@@ -157,13 +153,9 @@ if ($mform->is_cancelled()) {
     }
 
     redirect("view.php?id=$id","保存されました。",5);
-
 } else {
-    // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
-    // or on the first display of the form.
-    // Set default data (if any)
-    //  $mform->set_data($toform);
-    //displays the form
+    echo $OUTPUT->header();
+
     $mform->display();
 } 
 
