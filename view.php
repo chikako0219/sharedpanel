@@ -24,18 +24,14 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
 //echo '<meta name="viewport" content="width=device-width, initial-scale=0.5">';
-echo '<link rel="stylesheet" href="../../lib/jquery/ui-1.11.4/theme/smoothness/jquery-ui.css">';
-
-echo '
-    <script src="../../lib/jquery/jquery-1.11.2.min.js"></script>
-    <script src="../../lib/jquery/ui-1.11.4/jquery-ui.min.js"></script>
-    <script src="jsPlumb-2.1.5-min.js"></script>
-';
-
+//echo '<link rel="stylesheet" href="../../lib/jquery/ui-1.11.4/theme/smoothness/jquery-ui.css">';
+$PAGE->requires->jquery();
+$PAGE->requires->jquery_plugin('ui');
+$PAGE->requires->jquery_plugin('ui-css');
+$PAGE->requires->js(new moodle_url('js/jsPlumb-2.1.5-min.js'));
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // ... sharedpanel instance ID - it should be named as the first character of the module.
-//$import  = optional_param('import', 0, PARAM_INT);  // import new cards
 $sortby = optional_param('sortby', 0, PARAM_INT);
 
 if ($id) {
@@ -47,11 +43,10 @@ if ($id) {
     $course = $DB->get_record('course', array('id' => $sharedpanel->course), '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('sharedpanel', $sharedpanel->id, $course->id, false, MUST_EXIST);
 } else {
-    error('You must specify a course_module ID or an instance ID');
+    print_error('You must specify a course_module ID or an instance ID');
 }
 
 require_login($course, true, $cm);
-//$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 $context = context_module::instance($cm->id);
 
 // Groupカード（カテゴリ分け）を表示するかどうか
