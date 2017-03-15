@@ -1,112 +1,117 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <XMLDB PATH="mod/sharedpanel/db" VERSION="20101203" COMMENT="XMLDB file for Moodle mod/sharedpanel"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
-  <TABLES>
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+    <TABLES>
+        <TABLE NAME="sharedpanel" COMMENT="Table for sharedpanel instance">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
+                <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"
+                       COMMENT="Course sharedpanel activity belongs to" PREVIOUS="id" NEXT="name"/>
+                <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"
+                       COMMENT="name field for moodle instances" PREVIOUS="course" NEXT="intro"/>
+                <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false"
+                       COMMENT="General introduction of the sharedpanel activity" PREVIOUS="name" NEXT="introformat"/>
+                <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0"
+                       SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro"
+                       NEXT="timecreated"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"
+                       PREVIOUS="introformat" NEXT="timemodified"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"
+                       SEQUENCE="false" PREVIOUS="timecreated"/>
+                <FIELD NAME="encryptionkey" TYPE="char" LENGTH="256" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="hashtag1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="emailadr1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="emailpas1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="emailkey1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="fbgroup1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="emailadr2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="emailpas2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="emailkey2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="config0" TYPE="text" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="config" TYPE="text" SEQUENCE="false" NOTNULL="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+            </INDEXES>
+        </TABLE>
 
-    <TABLE NAME="sharedpanel" COMMENT="Default comment for sharedpanel, please edit me">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
-        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course sharedpanel activity belongs to" PREVIOUS="id" NEXT="name"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" PREVIOUS="course" NEXT="intro"/>
-        <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the sharedpanel activity" PREVIOUS="name" NEXT="introformat"/>
-        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="timecreated"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="introformat" NEXT="timemodified"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
+        <TABLE NAME="sharedpanel_cards" COMMENT="Defines sharedpanel_cards">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="sharedpanelid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="rating" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="content" TYPE="text" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="comment" TYPE="text" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="hidden" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="timeposted" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="inputsrc" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="messageid" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="sender" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="positionx" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="positiony" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
 
-        <FIELD NAME="hashtag1" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="emailadr1" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="emailpas1" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="emailkey1" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="fbgroup1" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="emailadr2" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="emailpas2" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="emailkey2" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="config0" TYPE="text" SEQUENCE="false"/>
-        <FIELD NAME="config" TYPE="text" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-      <INDEXES>
-        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
-      </INDEXES>
-    </TABLE>
+        <TABLE NAME="sharedpanel_card_likes" COMMENT="Defines sharedpanel_card_likes">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="cardid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="rating" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="comment" TYPE="text" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="hidden" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="ltype" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="sessionid" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="true"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
 
-    <TABLE NAME="sharedpanel_cards" COMMENT="Defines sharedpanel_cards">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sharedpanelid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" SEQUENCE="false"/>
-        <FIELD NAME="rating" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="content" TYPE="text" SEQUENCE="false"/>
-        <FIELD NAME="comment" TYPE="text" SEQUENCE="false"/>
-        <FIELD NAME="hidden" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="timeposted" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="inputsrc" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="messageid" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="sender" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-        <FIELD NAME="positionx" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="positiony" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-    </TABLE>
+        <TABLE NAME="sharedpanel_card_tags" COMMENT="Defines sharedpanel_card_tags">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="cardid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="tag" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
 
-    <TABLE NAME="sharedpanel_card_likes" COMMENT="Defines sharedpanel_card_likes">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="cardid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10"  SEQUENCE="false"/>
-        <FIELD NAME="rating" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="comment" TYPE="text" SEQUENCE="false"/>
-        <FIELD NAME="hidden" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="ltype" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="sessionid" TYPE="char" LENGTH="255" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-    </TABLE>
-
-    <TABLE NAME="sharedpanel_card_tags" COMMENT="Defines sharedpanel_card_tags">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="cardid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-	<FIELD NAME="tag" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-    </TABLE>
-
-    <TABLE NAME="sharedpanel_gcards" COMMENT="Defines sharedpanel_gcards">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sharedpanelid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" SEQUENCE="false"/>
-        <FIELD NAME="rating" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="content" TYPE="text" SEQUENCE="false"/>
-        <FIELD NAME="comment" TYPE="text" SEQUENCE="false"/>
-        <FIELD NAME="hidden" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="positionx" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="positiony" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="sizex" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="600" SEQUENCE="false"/>
-        <FIELD NAME="sizey" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="600" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-    </TABLE>
-
-  </TABLES>
+        <TABLE NAME="sharedpanel_gcards" COMMENT="Defines sharedpanel_gcards">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="sharedpanelid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="rating" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="content" TYPE="text" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="comment" TYPE="text" SEQUENCE="false" NOTNULL="true"/>
+                <FIELD NAME="hidden" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="positionx" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="positiony" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="sizex" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="600" SEQUENCE="false"/>
+                <FIELD NAME="sizey" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="600" SEQUENCE="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
+    </TABLES>
 </XMLDB>

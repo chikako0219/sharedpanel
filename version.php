@@ -22,16 +22,15 @@
  * /admin/index.php
  *
  * @package    mod_sharedpanel
- * @copyright  2011 Your Name
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2016121200;      // The current module version (Date: YYYYMMDDXX).
-                                      // If version == 0 then module will not be installed.
+$plugin->version   = 2017030701;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires  = 2013111800;      // Requires this Moodle version.
 $plugin->cron      = 0;               // Period for cron to check this module (secs).
 $plugin->component = 'mod_sharedpanel'; // To check on upgrade, that module sits in correct place.
-$plugin->release = 'v1.2';
+$plugin->release = 'v1.3';
 $plugin->maturity = MATURITY_ALPHA;

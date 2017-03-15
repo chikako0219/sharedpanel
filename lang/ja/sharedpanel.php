@@ -37,6 +37,9 @@ $string['sharedpanelname_help'] = 'This is the content of the help tooltip assoc
 $string['sharedpanel'] = 'SharedPanel';
 $string['pluginadministration'] = 'SharedPanel管理';
 $string['pluginname'] = 'SharedPanel';
+//@TODO
+$string['requiremodintro'] = '活動説明を必須とするかどうか';
+$string['configrequiremodintro'] = '活動説明を必須とするかどうか';
 
 $string['print'] = '印刷する';
 $string['backtopanel'] = 'パネルにもどる';
