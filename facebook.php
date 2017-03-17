@@ -36,6 +36,8 @@ if ($id) {
     error('You must specify a course_module ID or an instance ID');
 }
  
+$andkey2 = $sharedpanel->facebookkey1;
+
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
@@ -54,6 +56,7 @@ $config = get_config('sharedpanel');
 
 $client_id = $config->FBappID;
 $client_secret = $config->FBsecret;
+
 // $redirectUrl = $config->FBredirectUrl;
 // $token = $config->FBtoken;
 $Groupid= $sharedpanel->fbgroup1;
@@ -105,7 +108,7 @@ if (!$code) {
     // echo "<pre>"; var_dump($ret); echo "</pre>";  // debug
 }
 
-echo "<br/>importing facebook ($Groupid) ... <br/>";  ob_flush(); flush();
+echo "<br/>importing facebook ($Groupid, key: $andkey2) ... <br/>";  ob_flush(); flush();
 
 $n2 = count($retdata);
 
@@ -122,6 +125,9 @@ for ($index = 0; $index < $n2; $index++){
     }else{
         continue;
     }
+
+//    if ( $andkey2 && !preg_match("/$andkey2/",$ret->message) ){  continue;  }
+
 
    // DBにあるカードと重複していれば登録しない（次の投稿の処理へ）
     $samecard = $DB->get_record('sharedpanel_cards', array('timeposted' => strtotime($ret->created_time), 'inputsrc' => 'facebook','sharedpanelid' => $sharedpanel->id,'hidden' => 0));

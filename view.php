@@ -55,13 +55,21 @@ $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 //$context = context_module::instance($cm->id);
 
 // Groupカード（カテゴリ分け）を表示するかどうか
-$sharedpanel_dispgcard= true;
+//$sharedpanel_dispgcard= true;
+$sharedpanel_dispgcard= false;
 
 // ２つ目のいいねを使うか
-$sharedpanel_likes2= true;
+//$sharedpanel_likes2= true;
+$sharedpanel_likes2= false;
 
 // sender を表示するかどうか
 $dispname= false;
+
+// ページをリロードするか
+$reloadpage= true;
+
+// ページをリロードする秒間隔
+$intdelay= 90;
 
 // パネル毎にCSSを変える ... 仮実装
 //$styfile= $CFG->dataroot.'/sharedpanel/style.css.'.$sharedpanel->id;
@@ -144,6 +152,7 @@ $PAGE->set_url('/mod/sharedpanel/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($sharedpanel->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
+if ($reloadpage){  $PAGE->set_periodic_refresh_delay($intdelay);  }
  
 /*
  * Other things you may want to set - remove if not needed.
@@ -204,11 +213,15 @@ function disp_list($array, $name, $selected_value = "") {
 
 //echo session_id();
 
+if ($reloadpage){  echo "(このページは $intdelay 秒毎にリロードされます)<br/><br/>";  }
 echo get_string('sortedas', 'sharedpanel');
-echo " <a href='./view.php?id=$id'>".get_string('sort', 'sharedpanel')."</a>";
-echo " / <a href='./view.php?id=$id&sortby=1'>".get_string('sortbylike1', 'sharedpanel')."</a><br>";
 
-echo '<input type="button" value="'.get_string('print', 'sharedpanel').'" onclick="window.print()" style="margin:1ex;"><br>';
+echo " <a href='./view.php?id=$id&sortby=50'>".get_string('sort', 'sharedpanel')."</a>";
+echo " / <a href='./view.php?id=$id&sortby=1'>".get_string('sortbylike1', 'sharedpanel')."</a><br/>";
+echo "<a href='./view.php?id=$id&sortby=51'>"."ピックアップしたカードだけ表示"."</a>";
+echo " / <a href='./view.php?id=$id'>"."すべてのカードを表示"."</a>";
+//echo '<input type="button" value="'.get_string('print', 'sharedpanel').'" onclick="window.print()"><br/>';
+echo ' / <a href="#" onclick="window.print()">'.get_string('print', 'sharedpanel').'</a><br/><br/>';
 
 //echo "<form method='get' action='./importcard.php?id=$id'>";
 //echo '<input type="button" value="import" onclick="submit()">';
@@ -219,33 +232,43 @@ echo "<a href='./camera/com.php?id=$id&n=$sharedpanel->id'>".get_string('postmes
 echo "<a href='./camera/?id=$id&n=$sharedpanel->id'>".get_string('camera', 'sharedpanel')."</a><br><br>";
 
 if (has_capability('moodle/course:manageactivities', $context)){
-  echo "<a href='./importcard.php?id=$id'>".get_string('import', 'sharedpanel')."</a><br><br>";
+  echo "<a href='./facebook.php?id=$id'>".get_string('facebookimport', 'sharedpanel')."</a>";
+  echo " / <a href='./importcard.php?id=$id'>".get_string('import', 'sharedpanel')."</a><br><br>";
   echo "<a href='./post.php?id=$id'>".get_string('post', 'sharedpanel')."</a><br><br>";
   echo "<a href='./gcard.php?id=$id'>".get_string('groupcard', 'sharedpanel')."</a><br><br>";
 }
 
-
-// CARDのデータをDBから取得
-if ($sortby){
-  $cards =  $DB->get_records('sharedpanel_cards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0),'timeposted DESC');
-  $likest = $DB->get_records_sql('SELECT cardid, sum(rating) as sumr FROM {sharedpanel_card_likes} WHERE ltype = ? GROUP BY cardid;', array($sortby));
-  foreach ($likest as $like1){
-    $ratingmap[$like1->cardid]= $like1->sumr;
+ 
+// CARDのデータをDBから取得  
+if ($sortby==1){ // 面白いね!(２個目の投票）の多い順でソート  
+  $cards =  $DB->get_records('sharedpanel_cards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0),'timeposted DESC');  
+  $likest = $DB->get_records_sql('SELECT cardid, sum(rating) as sumr FROM {sharedpanel_card_likes} WHERE ltype = ? GROUP BY cardid;', array($sortby));  
+  foreach ($likest as $like1){  
+    $ratingmap[$like1->cardid]= $like1->sumr;  
   }  
-  foreach ($cards as $key => $row) {
-    $timeposted[$key]  = $row->timeposted;
-    $rating[$key]      = $row->rating;
-    if ($ratingmap[$row->id]){
-      $rating2[$key]     = $ratingmap[$row->id];
-    }else{
-      $rating2[$key]     = 0;
-    }
-  }
-  // $cards を最後のパラメータとして渡し、同じキーでソートする。
-  array_multisort($rating2, SORT_DESC, $rating, SORT_DESC, $timeposted, SORT_DESC, $cards);
-}else{
-  $cards = $DB->get_records('sharedpanel_cards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0),'rating DESC, timeposted DESC');
-}
+  foreach ($cards as $key => $row) {  
+    $timeposted[$key]  = $row->timeposted;  
+    $rating[$key]      = $row->rating;  
+    if ($ratingmap[$row->id]){  
+      $rating2[$key]     = $ratingmap[$row->id];  
+    }else{  
+      $rating2[$key]     = 0;  
+    }  
+  }  
+  // $cards を最後のパラメータとして渡し、同じキーでソートする。  
+  array_multisort($rating2, SORT_DESC, $rating, SORT_DESC, $timeposted, SORT_DESC, $cards);  
+}else if ($sortby==51){ // いいね!したものだけ表示  
+  if ($USER->id==1){ // guest access  
+      $cards = $DB->get_records_sql('select c.* from {sharedpanel_cards} c, {sharedpanel_card_likes} lk where c.sharedpanelid=? and lk.userid=? and c.hidden=0 and lk.rating=1 and c.id=lk.cardid and lk.sessionid=? order by c.timeposted DESC;', array( $sharedpanel->id,$USER->id,session_id() ));  
+  }else{  
+      $cards = $DB->get_records_sql('select c.* from {sharedpanel_cards} c, {sharedpanel_card_likes} lk where c.sharedpanelid=? and lk.userid=? and c.hidden=0 and lk.rating=1 and c.id=lk.cardid order by c.timeposted DESC;', array($sharedpanel->id,$USER->id));  
+  }  
+}else if ($sortby==50){ // 重要だね!(1個目の投票）の順  
+  $cards = $DB->get_records('sharedpanel_cards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0),'rating DESC, timeposted DESC');  
+}else{ // すべて表示（時間順）  
+  $cards = $DB->get_records('sharedpanel_cards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0),'timeposted DESC');  
+}  
+
 
 // Group (Category) Card
 $gcards = $DB->get_records('sharedpanel_gcards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0),'rating DESC ');
