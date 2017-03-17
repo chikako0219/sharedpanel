@@ -66,6 +66,10 @@ $PAGE->set_context($context);
 echo $OUTPUT->header();
  
 
+// LINE
+include_once(dirname(__FILE__).'/line.php');
+add_card_from_line($sharedpanel);
+
 // Twitter
 include_once(dirname(__FILE__).'/twitter.php');
 //add_card_from_twitter($sharedpanel, "#amakusa1125");
@@ -86,6 +90,7 @@ if ($sharedpanel->emailadr1 == ""){
 // Evernote
 include_once(dirname(__FILE__).'/evernote.php');
 add_card_from_evernote($sharedpanel);
+
 
 echo "<br/><hr><a href=\"./view.php?id=$id\"><span style='background-color:orange;padding:1ex;color:black;'><b>Importing done.</b></span></a><br/>"; ob_flush(); flush();
 
