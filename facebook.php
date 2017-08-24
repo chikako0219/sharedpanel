@@ -20,7 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//ini_set('display_errors',1);
+ini_set('display_errors',1);
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -37,6 +37,7 @@ if ($id) {
 }
  
 $andkey2 = $sharedpanel->facebookkey1;
+//$andkey2 = "#sp0823";
 
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -84,8 +85,11 @@ if (!$code) {
     curl_setopt($ch, CURLOPT_URL, $token_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $token = curl_exec($ch);
+    // こういうことか？: http://facebook-docs.oklahome.net/archives/52218524.html
+    $tokenarr = json_decode($token);
 
-    $url = "https://graph.facebook.com/v2.8/".$Groupid."/feed?fields=id,name,created_time,updated_time,message,from,picture,link&".$token."&limit=25";
+//    $url = "https://graph.facebook.com/v2.8/".$Groupid."/feed?fields=id,name,created_time,updated_time,message,from,picture,link&access_token=".$tokenarr->access_token."&limit=25";
+    $url = "https://graph.facebook.com/v2.10/".$Groupid."/feed?fields=id,name,created_time,updated_time,message,from,picture,link&access_token=".$tokenarr->access_token."&limit=25";
     $ret0 = json_decode(file_get_contents($url));
     $retdata = $ret0->data;    
 
@@ -105,7 +109,8 @@ if (!$code) {
 // Output starts here.
     echo $OUTPUT->header();
 
-    // echo "<pre>"; var_dump($ret); echo "</pre>";  // debug
+//    echo "<pre> url: "; var_dump($url); echo "</pre>";  // debug
+//    echo "<pre>"; var_dump($ret0); echo "</pre>";  // debug
 }
 
 echo "<br/>importing facebook ($Groupid, key: $andkey2) ... <br/>";  ob_flush(); flush();
@@ -116,7 +121,7 @@ for ($index = 0; $index < $n2; $index++){
     $content="";
     $ret = $retdata[$index];
     
-    // echo "index ".$index."/".$n2."\n"; var_dump($ret);   // debug
+//     echo "index ".$index."/".$n2."\n"; var_dump($ret);   // debug
     if($ret->message){
         if ($ret->picture){
             $content.= "<a href='".$ret->link."' target='_blank'><img src=".$ret->picture." width=250px></a><br>\n<br>";
@@ -126,7 +131,7 @@ for ($index = 0; $index < $n2; $index++){
         continue;
     }
 
-//    if ( $andkey2 && !preg_match("/$andkey2/",$ret->message) ){  continue;  }
+   if ( $andkey2 && !preg_match("/$andkey2/",$ret->message) ){  continue;  }
 
 
    // DBにあるカードと重複していれば登録しない（次の投稿の処理へ）
