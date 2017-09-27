@@ -37,6 +37,10 @@ $string['sharedpanelname_help'] = 'This is the content of the help tooltip assoc
 $string['sharedpanel'] = 'SharedPanel';
 $string['pluginadministration'] = 'SharedPanel administration';
 $string['pluginname'] = 'SharedPanel';
+//@TODO
+$string['requiremodintro'] = 'require module description';
+$string['configrequiremodintro'] = 'require module description';
+
 
 $string['print'] = 'Print';
 $string['backtopanel'] = 'Back to Panel';

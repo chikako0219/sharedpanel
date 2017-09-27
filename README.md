@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/yuesan/sharedpanel.svg?branch=master)](https://travis-ci.org/yuesan/sharedpanel)
+
 == SharedPanel plugin version 0.1 ==
 
 Please note that this versin of sharedpanel needs facebook graph API account
