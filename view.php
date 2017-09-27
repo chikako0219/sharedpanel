@@ -29,6 +29,7 @@ $PAGE->requires->jquery();
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->jquery_plugin('ui-css');
 $PAGE->requires->js(new moodle_url('js/jsPlumb-2.1.5-min.js'));
+$PAGE->requires->js(new moodle_url('js/card_admin.js'));
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // ... sharedpanel instance ID - it should be named as the first character of the module.
@@ -46,15 +47,13 @@ if ($id) {
     print_error('You must specify a course_module ID or an instance ID');
 }
 
-require_login($course, true, $cm);
+require_login();
 $context = context_module::instance($cm->id);
 
 // Groupカード（カテゴリ分け）を表示するかどうか
 $sharedpanel_dispgcard = true;
-
 // ２つ目のいいねを使うか
 $sharedpanel_likes2 = true;
-
 // sender を表示するかどうか
 $dispname = false;
 
@@ -67,72 +66,6 @@ if (file_exists($styfile)) {
     echo '<link rel="stylesheet" type="text/css" href="./style.css" media="screen">';
 }
 
-echo '
-<script>
-//        $(".item").resizable({
-    $(".app-style0").resizable({
-
-        resize : function(event, ui) {            
-//                jsPlumb.repaint(ui.helper);
-            },
-            handles: "all"
-    });
-
-  jsPlumb.ready(function() {
-            
-//            jsPlumb.connect({
-//                source:"item_left",
-//                target:"item_right",
-//                endpoint:"Rectangle"
-//            });
-';
-
-if (has_capability('moodle/course:manageactivities', $context)) {
-    echo '
-  jsPlumb.draggable($(".card"), {
-//   containment: "parent",
-   stop: function(event) {
-     if ($(event.target).find("select").length == 0) {  saveState(event.target);  }
-   }
-  }); 
-  ';
-} // if (has_capability('moodle/course:manageactivities', $context))
-
-echo '
-  });
-
-  var allPositions = function() {
-   var blocks = []
-   $("#diagramContainer .card").each(function (idx, elem) {
-    var $elem = $(elem);
-    blocks.push({
-        cardid: $elem.attr("id"),
-        positionx: parseInt($elem.css("left"), 10),
-        positiony: parseInt($elem.css("top"), 10)
-    });
-   });
-   var serializedData = JSON.stringify(blocks);
-   return serializedData;
-  }
-
-  var saveState = function(state) {
-    $.post("' . $CFG->wwwroot . '/mod/sharedpanel/cardxy/",{data:allPositions()} );
-  }
- </script> 
-';
-
-
-/*
-$event = \mod_sharedpanel\event\course_module_viewed::create(array(
-    'objectid' => $PAGE->cm->instance,
-    'context' => $PAGE->context,
-));
-$event->add_record_snapshot('course', $PAGE->course);
-// In the next line you can use $PAGE->activityrecord if you have set it, or skip this line if you don't have a record.
-$event->add_record_snapshot($PAGE->cm->modname, $activityrecord);
-$event->trigger();
-*/
-
 // Print the page header.
 
 $PAGE->set_url('/mod/sharedpanel/view.php', array('id' => $cm->id));
@@ -140,26 +73,8 @@ $PAGE->set_title(format_string($sharedpanel->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-/*
- * Other things you may want to set - remove if not needed.
- * $PAGE->set_cacheable(false);
- * $PAGE->set_focuscontrol('some-html-id');
- * $PAGE->add_body_class('sharedpanel-'.$somevar);
- */
-
 // Output starts here.
 echo $OUTPUT->header();
-
-// Conditions to show the intro can change to look for own settings or whatever.
-/*
-if ($sharedpanel->intro) {
-    echo $OUTPUT->box(format_module_intro('sharedpanel', $sharedpanel, $cm->id), 'generalbox mod_introbox', 'sharedpanelintro');
-}
-*/
-
-// Replace the following lines with you own code.
-//echo $OUTPUT->heading('Yay! It works!');
-
 
 // プルダウンメニュー表示/
 //----------------------------------------------------------------------------
@@ -168,7 +83,7 @@ if ($sharedpanel->intro) {
 //$files1 = scandir($dir);
 
 //配列の中身確認用
-//for ($i=0; $i < count($files1); $i++) { 
+//for ($i=0; $i < count($files1); $i++) {
 //echo "<option>".$files1[$i]."</option>";
 //}
 
@@ -176,11 +91,11 @@ if ($sharedpanel->intro) {
 // 選択リストの値を取得
 $name = "menu1";
 $selected_value = $_POST[$name];
-  
+
 // 選択リストの要素を配列に格納 → この配列からドロップダウンリストを作成
 echo '</br>  Please select the past files';
 $ar_menu1 = $files1;
- 
+
 // 配列から選択リストを作成する関数
 // パラメータ：配列／選択リスト名／選択値
 // 並び替えのキーを選ぶように
@@ -197,35 +112,44 @@ function disp_list($array, $name, $selected_value = "") {
 }
 */
 
-//echo session_id();
-
+echo html_writer::start_div();
 echo get_string('sortedas', 'sharedpanel');
-echo " <a href='./view.php?id=$id'>" . get_string('sort', 'sharedpanel') . "</a>";
-echo " / <a href='./view.php?id=$id&sortby=1'>" . get_string('sortbylike1', 'sharedpanel') . "</a><br>";
+echo html_writer::link(new moodle_url('view.php', ['id' => $id]), get_string('sort', 'sharedpanel'));
+echo html_writer::link(new moodle_url('view.php', ['id' => $id, 'sortby' => 1]), get_string('sortbylike1', 'sharedpanel'));
+echo html_writer::end_div();
 
-echo '<input type="button" value="' . get_string('print', 'sharedpanel') . '" onclick="window.print()" style="margin:1ex;"><br>';
+echo html_writer::start_div();
+echo html_writer::empty_tag('input',
+    ['type' => 'button', 'value' => get_string('print', 'sharedpanel'), 'onclick' => 'window.print()', 'style' => 'margin:1ex;']);
+echo html_writer::end_div();
 
-//echo "<form method='get' action='./importcard.php?id=$id'>";
-//echo '<input type="button" value="import" onclick="submit()">';
-//echo '</form><br>';
-
-echo "<a href='./camera/com.php?id=$id&n=$sharedpanel->id'>" . get_string('postmessage', 'sharedpanel') . "</a><br><br>";
-
-echo "<a href='./camera/?id=$id&n=$sharedpanel->id'>" . get_string('camera', 'sharedpanel') . "</a><br><br>";
+echo html_writer::start_div();
+echo html_writer::link(new moodle_url('camera/com.php', ['id' => $id, 'n' => $sharedpanel->id]), get_string('postmessage', 'sharedpanel'));
+echo html_writer::end_div();
 
 if (has_capability('moodle/course:manageactivities', $context)) {
-    echo "<a href='./importcard.php?id=$id'>" . get_string('import', 'sharedpanel') . "</a><br><br>";
-    echo html_writer::link(new moodle_url('post.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('post', 'sharedpanel'));
-    echo html_writer::empty_tag('br');
-    echo html_writer::empty_tag('br');
-    echo "<a href='./gcard.php?id=$id'>" . get_string('groupcard', 'sharedpanel') . "</a><br><br>";
-}
 
+    echo html_writer::start_div();
+    echo html_writer::link(new moodle_url('importcard.php', ['id' => $id]), get_string('import', 'sharedpanel'));
+    echo html_writer::end_div();
+
+    echo html_writer::start_div();
+    echo html_writer::link(new moodle_url('post.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('post', 'sharedpanel'));
+    echo html_writer::end_div();
+
+    echo html_writer::start_div();
+    echo html_writer::link(new moodle_url('gcard.php', ['id' => $id]), get_string('groupcard', 'sharedpanel'));
+    echo html_writer::end_div();
+}
 
 // CARDのデータをDBから取得
 if ($sortby) {
     $cards = $DB->get_records('sharedpanel_cards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0), 'timeposted DESC');
-    $likest = $DB->get_records_sql('SELECT cardid, sum(rating) as sumr FROM {sharedpanel_card_likes} WHERE ltype = ? GROUP BY cardid;', array($sortby));
+    $likest = $DB->get_records_sql(
+        'SELECT cardid, sum(rating) sumr 
+           FROM {sharedpanel_card_likes} 
+          WHERE ltype = :ltype 
+          GROUP BY cardid;', ['ltype' => $sortby]);
     foreach ($likest as $like1) {
         $ratingmap[$like1->cardid] = $like1->sumr;
     }
@@ -245,10 +169,9 @@ if ($sortby) {
 }
 
 // Group (Category) Card
-$gcards = $DB->get_records('sharedpanel_gcards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0), 'rating DESC ');
+$gcards = $DB->get_records('sharedpanel_gcards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0), 'rating DESC');
 
-echo '<div id="diagramContainer">' . "\n";
-
+echo html_writer::start_div('', ['id' => 'diagramContainer']);
 
 // Groupカード ----------------------------------------------
 if ($sharedpanel_dispgcard) {
@@ -257,7 +180,7 @@ if ($sharedpanel_dispgcard) {
     $gcardnum = 0;
     foreach ($gcards as $gcard) {  // 各Groupカード
         if ($gcard->positionx == 0 and $gcard->positiony == 0) {
-            $tstyle = "style='left:${leftpos}px;top:${toppos}px;'";
+            $tstyle = "left:${leftpos}px;top:${toppos}px;";
             $leftpos += 300;
             $toppos += 10;
             if ($leftpos > 1200) {
@@ -265,58 +188,29 @@ if ($sharedpanel_dispgcard) {
                 $toppos += 440;
             }
         } else {
-            $tstyle = "style='left:" . $gcard->positionx . "px;top:" . $gcard->positiony . "px;'";
+            $tstyle = "left:" . $gcard->positionx . "px;top:" . $gcard->positiony . "px;'";
         }
         $gcardnum = $gcard->id;
 
-        /*
-          // いいね! のリンク要素 ($likeslink)
-          $like0 = $DB->get_record('sharedpanel_card_likes', array('cardid' => $card->id,'userid' => $USER->id));
-          if ($like0->rating > 0){
-            $mylike = "✓";
-          }else{
-            $mylike = "";
-          }
-          $likeslink = "";
-          $likeslink .= "<a href=\"./likes.php?id=$id&c=$card->id\" >いいね!</a> ";
-          if ($card->rating > 0){  $likeslink .= $mylike . "($card->rating)";  }
-        //  $likeslink .= "</span><br>";
-
-          // タグ要素 ($taglink)
-          $tags = $DB->get_records('sharedpanel_card_tags', array('cardid' => $card->id));
-          $taglink = "";
-          foreach ($tags as $tag){
-        //    $taglink .= "<a href=\"\" style='background-color:blue; color:white;'> $tag->tag </a> ";
-            $taglink .= "<a href=\"\"> $tag->tag </a> ";
-          }
-        */
         // コンテンツ要素
         $gcardcontent = $gcard->content;
 
+        // 上記要素を使って、Groupカードの表示
+        $tstyle .= ' width:' . $gcard->sizex . 'px';
+        echo html_writer::start_div('all-style0 card', ['id' => 'gcard' . $gcardnum, 'style' => $tstyle]);
+        echo html_writer::div($gcardcontent, 'all-style2', ['style' => 'height:' . $gcard->sizey . 'px; width:' . $gcard->sizex . 'px;']);
+        echo html_writer::start_div('all-style3', ['style' => 'width:' . $gcard->sizex . 'px;']);
+        echo html_writer::span($likeslink);
         // 削除リンク要素 （教師だけに表示）
         if (has_capability('moodle/course:manageactivities', $context)) {
-            $dellink = "<a href=\"./delgcard.php?id=$id&c=$gcard->id\">削除する</a>";
+            $dellink = html_writer::link(new moodle_url('delgcard.php', ['id' => $id, 'c' => $gcard->id]), '削除する');
+            echo html_writer::span($dellink, ['style' => 'margin-left:5em;']);
         }
-        // 上記要素を使って、Groupカードの表示
-        echo "
-<div class='all-style0 card' id='gcard$gcardnum' $tstyle style='width:" . $gcard->sizex . "px;'>
-  <!--
-  <div class='all-style1'>
-    $taglink <br/>
-  </div>
-  -->
-  <div class='all-style2' style='height:" . $gcard->sizey . "px; width:" . $gcard->sizex . "px;'>
-    $gcardcontent
-  </div>
-  <div class='all-style3' style='width:" . $gcard->sizex . "px;'>
-    <span>$likeslink</span> <span style='margin-left:5em;'>$dellink</span>
-  </div>
-</div>
-  ";
+        echo html_writer::end_div();
+        echo html_writer::end_div();
     }
-} // if ($sharedpanel_dispgcard)
+}
 // Groupカード ----------------------------------------------
-
 
 $leftpos = 420;
 $toppos = 370;
@@ -339,13 +233,8 @@ foreach ($cards as $card) {  // 各カード
     $guests_distinguished = true;
 
     $sessionid = session_id(); // for distingushing guests from different places
-    if ($USER->id == 1) {
-        $is_guest = true;
-    } else {
-        $is_guest = false;
-    }
 
-    if ($guests_distinguished and $is_guest) {
+    if ($guests_distinguished && is_guest($context)) {
         $likearray = array('cardid' => $card->id, 'userid' => $USER->id, 'ltype' => 0, 'sessionid' => $sessionid);
         $likearray1 = array('cardid' => $card->id, 'userid' => $USER->id, 'ltype' => 1, 'sessionid' => $sessionid);
     } else {
@@ -356,16 +245,10 @@ foreach ($cards as $card) {  // 各カード
     $like0 = $DB->get_record('sharedpanel_card_likes', $likearray);
     if ($like0 != false && $like0->rating > 0) {
         $maru1 = "<span style='font-size:17px;color:red;vertical-align:bottom;'>✓</span>";
-        //$mylike = "✓";
-        //$maru1 = "<span style='font-size:28px;color:red;vertical-align:middle;'>■</span>";
     } else {
-//    $mylike = "";
         $maru1 = "<span style='font-size:27px;color:red;vertical-align:middle;'>□</span>";
-//    $maru1 = "";
-
     }
-    $likeslink = "";
-    $likeslink .= html_writer::link(new moodle_url('likes.php', ['id' => $id, 'c' => $card->id, 'sesskey' => sesskey()]), get_string('important', 'sharedpanel') . $maru1);
+    $likeslink = html_writer::link(new moodle_url('likes.php', ['id' => $id, 'c' => $card->id, 'sesskey' => sesskey()]), get_string('important', 'sharedpanel') . $maru1);
 
 
     $cardrating = $card->rating;
@@ -417,7 +300,6 @@ foreach ($cards as $card) {  // 各カード
 
     // 削除リンク要素 （教師だけに表示）
     if (has_capability('moodle/course:manageactivities', $context)) {
-//    $dellink = "<a href=\"./deletecard.php?id=$id&c=$card->id\">削除する</a>";
         $dellink = html_writer::link(new moodle_url('deletecard.php', ['id' => $id, 'c' => $card->id, 'sesskey' => sesskey()]), '×');
     }
 
@@ -440,9 +322,9 @@ foreach ($cards as $card) {  // 各カード
 ";
     $cnum++;
 }  // foreach ($cards as $card)
-echo "</div>\n";
+echo html_writer::end_div();
 
-echo "(total: $cnum cards)";
+echo '(total: ' . $cnum . 'cards)';
 
 //----------------------------------------------------------------------------
 // Finish the page.
