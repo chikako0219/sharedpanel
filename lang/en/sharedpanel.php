@@ -45,6 +45,8 @@ $string['configrequiremodintro'] = 'require module description';
 $string['print'] = 'Print';
 $string['backtopanel'] = 'Back to Panel';
 $string['import'] = 'Import posts and email';
+$string['facebookimport'] = 'Import from Facebook';
+
 $string['sortedas'] = 'Sorted by number of likes, and newer timestamp of posting.';
 $string['post'] = 'Post';
 $string['cardcontent'] = 'Card content';
