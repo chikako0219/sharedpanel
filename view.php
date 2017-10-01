@@ -23,32 +23,26 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
-//echo '<meta name="viewport" content="width=device-width, initial-scale=0.5">';
-//echo '<link rel="stylesheet" href="../../lib/jquery/ui-1.11.4/theme/smoothness/jquery-ui.css">';
-$PAGE->requires->jquery();
-$PAGE->requires->jquery_plugin('ui');
-$PAGE->requires->jquery_plugin('ui-css');
-$PAGE->requires->js(new moodle_url('js/jsPlumb-2.1.5-min.js'));
-$PAGE->requires->js(new moodle_url('js/card_admin.js'));
+global $DB, $PAGE, $OUTPUT;
 
-$id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
-$n = optional_param('n', 0, PARAM_INT);  // ... sharedpanel instance ID - it should be named as the first character of the module.
+$id = optional_param('id', 0, PARAM_INT);
+$n = optional_param('n', 0, PARAM_INT);
 $sortby = optional_param('sortby', 0, PARAM_INT);
 
 if ($id) {
     $cm = get_coursemodule_from_id('sharedpanel', $id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $sharedpanel = $DB->get_record('sharedpanel', array('id' => $cm->instance), '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+    $sharedpanel = $DB->get_record('sharedpanel', ['id' => $cm->instance], '*', MUST_EXIST);
 } else if ($n) {
-    $sharedpanel = $DB->get_record('sharedpanel', array('id' => $n), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $sharedpanel->course), '*', MUST_EXIST);
+    $sharedpanel = $DB->get_record('sharedpanel', ['id' => $n], '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $sharedpanel->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('sharedpanel', $sharedpanel->id, $course->id, false, MUST_EXIST);
 } else {
     print_error('You must specify a course_module ID or an instance ID');
 }
 
-require_login();
 $context = context_module::instance($cm->id);
+require_login();
 
 // Groupカード（カテゴリ分け）を表示するかどうか
 $sharedpanel_dispgcard = true;
@@ -61,56 +55,26 @@ $dispname = false;
 //$styfile= $CFG->dataroot.'/sharedpanel/style.css.'.$sharedpanel->id;
 $styfile = __DIR__ . '/css/style.css.' . $sharedpanel->id;
 if (file_exists($styfile)) {
-    echo '<style>' . file_get_contents($styfile) . '</style>';
+    $PAGE->requires->css($styfile);
 } else {
-    echo '<link rel="stylesheet" type="text/css" href="./style.css" media="screen">';
+    $PAGE->requires->css(new moodle_url("style.css"));
 }
 
 // Print the page header.
+$PAGE->requires->jquery();
+$PAGE->requires->jquery_plugin('ui');
+$PAGE->requires->jquery_plugin('ui-css');
+$PAGE->requires->js(new moodle_url('js/jsPlumb-2.1.5-min.js'));
+$PAGE->requires->js(new moodle_url('js/card_admin.js'));
 
-$PAGE->set_url('/mod/sharedpanel/view.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($sharedpanel->name));
-$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_cm($cm);
 $PAGE->set_context($context);
+$PAGE->set_url('/mod/sharedpanel/view.php', array('id' => $cm->id));
+$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_title(format_string($sharedpanel->name));
 
 // Output starts here.
 echo $OUTPUT->header();
-
-// プルダウンメニュー表示/
-//----------------------------------------------------------------------------
-// ファイル名を取得、配列に格納する
-//$dir = ($CFG->dataroot.'/sharedpanel/');
-//$files1 = scandir($dir);
-
-//配列の中身確認用
-//for ($i=0; $i < count($files1); $i++) {
-//echo "<option>".$files1[$i]."</option>";
-//}
-
-/*
-// 選択リストの値を取得
-$name = "menu1";
-$selected_value = $_POST[$name];
-
-// 選択リストの要素を配列に格納 → この配列からドロップダウンリストを作成
-echo '</br>  Please select the past files';
-$ar_menu1 = $files1;
-
-// 配列から選択リストを作成する関数
-// パラメータ：配列／選択リスト名／選択値
-// 並び替えのキーを選ぶように
-function disp_list($array, $name, $selected_value = "") {
-    echo '<select name="' . $name . '" onchange="this.form.submit()">';
-    while (list($value, $text) = each($array)) {
-        echo "<option ";
-        if ($selected_value == $value) {
-            echo " selected ";
-        }
-        echo ' value="'.$value.'">' . $text . "</option>";
-    }
-    echo "</select>";
-}
-*/
 
 echo html_writer::start_div();
 echo get_string('sortedas', 'sharedpanel');

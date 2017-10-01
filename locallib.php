@@ -22,49 +22,36 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/*
- * Does something really useful with the passed things
- *
- * @param array $things
- * @return object
- *function sharedpanel_do_something_useful(array $things) {
- *    return new stdClass();
- *}
- */
-
-
-function mod_sharedpanel_get_tags($s){
-  $manum= preg_match_all('/#\S+/',$s,$match);
-  $ta = array();
-  for($i=0; $i<$manum; $i++){
-    $ta[]= $match[0][$i];
-  }
-  return $ta;
+function mod_sharedpanel_get_tags($s) {
+    $manum = preg_match_all('/#\S+/', $s, $match);
+    $ta = array();
+    for ($i = 0; $i < $manum; $i++) {
+        $ta[] = $match[0][$i];
+    }
+    return $ta;
 }
 
-function mod_sharedpanel_compress_img($attached, $width){
-//  $imagea= imap_base64($attached);
-//  $imagea= imagecreatefromstring($imagea);
-  $imagea= imagecreatefromstring($attached);
-  $imagea= imagescale($imagea, $width, -1);  // proportionally compress image with $width
-  $jpegfile= tempnam("/tmp", "email-jpg-");
-  imagejpeg($imagea,$jpegfile);
-  imagedestroy($imagea);
-  $attached= base64_encode(file_get_contents($jpegfile));
-  unlink($jpegfile);
-  return $attached;
+function mod_sharedpanel_compress_img($attached, $width) {
+    $imagea = imagecreatefromstring($attached);
+    $imagea = imagescale($imagea, $width, -1);  // proportionally compress image with $width
+    $jpegfile = tempnam("/tmp", "email-jpg-");
+    imagejpeg($imagea, $jpegfile);
+    imagedestroy($imagea);
+    $attached = base64_encode(file_get_contents($jpegfile));
+    unlink($jpegfile);
+    return $attached;
 }
 
-function mod_sharedpanel_compress_img_base64($attached, $width){
-  $imagea= imap_base64($attached);
-  $imagea= imagecreatefromstring($imagea);
-  $imagea= imagescale($imagea, $width, -1);  // proportionally compress image with $width
-  $jpegfile= tempnam("/tmp", "email-jpg-");
-  imagejpeg($imagea,$jpegfile);
-  imagedestroy($imagea);
-  $attached= base64_encode(file_get_contents($jpegfile));
-  unlink($jpegfile);
-  return $attached;
+function mod_sharedpanel_compress_img_base64($attached, $width) {
+    $imagea = imap_base64($attached);
+    $imagea = imagecreatefromstring($imagea);
+    $imagea = imagescale($imagea, $width, -1);  // proportionally compress image with $width
+    $jpegfile = tempnam("/tmp", "email-jpg-");
+    imagejpeg($imagea, $jpegfile);
+    imagedestroy($imagea);
+    $attached = base64_encode(file_get_contents($jpegfile));
+    unlink($jpegfile);
+    return $attached;
 }
 
 // utf8mb4_encode_numericentity
@@ -73,10 +60,16 @@ function mod_sharedpanel_compress_img_base64($attached, $width){
 // MySQL 5.5 で導入された utf8mb4 を使えない場合
 // http://qiita.com/masakielastic/items/ec483b00ff6337a02878
 
-function mod_sharedpanel_utf8mb4_encode_numericentity($str)
-{
+/**
+ * UTF-8 の4バイト文字を HTML 数値文字参照に変換する
+ * MySQL 5.5 で導入された utf8mb4 を使えない場合
+ *
+ * @param $str
+ * @return mixed
+ */
+function mod_sharedpanel_utf8mb4_encode_numericentity($str) {
     $re = '/[^\x{0}-\x{FFFF}]/u';
-    return preg_replace_callback($re, function($m) {
+    return preg_replace_callback($re, function ($m) {
         $char = $m[0];
         $x = ord($char[0]);
         $y = ord($char[1]);
@@ -86,12 +79,3 @@ function mod_sharedpanel_utf8mb4_encode_numericentity($str)
         return sprintf("&#x%X;", $cp);
     }, $str);
 }
-/*
-function utf8mb4_decode_numericentity($str)
-{
-    $re = '/&#(x[0-9a-fA-F]{5,6}|\d{5,7});/';
-    return preg_replace_callback($re, function($m) {
-        return html_entity_decode($m[0]);
-    }, $str);
-}
-*/
