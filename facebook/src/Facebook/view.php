@@ -97,7 +97,7 @@ if ($sharedpanel->intro) {
 
 // 文字列の挿入
 //----------------------------------------------------------------------------
-$andkey = $_POST['Mojiretsu1'];
+$andkey = required_param('Mojiretsu1', PARAM_TEXT);
 $ret1 = "";
 
 // プルダウンメニュー表示/
@@ -107,13 +107,13 @@ $dir = ($CFG->dataroot . '/sharedpanel/');
 $files1 = scandir($dir);
 
 //配列の中身確認用
-//for ($i=0; $i < count($files1); $i++) { 
+//for ($i=0; $i < count($files1); $i++) {
 //echo "<option>".$files1[$i]."</option>";
 //}
 
 // 選択リストの値を取得
 $name = "menu1";
-$selected_value = $_POST[$name];
+$selected_value = required_param('menu1', PARAM_TEXT);
 
 // 選択リストの要素を配列に格納 → この配列からドロップダウンリストを作成
 echo '</br>  Please select the past files';
@@ -149,10 +149,8 @@ echo '<input type="button" value="印刷する" onclick="window.print()">';
 echo '<br>';
 
 
-//エラー発見コード
-//ini_set( 'display_errors', 1 );// debug
-
 //TwitterAPI利用の承認情報
+//@FIXME :
 require_once("twitteroauth.php");
 $consumerKey = "yr18wDxGUDDaF2t68qLCmIYOm";
 $consumerSecret = "OZoNAoMckytTqAngAHZsLysgfvpiGwFb2W5Ath0ssEjGinwhaA";
@@ -251,7 +249,7 @@ if ($mboxes->Nmsgs != 0) {
         // メール構造を取得
         $info = imap_fetchstructure($mbox, $mailno);
         if (!empty($info->parts)) {
-            // 
+            //
             $parts_cnt = count($info->parts);
             for ($p = 0; $p < $parts_cnt; $p++) {
                 // タイプにより処理を分ける
@@ -439,7 +437,7 @@ if (isset($response)) {
 
     $arrayResult = (array)$response;
 
-// Feed結果全体の表示	
+// Feed結果全体の表示
 //	$n = count($arrayResult);
 
     //echo "<pre>\n";

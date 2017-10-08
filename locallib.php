@@ -79,3 +79,12 @@ function mod_sharedpanel_utf8mb4_encode_numericentity($str) {
         return sprintf("&#x%X;", $cp);
     }, $str);
 }
+
+function mod_sharedpanel_get_sharedpanel_cardid(){
+    global $DB;
+
+    $cards = $DB->get_records('sharedpanel_cards', null, 'DESC');
+    $card = current($cards);
+
+    return $card->id;
+}
