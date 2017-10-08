@@ -25,6 +25,8 @@ $cameracomment = htmlspecialchars($cameracomment, ENT_QUOTES);
 $name = required_param('name', PARAM_TEXT);
 $name = htmlspecialchars($name, ENT_QUOTES);
 
+require_login();
+
 header("Refresh: 3; URL=" . $CFG->wwwroot . "/mod/sharedpanel/view.php?id=" . $id);
 ?>
 <!DOCTYPE HTML>

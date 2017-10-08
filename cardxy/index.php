@@ -4,6 +4,8 @@ require_once '../../../config.php';
 $data = required_param('data', PARAM_TEXT);
 $data = json_decode($data);
 
+require_login();
+
 if ($CFG->dbtype == "mysqli") {
     $dbtype = "mysql";
 } else {
