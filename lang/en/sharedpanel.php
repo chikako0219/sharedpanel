@@ -28,6 +28,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['sharedpanel:addinstance'] = 'SharedPanelを追加する';
+
 $string['modulename'] = 'SharedPanel';
 $string['modulenameplural'] = 'SharedPanels';
 $string['modulename_help'] = 'Use the SharedPanel module for... | The SharedPanel module allows...';
