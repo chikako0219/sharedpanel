@@ -54,12 +54,6 @@ function mod_sharedpanel_compress_img_base64($attached, $width) {
     return $attached;
 }
 
-// utf8mb4_encode_numericentity
-// utf8mb4_decode_numericentity
-// UTF-8 の4バイト文字を HTML 数値文字参照に変換する
-// MySQL 5.5 で導入された utf8mb4 を使えない場合
-// http://qiita.com/masakielastic/items/ec483b00ff6337a02878
-
 /**
  * UTF-8 の4バイト文字を HTML 数値文字参照に変換する
  * MySQL 5.5 で導入された utf8mb4 を使えない場合

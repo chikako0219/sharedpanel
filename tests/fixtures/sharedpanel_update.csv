@@ -1,0 +1,11 @@
+course,encryptionkey,hashtag1,emailadr1,emailpas1,emailkey1,fbgroup1,emailadr2,emailpas2,emailkey2,config0,config,timecreated,timemodified
+30,0,sharedpanel1,emailadr1+1@example.com,emailpas0,emailkey1,fbgroup1,emailadr2+1@example.com,emailpas0,emailke1,config0,config,0,0
+30,0,sharedpanel2,emailadr1+2@example.com,emailpas1,emailkey2,fbgroup2,emailadr2+2@example.com,emailpas1,emailke2,config0,config,0,0
+30,0,sharedpanel3,emailadr1+3@example.com,emailpas2,emailkey3,fbgroup3,emailadr2+3@example.com,emailpas2,emailke3,config0,config,0,0
+30,0,sharedpanel4,emailadr1+4@example.com,emailpas3,emailkey4,fbgroup4,emailadr2+4@example.com,emailpas3,emailke4,config0,config,0,0
+30,0,sharedpanel5,emailadr1+5@example.com,emailpas4,emailkey5,fbgroup5,emailadr2+5@example.com,emailpas4,emailke5,config0,config,0,0
+30,0,sharedpanel6,emailadr1+6@example.com,emailpas5,emailkey6,fbgroup6,emailadr2+6@example.com,emailpas5,emailke6,config0,config,0,0
+30,0,sharedpanel7,emailadr1+7@example.com,emailpas6,emailkey7,fbgroup7,emailadr2+7@example.com,emailpas6,emailke7,config0,config,0,0
+30,0,sharedpanel8,emailadr1+8@example.com,emailpas7,emailkey8,fbgroup8,emailadr2+8@example.com,emailpas7,emailke8,config0,config,0,0
+30,0,sharedpanel9,emailadr1+9@example.com,emailpas8,emailkey9,fbgroup9,emailadr2+9@example.com,emailpas8,emailke9,config0,config,0,0
+30,0,sharedpanel10,emailadr1+10@example.com,emailpas9,emailkey10,fbgroup10,emailadr2+10@example.com,emailpas9,emailke10,config0,config,0,0
