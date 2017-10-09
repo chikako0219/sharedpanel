@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once '../classes/aes.php';
+require_once(__DIR__ . '/../classes/aes.php');
 
 /**
  * Fill new field courseid in tables feedback_completed or feedback_completedtmp
