@@ -12,13 +12,17 @@ class card
 {
     private $moduleinstance;
 
-    private $email_addr;
-    private $email_password;
-
-    private $email_host;
-    private $email_port;
-
     function __construct($modinstance) {
         $this->moduleinstance = $modinstance;
+    }
+
+    function get_gcards($hidden = 0, $order = 'rating DESC') {
+        global $DB;
+        return $DB->get_records('sharedpanel_gcards', ['sharedpanelid' => $this->moduleinstance->id, 'hidden' => $hidden], $order);
+    }
+
+    function get_cards($hidden = 0, $order = 'rating DESC, timeposted DESC') {
+        global $DB;
+        return $DB->get_records('sharedpanel_cards', ['sharedpanelid' => $this->moduleinstance->id, 'hidden' => $hidden], $order);
     }
 }

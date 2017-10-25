@@ -73,6 +73,9 @@ $PAGE->set_url('/mod/sharedpanel/view.php', array('id' => $cm->id));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_title(format_string($sharedpanel->name));
 
+//Call Objects
+$cardObj = new \mod_sharedpanel\card($sharedpanel);
+
 // Output starts here.
 echo $OUTPUT->header();
 
@@ -107,6 +110,7 @@ if (has_capability('moodle/course:manageactivities', $context)) {
 }
 
 // CARDのデータをDBから取得
+$ratingmap = [];
 if ($sortby) {
     $cards = $DB->get_records('sharedpanel_cards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0), 'timeposted DESC');
     $likest = $DB->get_records_sql(
@@ -120,7 +124,7 @@ if ($sortby) {
     foreach ($cards as $key => $row) {
         $timeposted[$key] = $row->timeposted;
         $rating[$key] = $row->rating;
-        if ($ratingmap[$row->id]) {
+        if (array_key_exists($row->id, $ratingmap)) {
             $rating2[$key] = $ratingmap[$row->id];
         } else {
             $rating2[$key] = 0;
@@ -129,11 +133,11 @@ if ($sortby) {
     // $cards を最後のパラメータとして渡し、同じキーでソートする。
     array_multisort($rating2, SORT_DESC, $rating, SORT_DESC, $timeposted, SORT_DESC, $cards);
 } else {
-    $cards = $DB->get_records('sharedpanel_cards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0), 'rating DESC, timeposted DESC');
+    $cards = $cardObj->get_cards();
 }
 
 // Group (Category) Card
-$gcards = $DB->get_records('sharedpanel_gcards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0), 'rating DESC');
+$gcards = $cardObj->get_gcards(0, 'rating DESC');
 
 echo html_writer::start_div('', ['id' => 'diagramContainer']);
 
