@@ -72,6 +72,7 @@ $PAGE->set_context($context);
 $PAGE->set_url('/mod/sharedpanel/view.php', array('id' => $cm->id));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_title(format_string($sharedpanel->name));
+$PAGE->set_pagelayout('incourse');
 
 //Call Objects
 $cardObj = new \mod_sharedpanel\card($sharedpanel);
@@ -80,60 +81,66 @@ $cardObj = new \mod_sharedpanel\card($sharedpanel);
 echo $OUTPUT->header();
 
 echo html_writer::start_div();
+
+echo html_writer::empty_tag('hr');
 echo get_string('sortedas', 'sharedpanel');
-echo html_writer::link(new moodle_url('view.php', ['id' => $id]), get_string('sort', 'sharedpanel'));
-echo html_writer::link(new moodle_url('view.php', ['id' => $id, 'sortby' => 1]), get_string('sortbylike1', 'sharedpanel'));
+echo \html_writer::start_div('btn-toolbar');
+
+echo html_writer::start_div('btn-group');
+echo html_writer::link(new moodle_url('view.php', ['id' => $id]), get_string('sort', 'sharedpanel'), ['class' => 'btn']);
 echo html_writer::end_div();
 
-echo html_writer::start_div();
+echo html_writer::start_div('btn-group');
+echo html_writer::link(new moodle_url('view.php', ['id' => $id, 'sortby' => 1]), get_string('sortbylike1', 'sharedpanel'), ['class' => 'btn']);
+echo html_writer::end_div();
+
+echo html_writer::end_div();
+echo html_writer::end_div();
+
+echo html_writer::empty_tag('hr');
+
+echo \html_writer::start_div('btn-toolbar');
+echo html_writer::start_div('btn-group');
+echo html_writer::link(new moodle_url('camera/com.php', ['id' => $id, 'n' => $sharedpanel->id]), get_string('postmessage', 'sharedpanel'), ['class' => 'btn']);
+echo html_writer::end_div();
+echo html_writer::start_div('btn-group');
 echo html_writer::empty_tag('input',
-    ['type' => 'button', 'value' => get_string('print', 'sharedpanel'), 'onclick' => 'window.print()', 'style' => 'margin:1ex;']);
+    ['type' => 'button', 'value' => get_string('print', 'sharedpanel'), 'onclick' => 'window.print()', 'style' => 'margin:1ex;', 'class' => 'btn']);
+echo html_writer::end_div();
 echo html_writer::end_div();
 
-echo html_writer::start_div();
-echo html_writer::link(new moodle_url('camera/com.php', ['id' => $id, 'n' => $sharedpanel->id]), get_string('postmessage', 'sharedpanel'));
-echo html_writer::end_div();
+echo html_writer::empty_tag('hr');
 
 if (has_capability('moodle/course:manageactivities', $context)) {
+    echo \html_writer::start_div('btn-toolbar');
 
-    echo html_writer::start_div();
-    echo html_writer::link(new moodle_url('importcard.php', ['id' => $id]), get_string('import', 'sharedpanel'));
+    echo \html_writer::start_div('btn-group');
+    echo html_writer::link(new moodle_url('importcard.php', ['id' => $id]), get_string('import', 'sharedpanel'), ['class' => 'btn']);
     echo html_writer::end_div();
 
-    echo html_writer::start_div();
-    echo html_writer::link(new moodle_url('post.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('post', 'sharedpanel'));
+    echo \html_writer::start_div('btn-group');
+    echo html_writer::link(new moodle_url('importcard.php', ['id' => $id]), get_string('import', 'sharedpanel'), ['class' => 'btn']);
     echo html_writer::end_div();
 
-    echo html_writer::start_div();
-    echo html_writer::link(new moodle_url('gcard.php', ['id' => $id]), get_string('groupcard', 'sharedpanel'));
+    echo \html_writer::start_div('btn-group');
+    echo html_writer::link(new moodle_url('post.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('post', 'sharedpanel'), ['class' => 'btn']);
+    echo html_writer::end_div();
+
+    echo \html_writer::start_div('btn-group');
+    echo html_writer::link(new moodle_url('gcard.php', ['id' => $id]), get_string('groupcard', 'sharedpanel'), ['class' => 'btn']);
+    echo html_writer::end_div();
+
     echo html_writer::end_div();
 }
+
+echo html_writer::empty_tag('hr');
 
 // CARDのデータをDBから取得
 $ratingmap = [];
 if ($sortby) {
-    $cards = $DB->get_records('sharedpanel_cards', array('sharedpanelid' => $sharedpanel->id, 'hidden' => 0), 'timeposted DESC');
-    $likest = $DB->get_records_sql(
-        'SELECT cardid, sum(rating) sumr 
-           FROM {sharedpanel_card_likes} 
-          WHERE ltype = :ltype 
-          GROUP BY cardid;', ['ltype' => $sortby]);
-    foreach ($likest as $like1) {
-        $ratingmap[$like1->cardid] = $like1->sumr;
-    }
-    foreach ($cards as $key => $row) {
-        $timeposted[$key] = $row->timeposted;
-        $rating[$key] = $row->rating;
-        if (array_key_exists($row->id, $ratingmap)) {
-            $rating2[$key] = $ratingmap[$row->id];
-        } else {
-            $rating2[$key] = 0;
-        }
-    }
-    // $cards を最後のパラメータとして渡し、同じキーでソートする。
-    array_multisort($rating2, SORT_DESC, $rating, SORT_DESC, $timeposted, SORT_DESC, $cards);
+    $cards = $cardObj->get_cards('important');
 } else {
-    $cards = $cardObj->get_cards();
+    $cards = $cardObj->get_cards('like');
 }
 
 // Group (Category) Card
@@ -195,99 +202,9 @@ foreach ($cards as $card) {  // 各カード
     } else {
         $tstyle = "style='left:" . $card->positionx . "px;top:" . $card->positiony . "px;'";
     }
-    $cardnum = $card->id;
 
+    echo \mod_sharedpanel\html_writer::card($context, $card, $tstyle);
 
-    $guests_distinguished = true;
-
-    $sessionid = session_id(); // for distingushing guests from different places
-
-    if ($guests_distinguished && is_guest($context)) {
-        $likearray = array('cardid' => $card->id, 'userid' => $USER->id, 'ltype' => 0, 'sessionid' => $sessionid);
-        $likearray1 = array('cardid' => $card->id, 'userid' => $USER->id, 'ltype' => 1, 'sessionid' => $sessionid);
-    } else {
-        $likearray = array('cardid' => $card->id, 'userid' => $USER->id, 'ltype' => 0);
-        $likearray1 = array('cardid' => $card->id, 'userid' => $USER->id, 'ltype' => 1);
-    }
-    // いいね! のリンク要素 ($likeslink)
-    $like0 = $DB->get_record('sharedpanel_card_likes', $likearray);
-    if ($like0 != false && $like0->rating > 0) {
-        $maru1 = "<span style='font-size:17px;color:red;vertical-align:bottom;'>✓</span>";
-    } else {
-        $maru1 = "<span style='font-size:27px;color:red;vertical-align:middle;'>□</span>";
-    }
-    $likeslink = html_writer::link(new moodle_url('likes.php', ['id' => $id, 'c' => $card->id, 'sesskey' => sesskey()]), get_string('important', 'sharedpanel') . $maru1);
-
-
-    $cardrating = $card->rating;
-    $barwidth = $cardrating * 6;
-    if ($barwidth > 150) {
-        $barwidth = 150;
-    }
-    if ($cardrating > 0) {
-        $likeslink .= " <img src='red.png' style='width:${barwidth}px; height:20px; vertical-align:middle;'>($cardrating)";
-    }
-
-    // もうひとつの「いいね!」(ltype==1) のリンク要素 ($likeslink1)
-    if ($sharedpanel_likes2) {
-        $like01 = $DB->get_record('sharedpanel_card_likes', $likearray1);
-        if ($like01 != false && $like01->rating > 0) {
-            $maru1 = "<span style='font-size:17px;color:#55f;vertical-align:bottom;'>✓</span>";
-        } else {
-            $maru1 = "<span style='font-size:27px;color:#55f;vertical-align:middle;'>□</span>";
-        }
-        $likeslink1 = "";
-        $likeslink1 .= html_writer::link(new moodle_url('likes.php', ['id' => $id, 'c' => $card->id, 'ltype' => 1, 'sesskey' => sesskey()]), get_string('interesting', 'sharedpanel') . $maru1);
-
-        $ratingsum1 = $DB->get_record_sql('SELECT sum(rating) as sumr FROM {sharedpanel_card_likes} WHERE cardid = ? AND ltype = ?', array($card->id, 1));
-        $cardrating1 = $ratingsum1->sumr;
-        $barwidth1 = $cardrating1 * 6;
-        if ($barwidth1 > 150) {
-            $barwidth1 = 150;
-        }
-        if ($cardrating1 > 0) {
-            $likeslink1 .= " <img src='blue.png' style='width:${barwidth1}px; height:20px; vertical-align:middle;'>($cardrating1)";
-        }
-    }
-
-    // タグ要素 ($taglink)
-    $tags = $DB->get_records('sharedpanel_card_tags', array('cardid' => $card->id));
-    $taglink = "";
-    foreach ($tags as $tag) {
-        $taglink .= "<a href=\"\"> $tag->tag </a> ";
-    }
-
-    // コンテンツ要素
-    $cardcontent = $card->content;
-    // 日付などを別途表示
-    $cardcontent .= "<div style='font-size:60%;line-height:100%;'><br/><br/>" . date('c', $card->timeposted);
-    if ($dispname) {
-        $cardcontent .= "<br/>" . $card->sender;
-    }
-    $cardcontent .= "<br/> from " . $card->inputsrc . "</div>";
-
-    // 削除リンク要素 （教師だけに表示）
-    if (has_capability('moodle/course:manageactivities', $context)) {
-        $dellink = html_writer::link(new moodle_url('deletecard.php', ['id' => $id, 'c' => $card->id, 'sesskey' => sesskey()]), '×');
-    }
-
-    $inputsrc = $card->inputsrc; // twtter, facebook, ....
-    // 上記4要素を使って、カードの表示
-    echo "
-<div class='$inputsrc-style0 all-style0 card' id='card$cardnum' $tstyle>
-  <div class='$inputsrc-style1 all-style1'>
-    <span style='background-color:lightblue; font-size:25px; padding:1px;'> $dellink </span>
-    <span> $taglink </span> <br/>
-  </div>
-  <div class='$inputsrc-style2 all-style2'>
-    $cardcontent
-  </div>
-  <div class='all-style3'>
-    <div>$likeslink</div> 
-    <div>$likeslink1</div> 
-  </div>
-</div>
-";
     $cnum++;
 }  // foreach ($cards as $card)
 echo html_writer::end_div();

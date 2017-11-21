@@ -82,3 +82,18 @@ function mod_sharedpanel_get_sharedpanel_cardid(){
 
     return $card->id;
 }
+
+function mod_sharedpanel_rotatecompress_img($imgname, $width) {
+    $imagea = imagecreatefromjpeg($imgname);
+    $exif_data = exif_read_data($imgname);
+    if (isset($exif_data['Orientation']) && $exif_data['Orientation'] == 6) {
+        $imagea = imagerotate($imagea, 270, 0);
+    }
+    $imagea = imagescale($imagea, $width, -1); // proportionally compress image with $width
+    $jpegfile = tempnam("/tmp", "email-jpg-");
+    imagejpeg($imagea, $jpegfile);
+    imagedestroy($imagea);
+    $attached = base64_encode(file_get_contents($jpegfile));
+    unlink($jpegfile);
+    return $attached;
+}

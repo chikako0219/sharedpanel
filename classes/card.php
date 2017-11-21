@@ -21,8 +21,34 @@ class card
         return $DB->get_records('sharedpanel_gcards', ['sharedpanelid' => $this->moduleinstance->id, 'hidden' => $hidden], $order);
     }
 
-    function get_cards($hidden = 0, $order = 'rating DESC, timeposted DESC') {
+    function get_cards($order = 'like') {
         global $DB;
-        return $DB->get_records('sharedpanel_cards', ['sharedpanelid' => $this->moduleinstance->id, 'hidden' => $hidden], $order);
+
+        $sql = "SELECT cards.*, card_likes.ltype, 
+                      (SELECT COUNT(id) 
+                               FROM {sharedpanel_card_likes} likes 
+                              WHERE likes.cardid = cards.id AND rating != 0 AND ltype = 0) like_count_0,
+                      (SELECT COUNT(id) 
+                               FROM {sharedpanel_card_likes} likes 
+                              WHERE likes.cardid = cards.id AND rating != 0 AND ltype = 1) like_count_1
+                  FROM {sharedpanel_cards} cards
+                  JOIN {sharedpanel_card_likes} card_likes ON card_likes.cardid = cards.id 
+                 GROUP BY cards.id
+                  ";
+
+        if ($order === 'like') {
+            $sql .= " ORDER BY like_count_0 DESC, card_likes.ltype ASC";
+        } else if ($order === 'newest') {
+            $sql .= " ORDER BY  card_likes.ltype DESC, cards.timecreated DESC";
+        } else if ($order === 'important') {
+            $sql .= " ORDER BY like_count_1 DESC, card_likes.ltype DESC";
+        }
+
+        return $DB->get_records_sql($sql);
+    }
+
+    static function get_tags($cardid) {
+        global $DB;
+        return $DB->get_records('sharedpanel_card_tags', ['cardid' => $cardid]);
     }
 }

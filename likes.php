@@ -23,32 +23,12 @@ if ($id) {
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
-/*
-$event = \mod_sharedpanel\event\course_module_viewed::create(array(
-    'objectid' => $PAGE->cm->instance,
-    'context' => $PAGE->context,
-));
-$event->add_record_snapshot('course', $PAGE->course);
-// In the next line you can use $PAGE->activityrecord if you have set it, or skip this line if you don't have a record.
-$event->add_record_snapshot($PAGE->cm->modname, $activityrecord);
-$event->trigger();
-*/
-
-// Print the page header.
-
 $PAGE->set_url('/mod/sharedpanel/deletecard.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($sharedpanel->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-/*
- * Other things you may want to set - remove if not needed.
- * $PAGE->set_cacheable(false);
- * $PAGE->set_focuscontrol('some-html-id');
- * $PAGE->add_body_class('sharedpanel-'.$somevar);
- */
-
-$sessionid = session_id(); // for distingushing guests from different places
+$sessionid = session_id();
 
 if ($USER->id == 1) {
     $is_guest = true;
@@ -69,6 +49,7 @@ if (!$like) {
     $like->userid = $USER->id;
     $like->timecreated = time();
     $like->rating = 1;
+    $like->comment = '';
     $like->ltype = $ltype;
     if ($guests_distinguished and $is_guest) {
         $like->sessionid = $sessionid;
@@ -104,4 +85,4 @@ if ($ltype == 0) {
 
 redirect(new moodle_url('view.php', ['id' => $id]), $msg, 2);
 
-echo $OUTPUT->footer();
+//echo $OUTPUT->footer();
