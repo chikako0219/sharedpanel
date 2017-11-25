@@ -119,10 +119,6 @@ if (has_capability('moodle/course:manageactivities', $context)) {
     echo html_writer::end_div();
 
     echo \html_writer::start_div('btn-group');
-    echo html_writer::link(new moodle_url('importcard.php', ['id' => $id]), get_string('import', 'sharedpanel'), ['class' => 'btn']);
-    echo html_writer::end_div();
-
-    echo \html_writer::start_div('btn-group');
     echo html_writer::link(new moodle_url('post.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('post', 'sharedpanel'), ['class' => 'btn']);
     echo html_writer::end_div();
 

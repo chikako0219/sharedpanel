@@ -20,11 +20,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_sharedpanel;
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
+global $DB, $PAGE, $OUTPUT;
+
 $id = optional_param('id', 0, PARAM_INT); // course module id
-$c = optional_param('c', 0, PARAM_INT);  // ... card ID
 
 if ($id) {
     $cm = get_coursemodule_from_id('sharedpanel', $id, 0, false, MUST_EXIST);
@@ -35,7 +38,7 @@ if ($id) {
 }
 
 require_login($course, true, $cm);
-$context = context_module::instance($cm->id);
+$context = \context_module::instance($cm->id);
 
 // Print the page header.
 
@@ -44,37 +47,37 @@ $PAGE->set_title(format_string($sharedpanel->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-/*
- * Other things you may want to set - remove if not needed.
- * $PAGE->set_cacheable(false);
- * $PAGE->set_focuscontrol('some-html-id');
- * $PAGE->add_body_class('sharedpanel-'.$somevar);
- */
 // Output starts here.
 echo $OUTPUT->header();
 
 // LINE
 include_once(dirname(__FILE__) . '/line.php');
-add_card_from_line($sharedpanel);
+//add_card_from_line($sharedpanel);
 
 // Twitter
 include_once(dirname(__FILE__) . '/twitter.php');
-//add_card_from_twitter($sharedpanel, "#amakusa1125");
-add_card_from_twitter($sharedpanel);
+$twitterObj = new twitter($sharedpanel);
+$cardids_twitter = $twitterObj->import();
+
+if ($cardids_twitter != false) {
+    echo html_writer::message(\core\notification::SUCCESS, 'Twitterからのインポートに成功しました。');
+} else {
+    echo html_writer::message(\core\notification::ERROR, 'Twitterからのインポートに失敗しました。');
+}
 
 // Email
-include_once(dirname(__FILE__) . '/email.php');
-if ($sharedpanel->emailadr1 == "") {
-    echo "<br/><hr>no email address.<br/>";
-    ob_flush();
-    flush();
-} else {
-    //add_card_from_email($sharedpanel);
-    add_card_from_email($sharedpanel, 600); // 大きな画像は幅600pxに縮小される
-}
-// Evernote
-include_once(dirname(__FILE__) . '/evernote.php');
-add_card_from_evernote($sharedpanel);
+//include_once(dirname(__FILE__) . '/email.php');
+//if ($sharedpanel->emailadr1 == "") {
+//    echo "<br/><hr>no email address.<br/>";
+//    ob_flush();
+//    flush();
+//} else {
+//    //add_card_from_email($sharedpanel);
+//    add_card_from_email($sharedpanel, 600); // 大きな画像は幅600pxに縮小される
+//}
+//// Evernote
+//include_once(dirname(__FILE__) . '/evernote.php');
+//add_card_from_evernote($sharedpanel);
 
 
 echo "<br/><hr><a href=\"./view.php?id=$id\"><span style='background-color:orange;padding:1ex;color:black;'><b>Importing done.</b></span></a><br/>";

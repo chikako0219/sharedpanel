@@ -41,8 +41,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */
-function sharedpanel_supports($feature)
-{
+function sharedpanel_supports($feature) {
     switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
@@ -65,8 +64,7 @@ function sharedpanel_supports($feature)
  * @param mod_sharedpanel_mod_form $mform
  * @return int The id of the newly inserted sharedpanel record
  */
-function sharedpanel_add_instance(stdClass $sharedpanel, mod_sharedpanel_mod_form $mform = null)
-{
+function sharedpanel_add_instance(stdClass $sharedpanel, mod_sharedpanel_mod_form $mform = null) {
     global $DB;
 
     $sharedpanel->timecreated = time();
@@ -90,10 +88,10 @@ function sharedpanel_add_instance(stdClass $sharedpanel, mod_sharedpanel_mod_for
  * @param mod_sharedpanel_mod_form $mform
  * @return boolean Success/Fail
  */
-function sharedpanel_update_instance(stdClass $sharedpanel, mod_sharedpanel_mod_form $mform = null)
-{
+function sharedpanel_update_instance(stdClass $sharedpanel, mod_sharedpanel_mod_form $mform = null) {
     global $DB;
 
+    $sharedpanel->id = $sharedpanel->instance;
     $sharedpanel->timemodified = time();
     $sharedpanel->emailpas1 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas1, $sharedpanel->encryptionkey);
     $sharedpanel->emailpas2 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas2, $sharedpanel->encryptionkey);
@@ -111,15 +109,22 @@ function sharedpanel_update_instance(stdClass $sharedpanel, mod_sharedpanel_mod_
  * @param int $id Id of the module instance
  * @return boolean Success/Failure
  */
-function sharedpanel_delete_instance($id)
-{
+function sharedpanel_delete_instance($id) {
     global $DB;
 
     if (!$sharedpanel = $DB->get_record('sharedpanel', array('id' => $id))) {
         return false;
     }
 
-    $DB->delete_records('sharedpanel', array('id' => $sharedpanel->id));
+    $cards = $DB->get_records('sharedpanel_cards', ['sharedpanelid' => $sharedpanel->id]);
+    foreach ($cards as $card) {
+        $DB->delete_records('sharedpanel_card_likes', ['cardid' => $card->id]);
+        $DB->delete_records('sharedpanel_card_tags', ['cardid' => $card->id]);
+    }
+
+    $DB->delete_records('sharedpanel_cards', ['sharedpanelid' => $sharedpanel->id]);
+    $DB->delete_records('sharedpanel_gcards', ['sharedpanelid' => $sharedpanel->id]);
+    $DB->delete_records('sharedpanel', ['id' => $sharedpanel->id]);
 
     return true;
 }
@@ -133,8 +138,7 @@ function sharedpanel_delete_instance($id)
  *
  * @return stdClass|null
  */
-function sharedpanel_user_outline($course, $user, $mod, $sharedpanel)
-{
+function sharedpanel_user_outline($course, $user, $mod, $sharedpanel) {
 
     $return = new stdClass();
     $return->time = 0;
@@ -152,8 +156,7 @@ function sharedpanel_user_outline($course, $user, $mod, $sharedpanel)
  * @param stdClass $sharedpanel the module instance record
  * @return void, is supposed to echp directly
  */
-function sharedpanel_user_complete($course, $user, $mod, $sharedpanel)
-{
+function sharedpanel_user_complete($course, $user, $mod, $sharedpanel) {
 }
 
 /**
@@ -163,8 +166,7 @@ function sharedpanel_user_complete($course, $user, $mod, $sharedpanel)
  *
  * @return boolean
  */
-function sharedpanel_print_recent_activity($course, $viewfullnames, $timestart)
-{
+function sharedpanel_print_recent_activity($course, $viewfullnames, $timestart) {
     return false; // True if anything was printed, otherwise false.
 }
 
@@ -184,8 +186,7 @@ function sharedpanel_print_recent_activity($course, $viewfullnames, $timestart)
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  * @return void adds items into $activities and increases $index
  */
-function sharedpanel_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0)
-{
+function sharedpanel_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0) {
 }
 
 /**
@@ -193,8 +194,7 @@ function sharedpanel_get_recent_mod_activity(&$activities, &$index, $timestart, 
  *
  * @return void
  */
-function sharedpanel_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames)
-{
+function sharedpanel_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
 }
 
 /**
@@ -205,8 +205,7 @@ function sharedpanel_print_recent_mod_activity($activity, $courseid, $detail, $m
  * @return boolean
  * @todo Finish documenting this function
  **/
-function sharedpanel_cron()
-{
+function sharedpanel_cron() {
     return true;
 }
 
@@ -216,8 +215,7 @@ function sharedpanel_cron()
  * @example return array('moodle/site:accessallgroups');
  * @return array
  */
-function sharedpanel_get_extra_capabilities()
-{
+function sharedpanel_get_extra_capabilities() {
     return array();
 }
 
@@ -327,8 +325,7 @@ function sharedpanel_update_grades(stdClass $sharedpanel, $userid = 0) {
  * @param stdClass $context
  * @return array of [(string)filearea] => (string)description
  */
-function sharedpanel_get_file_areas($course, $cm, $context)
-{
+function sharedpanel_get_file_areas($course, $cm, $context) {
     return array();
 }
 
@@ -349,8 +346,7 @@ function sharedpanel_get_file_areas($course, $cm, $context)
  * @param string $filename
  * @return file_info instance or null if not found
  */
-function sharedpanel_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename)
-{
+function sharedpanel_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
     return null;
 }
 
@@ -368,8 +364,7 @@ function sharedpanel_get_file_info($browser, $areas, $course, $cm, $context, $fi
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
  */
-function sharedpanel_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array())
-{
+function sharedpanel_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array()) {
     global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -395,8 +390,7 @@ function sharedpanel_pluginfile($course, $cm, $context, $filearea, array $args, 
  * @param stdClass $module
  * @param cm_info $cm
  */
-function sharedpanel_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm)
-{
+function sharedpanel_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
 }
 
 /**
@@ -408,6 +402,5 @@ function sharedpanel_extend_navigation(navigation_node $navref, stdclass $course
  * @param settings_navigation $settingsnav {@link settings_navigation}
  * @param navigation_node $sharedpanelnode {@link navigation_node}
  */
-function sharedpanel_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $sharedpanelnode = null)
-{
+function sharedpanel_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $sharedpanelnode = null) {
 }

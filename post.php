@@ -20,6 +20,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_sharedpanel;
+
+global $CFG, $DB, $PAGE, $OUTPUT, $USER;
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
@@ -31,15 +35,14 @@ require_once("locallib.php");
 
 confirm_sesskey();
 
-class post_form extends moodleform
+class post_form extends \moodleform
 {
     //Add elements to form
     public function definition() {
         global $CFG;
 
-        $mform = $this->_form; // Don't forget the underscore! 
+        $mform = $this->_form; // Don't forget the underscore!
         $cm = $this->_customdata['cm'];
-        $context = context_module::instance($cm->id);
 
         $mform->addElement('editor', 'content', get_string('cardcontent', 'sharedpanel'));
         $mform->setType('content', PARAM_RAW);
@@ -50,25 +53,12 @@ class post_form extends moodleform
         $mform->addElement('text', 'tag', get_string('tag'));
         $mform->setType('tag', PARAM_NOTAGS);
 
-//        $mform->addElement('text', 'sender', get_string('cardsender','sharedpanel'));
-//        $mform->setType('sender', PARAM_NOTAGS);
-
-//        $mform->addElement('text', 'email', get_string('email'));
-//        $mform->setType('email', PARAM_NOTAGS);
-
         $mform->addElement('hidden', 'id', $cm->id);
         $mform->setType('id', PARAM_INT);
-//        $mform->addElement('hidden', 'cmid');
-//        $mform->setType('cmid', PARAM_INT);
 
         $this->add_action_buttons(true);
 
     }
-    //Custom validation should be added here
-//    function validation($data, $files) {
-//        return array();
-//    }
-
 }
 
 // --------------------------------------------------------------------------------
@@ -85,78 +75,46 @@ if ($id) {
 }
 
 require_login($course, true, $cm);
-$context = context_module::instance($cm->id);
+$context = \context_module::instance($cm->id);
 
-$PAGE->set_url('/mod/sharedpanel/post.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/sharedpanel/post.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($sharedpanel->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-/*
- * Other things you may want to set - remove if not needed.
- * $PAGE->set_cacheable(false);
- * $PAGE->set_focuscontrol('some-html-id');
- * $PAGE->add_body_class('sharedpanel-'.$somevar);
- */
-
-// Output starts here.
-
-// mimicing glossary/edit.php glossary/edit_form.php  t-kita
-
-//$mform = new post_form();
 $mform = new post_form(null, array('cm' => $cm));
 
 //Form processing and displaying is done here
 if ($mform->is_cancelled()) {
-    redirect(new moodle_url('view.php', ['id' => $id]), "キャンセルしました。", 3);
+    redirect(new \moodle_url('view.php', ['id' => $id]), "キャンセルしました。", 3);
 } else if ($fromform = $mform->get_data()) {
-    // In this case you process validated data. $mform->get_data() returns data posted in form.
-    $time = time();
-    $ret1 = "";
-    if (!$c) {
-        $data = new stdClass;
-        $data->sharedpanelid = $sharedpanel->id;
-        $data->userid = $USER->id;
-//      $data->timeposted= strtotime($updated);
-        $data->timecreated = $time;
-//      $data->timemodified = $data->timecreated;
-        $data->inputsrc = "moodlepost";
-//      $data->content = $ret1;
-        $data->content = "";
-        $data->id = $DB->insert_record('sharedpanel_cards', $data);
-    }
-    $data->timeposted = $time;
-    $data->timemodified = $time;
+    $cardObj = new card($sharedpanel);
 
-    $formcontent = $fromform->content["text"];
+    $content = "";
     $filecontent = $mform->get_file_content('userfile');
-    $ftag = $fromform->tag;
-
-    $name = $USER->lastname . " " . $USER->firstname;
-    $data->sender = $name;
+    $tag = $fromform->tag;
     if ($filecontent) {
-        $ret1 .= "<img src='data:image/gif;base64," . mod_sharedpanel_compress_img($filecontent, 600) . "' width=85%><br>";
-
-    }
-//    $ret1 .= $formcontent.'<br/>'.strftime('%c',$time).'<br/> posted on Moodle';
-    $ret1 .= $formcontent;
-    $data->content = $ret1;
-
-    $DB->update_record('sharedpanel_cards', $data);
-
-    if ($ftag) {
-        $tag = new stdClass;
-        $tag->cardid = $data->id;
-        $tag->userid = $USER->id;
-        $tag->timecreated = $data->timemodified;
-        $tag->tag = $ftag;
-        $tag->id = $DB->insert_record('sharedpanel_card_tags', $tag);
+        $content .= \html_writer::empty_tag('img',
+            ['src' => 'data:image/gif;base64,' . mod_sharedpanel_compress_img($filecontent, 600), 'style' => 'width=85%']);
+        $content .= '<br>';
     }
 
-    redirect("view.php?id=$id", "保存されました。", 5);
+    $content .= $fromform->content["text"];
+
+    $cardid = $cardObj->add_card($content, fullname($USER->id));
+
+    if ($tag) {
+        $tagObj = new tag($sharedpanel);
+        if (!$tagObj->is_exists($cardid)) {
+            $tagObj->set($cardid, $tag, $USER->id);
+        } else {
+            $tagObj->update($cardid, $tag);
+        }
+    }
+
+    redirect(new \moodle_url('view.php', ['id' => $id]), "保存されました。", 5);
 } else {
     echo $OUTPUT->header();
-
     $mform->display();
 }
 

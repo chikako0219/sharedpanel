@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: yue
- * Date: 2017/10/09
- * Time: 15:22
- */
 
 namespace mod_sharedpanel;
 
 class card
 {
-    private $moduleinstance;
+    protected $moduleinstance;
 
     function __construct($modinstance) {
         $this->moduleinstance = $modinstance;
@@ -32,7 +26,8 @@ class card
                                FROM {sharedpanel_card_likes} likes 
                               WHERE likes.cardid = cards.id AND rating != 0 AND ltype = 1) like_count_1
                   FROM {sharedpanel_cards} cards
-                  JOIN {sharedpanel_card_likes} card_likes ON card_likes.cardid = cards.id 
+             LEFT JOIN {sharedpanel_card_likes} card_likes ON card_likes.cardid = cards.id 
+                 WHERE cards.sharedpanelid = :sharedpanelid
                  GROUP BY cards.id
                   ";
 
@@ -44,11 +39,61 @@ class card
             $sql .= " ORDER BY like_count_1 DESC, card_likes.ltype DESC";
         }
 
-        return $DB->get_records_sql($sql);
+        return $DB->get_records_sql($sql, ['sharedpanelid' => $this->moduleinstance->id]);
+    }
+
+    function get_last_card($inputsrc) {
+        global $DB;
+        $cards = $DB->get_records('sharedpanel_cards', ['sharedpanelid' => $this->moduleinstance->id, 'inputsrc' => $inputsrc], 'id DESC');
+
+        return current($cards);
     }
 
     static function get_tags($cardid) {
         global $DB;
         return $DB->get_records('sharedpanel_card_tags', ['cardid' => $cardid]);
+    }
+
+    function add_card($content, $sender, $inputsrc = 'moodle', $messageid = "", $timeupdated = "") {
+        global $DB, $USER;
+
+        $data = new \stdClass;
+        $data->sharedpanelid = $this->moduleinstance->id;
+        $data->userid = $USER->id;
+        if (empty($timeupdated)) {
+            $data->timeposted = time();
+        } else {
+            $data->timeposted = $timeupdated;
+        }
+        $data->timecreated = time();
+        $data->timemodified = time();
+        $data->rating = 0;
+        $data->sender = $sender;
+        $data->messageid = $messageid;
+        $data->content = $content;
+        $data->comment = '';
+        $data->hidden = 0;
+        $data->inputsrc = $inputsrc;
+        $data->positionx = 0;
+        $data->positiony = 0;
+
+        return $DB->insert_record('sharedpanel_cards', $data);
+    }
+
+    function update_cards($cardid, $content) {
+        global $DB;
+
+        $data = new \stdClass();
+        $data->id = $cardid;
+        $data->content = $content;
+
+        return $DB->update_record('sharedpanel_cards', $data);
+    }
+
+    function delete_cards($cardid) {
+        global $DB;
+
+        $DB->delete_records('sharedpanel_card_likes', ['cardid' => $cardid]);
+        return $DB->delete_records('sharedpanel_cards', ['id' => $cardid]);
     }
 }
