@@ -55,7 +55,6 @@ include_once(dirname(__FILE__) . '/line.php');
 //add_card_from_line($sharedpanel);
 
 // Twitter
-include_once(dirname(__FILE__) . '/twitter.php');
 $twitterObj = new twitter($sharedpanel);
 $cardids_twitter = $twitterObj->import();
 
@@ -63,7 +62,21 @@ if ($cardids_twitter != false) {
     echo html_writer::message(\core\notification::SUCCESS, 'Twitterからのインポートに成功しました。');
 } else {
     echo html_writer::message(\core\notification::ERROR, 'Twitterからのインポートに失敗しました。');
+    $error = $twitterObj->get_error();
+    debugging($error->code . ":" . $error->message);
 }
+
+$emailObj = new email($sharedpanel);
+$cardids_emails = $emailObj->import();
+
+if ($cardids_emails != false) {
+    echo html_writer::message(\core\notification::SUCCESS, 'メールからのインポートに成功しました。');
+} else {
+    echo html_writer::message(\core\notification::ERROR, 'メールからのインポートに失敗しました。');
+    $error = $emailObj->get_error();
+    debugging($error->code . ":" . $error->message);
+}
+
 
 // Email
 //include_once(dirname(__FILE__) . '/email.php');

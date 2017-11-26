@@ -91,10 +91,12 @@ function sharedpanel_add_instance(stdClass $sharedpanel, mod_sharedpanel_mod_for
 function sharedpanel_update_instance(stdClass $sharedpanel, mod_sharedpanel_mod_form $mform = null) {
     global $DB;
 
+    $data = $DB->get_record('sharedpanel', ['id' => $sharedpanel->instance]);
+
     $sharedpanel->id = $sharedpanel->instance;
     $sharedpanel->timemodified = time();
-    $sharedpanel->emailpas1 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas1, $sharedpanel->encryptionkey);
-    $sharedpanel->emailpas2 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas2, $sharedpanel->encryptionkey);
+    $sharedpanel->emailpas1 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas1, $data->encryptionkey);
+    $sharedpanel->emailpas2 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas2, $data->encryptionkey);
 
     return $DB->update_record('sharedpanel', $sharedpanel);
 }

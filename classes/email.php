@@ -6,7 +6,7 @@ defined('MOODLE_INTERNAL') || die();
 
 class email extends card
 {
-    private $moduleinstance;
+    protected $moduleinstance;
 
     private $email_addr;
     private $email_password;
@@ -14,13 +14,17 @@ class email extends card
     private $email_host;
     private $email_port;
 
+    private $error;
+
     function __construct($modinstance) {
+        $this->error = new \stdClass();
+
         $this->email_addr = $modinstance->emailadr1;
         $this->email_password = aes::get_aes_decrypt_string($modinstance->emailpas1, $modinstance->encryptionkey);
         $this->email_port = 993;
 
         if (preg_match('/([^@]+)@gmail[.]com/', $this->email_addr, $ma)) {
-            $this->email_host = 'imap.googlemail.com';
+            $this->email_host = 'imap.gmail.com';
         } elseif (preg_match('/([^@]+)@yahoo[.]co[.]jp/', $this->email_addr, $ma)) {
             $this->email_host = 'imap.mail.yahoo.co.jp';
         } elseif (preg_match('/([^@]+)@yahoo[.]com/', $this->email_addr, $ma)) {
@@ -64,16 +68,18 @@ class email extends card
         return $DB->record_exists('sharedpanel_cards', $cond);
     }
 
-    public function add() {
+    public function import() {
         $message = "";
+        $host = '{' . $this->email_host . ':' . $this->email_port . '/novalidate-cert/imap/ssl}' . "INBOX";
 
-        if (($mbox = imap_open(SERVER . "INBOX", $this->email_addr, $this->email_password)) == false) {
+        if (($mbox = imap_open('{' . $this->email_host . ':' . $this->email_port . '/novalidate-cert/imap/ssl}' . "INBOX", $this->email_addr, $this->email_password, OP_READONLY)) == false) {
             // If failed to connect with IMAP, return false.
+            $this->error->message = imap_last_error();
             return false;
         }
 
         // Get list of mailboxes
-        $mboxes = imap_mailboxmsginfo($mbox);
+        $mboxes = \imap_mailboxmsginfo($mbox);
         $message .= "..." . $mboxes->Nmsgs . "emails found...<br>";
 
         if ($mboxes->NMsgs > 0) {
@@ -116,5 +122,9 @@ class email extends card
 
             }
         }
+    }
+
+    public function get_error() {
+        return $this->error;
     }
 }

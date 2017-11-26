@@ -42,6 +42,9 @@ class mod_sharedpanel_mod_form extends moodleform_mod {
 
         $mform = $this->_form;
 
+        $emailpas1 = \mod_sharedpanel\aes::get_aes_decrypt_string($this->current->emailpas1, $this->current->encryptionkey);
+        $this->current->encryptionkey = $emailpas1;
+
         $mform->addElement('header', 'general', get_string('general', 'form'));
         $mform->addElement('text', 'name', get_string('sharedpanelname', 'sharedpanel'), array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
@@ -89,11 +92,6 @@ class mod_sharedpanel_mod_form extends moodleform_mod {
 
         $mform->addElement('text', 'emailkey2', 'メール表題に含まれるキーワード(Evernote用)');
         $mform->setType('emailkey2', PARAM_TEXT);
-
-        $mform->addElement('header', 'sharedpanelfieldset_other', 'その他');
-        $mform->setExpanded('sharedpanelfieldset_other');
-        $mform->addElement('text', 'config0','config0');
-        $mform->setType('config0', PARAM_TEXT);
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();

@@ -10,9 +10,17 @@ include __DIR__ . "/../lib/twitteroauth/autoload.php";
 
 class twitter extends card
 {
-    function import() {
+    private $error;
+
+    public function __construct($modinstance) {
+        $this->error = new \stdClass();
+        parent::__construct($modinstance);
+    }
+
+    public function import() {
         $config = get_config('sharedpanel');
         if (empty($config->TWconsumerKey) || empty($config->TWconsumerSecret) || empty($config->TWaccessToken) || empty($config->TWaccessTokenSecret)) {
+            $this->error->message = "認証情報が入力されていません。";
             return false;
         }
 
@@ -24,6 +32,12 @@ class twitter extends card
         );
 
         $credentials = $connection->get("account/verify_credentials");
+        if (property_exists($credentials, 'errors')) {
+            $this->error->code = $credentials->errors[0]->code;
+            $this->error->message = $credentials->errors[0]->message;
+
+            return false;
+        }
 
         $latest_card = self::get_last_card('twitter');
 
@@ -41,5 +55,9 @@ class twitter extends card
         }
 
         return $cardids;
+    }
+
+    public function get_error() {
+        return $this->error;
     }
 }
