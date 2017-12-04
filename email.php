@@ -134,8 +134,6 @@ function add_card_from_email($sharedpanel, $compressimage = -1)
                 }
                 $info = imap_fetchstructure($mbox, $mailno);
             }
-            // echo "<br/><br/><pre>********************* mailno".$mailno.":"; // debug
-            // echo var_dump($info); echo "</pre>"; ob_flush(); flush();  // debug
             if (!empty($info->parts)) {
                 //
                 $parts_cnt = count($info->parts);
@@ -231,18 +229,7 @@ function add_card_from_email($sharedpanel, $compressimage = -1)
                     }
                 }
             }
-
-            // メールの削除
-//      imap_delete($mbox, $mailno);
-
-        } //   for( $mailno=1; $mailno<=$mboxes->Nmsgs; $mailno++ )
-
-        // 削除用にマークされたすべてのメッセージを削除
-//  imap_expunge($mbox);
-
-        // $mailの中身を確認
-//var_dump($mail);
-
+        }
         $co = 0;
         foreach ($mail as $mail2) {
             $ret1 = "";
@@ -252,15 +239,10 @@ function add_card_from_email($sharedpanel, $compressimage = -1)
 //メール処理
             } else {
                 $mail3 = $mail2['attached_file'];
-                //view.phpで定義をすることにしたため，下記のコードは削除（2016.07.21）
-                //echo '<div-mail>';
-                // $ret1.= $mail2['subject']."<br>"."<br>".$mail2['address']."<br>"."<hr>"."<br>";
                 $ret1 .= $mail2['subject'] . "<br/>";
-                //echo "<img src='".$mail3."''>"."<br>","<br>";
                 foreach ($mail3 as $mail4) {
                     $ret1 .= "<img src='data:image/gif;base64," . $mail4['imageb'] . "'  width=250px>" . "<br><br>";
                 }
-                // $ret1.= $mail2['body']."<br>".$mail2['date']."<br><br> from Email";
                 $ret1 .= $mail2['body'];
 
                 // DBにあるカードと重複していれば登録しない（次の投稿の処理へ）

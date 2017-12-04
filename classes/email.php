@@ -11,29 +11,22 @@ class email extends card
     private $email_addr;
     private $email_password;
 
-    private $email_host;
     private $email_port;
 
     private $error;
 
+    private $cardObj;
+
     function __construct($modinstance) {
         $this->error = new \stdClass();
+        $this->error->code = 0;
+        $this->error->message = "";
 
         $this->email_addr = $modinstance->emailadr1;
         $this->email_password = aes::get_aes_decrypt_string($modinstance->emailpas1, $modinstance->encryptionkey);
         $this->email_port = 993;
 
-        if (preg_match('/([^@]+)@gmail[.]com/', $this->email_addr, $ma)) {
-            $this->email_host = 'imap.gmail.com';
-        } elseif (preg_match('/([^@]+)@yahoo[.]co[.]jp/', $this->email_addr, $ma)) {
-            $this->email_host = 'imap.mail.yahoo.co.jp';
-        } elseif (preg_match('/([^@]+)@yahoo[.]com/', $this->email_addr, $ma)) {
-            $this->email_host = 'imap.mail.yahoo.com';
-        } else {
-            if (preg_match('/([^@]+)@([^@]+)/', $this->email_addr, $ma)) {
-                $this->email_host = 'imap.' . $ma[2];
-            }
-        }
+        $this->cardObj = new card($modinstance);
 
         parent::__construct($modinstance);
     }
@@ -69,59 +62,43 @@ class email extends card
     }
 
     public function import() {
-        $message = "";
-        $host = '{' . $this->email_host . ':' . $this->email_port . '/novalidate-cert/imap/ssl}' . "INBOX";
+        global $DB, $USER;
 
-        if (($mbox = imap_open('{' . $this->email_host . ':' . $this->email_port . '/novalidate-cert/imap/ssl}' . "INBOX", $this->email_addr, $this->email_password, OP_READONLY)) == false) {
-            // If failed to connect with IMAP, return false.
+        $mbox = imap_open('{' . $this->moduleinstance->emailhost . ':' . $this->moduleinstance->emailport . '/novalidate-cert/imap/ssl}' . "INBOX", $this->email_addr, $this->email_password, OP_READONLY);
+        if (!$mbox) {
             $this->error->message = imap_last_error();
             return false;
         }
+        $messageids = imap_search($mbox, "SUBJECT " . $this->moduleinstance->emailkey1, SE_UID);
+        if (!$messageids) {
+            return null;
+        }
+        $cardids = [];
+        foreach ($messageids as $num => $messageid) {
+            if ($DB->record_exists('sharedpanel_cards', ['messageid' => $messageid])) {
+                continue;
+            }
 
-        // Get list of mailboxes
-        $mboxes = \imap_mailboxmsginfo($mbox);
-        $message .= "..." . $mboxes->Nmsgs . "emails found...<br>";
+            $num++;
+            $head = imap_headerinfo($mbox, $num);
+            $body = imap_fetchbody($mbox, $num, 1, FT_INTERNAL);
+            $body = trim($body);
 
-        if ($mboxes->NMsgs > 0) {
-            $mail = null;
+            if (strpos($head->from[0]->host, "evernote.com") !== false) {
+                continue;
+            }
 
-            for ($mailno = 1; $mailno < $mboxes->Nmsgs; $mailno++) {
-                // Get Header Information
-                $head = imap_headerinfo($mbox, $mailno);
-                // If mail from evernote, then skip
-                if ($head->from[0]->host === "evernote.com") {
-                    continue;
-                }
+            $subject = mb_convert_encoding(imap_base64($body), 'utf-8', 'auto');
 
-                // Get address
-                $mail[$mailno]['address'] = $head->from[0]->mailbox . '@' . $head->from[0]->host;
-                // get date
-                $mail[$mailno]['date'] = $head->date;
-                // If this email is already received, then skip.
-                if (self::is_exists(strtotime($head->date))) {
-                    $mail[$mailno]['address'] = "xxx";
-                    $message .= "Not imported : same email as at " . $head->date . "<br>";
-                    continue;
-                }
-
-                if (!empty($head->subject)) {
-                    $mhead = imap_mime_header_decode($head->subject);
-                    foreach ($mhead as $key => $value) {
-                        if ($value->charset != 'default') {
-                            $mail[$mailno]['subject'] = mb_convert_encoding($value->text, 'utf-8', $value->charset);
-                        } else {
-                            $mail[$mailno]['subject'] = $value->text;
-                        }
-                    }
-                } else {
-                    //@TODO
-                    $mail[$mailno]['subject'] = "No title";
-                }
-
-                $mailinfo = imap_fetchstructure($mbox, $mailno);
-
+            $cardid = $this->cardObj->add_card($subject, $head->fromaddress, 'email', $messageid);
+            $cardids[] = $cardid;
+            foreach (mod_sharedpanel_get_tags($subject) as $tagstr) {
+                $tagObj = new tag($this->moduleinstance);
+                $tagObj->set($cardid, $tagstr, $USER->id);
             }
         }
+
+        return $cardids;
     }
 
     public function get_error() {

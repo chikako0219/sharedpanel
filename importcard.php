@@ -22,6 +22,8 @@
 
 namespace mod_sharedpanel;
 
+use core\notification;
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
@@ -42,7 +44,7 @@ $context = \context_module::instance($cm->id);
 
 // Print the page header.
 
-$PAGE->set_url('/mod/sharedpanel/deletecard.php', ['id' => $cm->id]);
+$PAGE->set_url('/mod/sharedpanel/importcard.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($sharedpanel->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
@@ -57,9 +59,12 @@ include_once(dirname(__FILE__) . '/line.php');
 // Twitter
 $twitterObj = new twitter($sharedpanel);
 $cardids_twitter = $twitterObj->import();
-
-if ($cardids_twitter != false) {
-    echo html_writer::message(\core\notification::SUCCESS, 'Twitterからのインポートに成功しました。');
+if ($cardids_twitter != false || is_null($cardids_twitter) || is_array($cardids_twitter)) {
+    if (count($cardids_twitter) == 0) {
+        echo html_writer::message(\core\notification::INFO, '新規ツイートはありませんでした。');
+    } else {
+        echo html_writer::message(\core\notification::SUCCESS, 'Twitterからのインポートに成功しました。');
+    }
 } else {
     echo html_writer::message(\core\notification::ERROR, 'Twitterからのインポートに失敗しました。');
     $error = $twitterObj->get_error();
@@ -69,45 +74,39 @@ if ($cardids_twitter != false) {
 $emailObj = new email($sharedpanel);
 $cardids_emails = $emailObj->import();
 
-if ($cardids_emails != false) {
-    echo html_writer::message(\core\notification::SUCCESS, 'メールからのインポートに成功しました。');
+if ($cardids_emails != false || is_null($cardids_emails) || is_array($cardids_emails)) {
+    if (count($cardids_emails) == 0) {
+        echo html_writer::message(\core\notification::INFO, '新規メールはありませんでした。');
+    } else {
+        echo html_writer::message(\core\notification::SUCCESS, count($cardids_emails) . '件をメールからインポートしました。');
+    }
 } else {
     echo html_writer::message(\core\notification::ERROR, 'メールからのインポートに失敗しました。');
     $error = $emailObj->get_error();
     debugging($error->code . ":" . $error->message);
 }
 
-
-// Email
-//include_once(dirname(__FILE__) . '/email.php');
-//if ($sharedpanel->emailadr1 == "") {
-//    echo "<br/><hr>no email address.<br/>";
-//    ob_flush();
-//    flush();
-//} else {
-//    //add_card_from_email($sharedpanel);
-//    add_card_from_email($sharedpanel, 600); // 大きな画像は幅600pxに縮小される
-//}
 //// Evernote
-//include_once(dirname(__FILE__) . '/evernote.php');
-//add_card_from_evernote($sharedpanel);
+$evernoteObj = new evernote($sharedpanel);
+$cardids_evernote = $evernoteObj->import();
 
+if ($cardids_evernote != false || is_null($cardids_evernote) || is_array($cardids_evernote)) {
+    if (count($cardids_evernote) == 0) {
+        echo html_writer::message(\core\notification::INFO, '新規Evernoteはありませんでした。');
+    } else {
+        echo html_writer::message(\core\notification::SUCCESS, count($cardids_evernote) . '件をEvernoteからインポートしました。');
+    }
+} else {
+    echo html_writer::message(\core\notification::ERROR, 'Evernoteからのインポートに失敗しました。');
+    $error = $emailObj->get_error();
+    debugging($error->code . ":" . $error->message);
+}
 
-echo "<br/><hr><a href=\"./view.php?id=$id\"><span style='background-color:orange;padding:1ex;color:black;'><b>Importing done.</b></span></a><br/>";
-ob_flush();
-flush();
+$total_count = count($cardids_twitter) + count($cardids_emails) + count($cardids_evernote);
+
+echo html_writer::message(notification::SUCCESS, 'インポート処理が完了しました。インポートした件数は' . $total_count . '件です。');
 
 //----------------------------------------------------------------------------
 // Finish the page.
 echo $OUTPUT->footer();
-
-
-
-
-// mkdir($CFG->dataroot.'/sharedpanel/');
-// $outfile= $CFG->dataroot.'/sharedpanel/'.date("Y-md-His").$andkey;
-// file_put_contents($outfile,$ret1);
-
-// $ret2 = file_get_contents($outfile);
-// echo $ret2;
 

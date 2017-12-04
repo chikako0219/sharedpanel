@@ -27,12 +27,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
 /**
  * Module instance settings form
  */
-class mod_sharedpanel_mod_form extends moodleform_mod {
+class mod_sharedpanel_mod_form extends moodleform_mod
+{
 
     /**
      * Defines forms elements
@@ -41,9 +42,6 @@ class mod_sharedpanel_mod_form extends moodleform_mod {
         global $CFG;
 
         $mform = $this->_form;
-
-        $emailpas1 = \mod_sharedpanel\aes::get_aes_decrypt_string($this->current->emailpas1, $this->current->encryptionkey);
-        $this->current->encryptionkey = $emailpas1;
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
         $mform->addElement('text', 'name', get_string('sharedpanelname', 'sharedpanel'), array('size' => '64'));
@@ -63,31 +61,57 @@ class mod_sharedpanel_mod_form extends moodleform_mod {
             $this->add_intro_editor();
         }
 
+        /**
+         * Twitter
+         */
         $mform->addElement('header', 'sharedpanelfieldset_twitter', 'Twitter');
         $mform->setExpanded('sharedpanelfieldset_twitter');
         $mform->addElement('text', 'hashtag1', 'インポートするTweetのハッシュタグ');
         $mform->setType('hashtag1', PARAM_TEXT);
 
+        /**
+         * Email
+         */
         $mform->addElement('header', 'sharedpanelfieldset_email', 'Email');
         $mform->setExpanded('sharedpanelfieldset_email');
-        $mform->addElement('text', 'emailadr1','インポート対象のメールアドレス');
+
+        $mform->addElement('text', 'emailadr1', 'インポート対象のメールアドレス');
         $mform->setType('emailadr1', PARAM_TEXT);
 
-        $mform->addElement('passwordunmask', 'emailpas1','パスワード');
         $mform->addElement('text', 'emailkey1', 'メール表題に含まれるキーワード');
         $mform->setType('emailkey1', PARAM_TEXT);
 
+        $mform->addElement('text', 'emailhost', 'IMAPサーバURI');
+        $mform->setType('emailhost', PARAM_TEXT);
+
+        $mform->addElement('text', 'emailport', 'IMAPサーバポート番号');
+        $mform->setType('emailport', PARAM_INT);
+
+        $mform->addElement('passwordunmask', 'emailpas1', 'パスワード');
+        $mform->setType('emailpas1', PARAM_TEXT);
+
+        $mform->addElement('text', 'emailkey1', 'メール表題に含まれるキーワード');
+        $mform->setType('emailkey1', PARAM_TEXT);
+
+        /**
+         * Facebook
+         */
         $mform->addElement('header', 'sharedpanelfieldset_facebook', 'Facebook');
         $mform->setExpanded('sharedpanelfieldset_facebook');
-        $mform->addElement('text', 'fbgroup1','FacebookグループID');
+
+        $mform->addElement('text', 'fbgroup1', 'FacebookグループID');
         $mform->setType('fbgroup1', PARAM_TEXT);
 
+        /**
+         * Evernote
+         */
         $mform->addElement('header', 'sharedpanelfieldset_evernote', 'Evernote');
         $mform->setExpanded('sharedpanelfieldset_evernote');
-        $mform->addElement('text', 'emailadr2','インポート対象のメールアドレス(Evernote用)');
+
+        $mform->addElement('text', 'emailadr2', 'インポート対象のメールアドレス(Evernote用)');
         $mform->setType('emailadr2', PARAM_TEXT);
 
-        $mform->addElement('passwordunmask', 'emailpas2','パスワード(Evernote用)');
+        $mform->addElement('passwordunmask', 'emailpas2', 'パスワード(Evernote用)');
         $mform->setType('emailpas2', PARAM_RAW);
 
         $mform->addElement('text', 'emailkey2', 'メール表題に含まれるキーワード(Evernote用)');

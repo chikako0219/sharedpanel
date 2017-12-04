@@ -2,6 +2,8 @@
 
 namespace mod_sharedpanel;
 
+defined('MOODLE_INTERNAL') || die();
+
 class like
 {
     private $moduleinstance;

@@ -37,8 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param int $oldversion
  * @return bool
  */
-function xmldb_sharedpanel_upgrade($oldversion)
-{
+function xmldb_sharedpanel_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
@@ -55,6 +54,44 @@ function xmldb_sharedpanel_upgrade($oldversion)
         mod_sharedpanel_upgrade_encryptionkey();
 
         upgrade_mod_savepoint(true, 2017030701, 'sharedpanel');
+    }
+
+    if ($oldversion < 2017112801) {
+        $table = new xmldb_table('sharedpanel');
+
+        $field = new xmldb_field('config0');
+        if (!$dbman->field_exists($table, $field)) {
+            $table->deleteField('config0');
+        }
+        $field = new xmldb_field('config');
+        if (!$dbman->field_exists($table, $field)) {
+            $table->deleteField('config');
+        }
+
+        $field = new xmldb_field('emailhost', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, false, null, null, 'emailpas1');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2017112801, 'sharedpanel');
+    }
+
+    if ($oldversion < 2017120101) {
+        $table = new xmldb_table('sharedpanel');
+
+        $field = new xmldb_field('config0');
+        if ($dbman->field_exists($table, $field)) {
+            $table->deleteField('config0');
+        }
+        $field = new xmldb_field('config');
+        if ($dbman->field_exists($table, $field)) {
+            $table->deleteField('config');
+        }
+
+        $field = new xmldb_field('emailport', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, false, null, null, 'emailhost');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2017120101, 'sharedpanel');
     }
 
     return true;

@@ -3,6 +3,7 @@
 namespace mod_sharedpanel;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use WebDriver\Exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -14,6 +15,9 @@ class twitter extends card
 
     public function __construct($modinstance) {
         $this->error = new \stdClass();
+        $this->error->code = 0;
+        $this->error->message = "";
+
         parent::__construct($modinstance);
     }
 
@@ -31,7 +35,12 @@ class twitter extends card
             trim($config->TWaccessTokenSecret)
         );
 
-        $credentials = $connection->get("account/verify_credentials");
+        try {
+            $credentials = $connection->get("account/verify_credentials");
+        } catch (Exception $e) {
+            return false;
+        }
+
         if (property_exists($credentials, 'errors')) {
             $this->error->code = $credentials->errors[0]->code;
             $this->error->message = $credentials->errors[0]->message;
@@ -39,10 +48,16 @@ class twitter extends card
             return false;
         }
 
-        $latest_card = self::get_last_card('twitter');
+        $cond = ["q" => $this->moduleinstance->hashtag1, 'count' => '100', "include_entities" => true];
 
-        $tweets = $connection->get("search/tweets",
-            ["q" => $this->moduleinstance->hashtag1, 'count' => '100', "include_entities" => true, 'since_id' => $latest_card->messageid]);
+        $latest_card = self::get_last_card('twitter');
+        if ($latest_card) {
+            $cond['since_id'] = $latest_card->messageid;
+        }
+        $tweets = $connection->get("search/tweets", $cond);
+        if (!$tweets->statuses) {
+            return null;
+        }
 
         $cardObj = new card($this->moduleinstance);
 

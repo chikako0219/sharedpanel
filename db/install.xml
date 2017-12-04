@@ -23,13 +23,13 @@
                 <FIELD NAME="hashtag1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailadr1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailpas1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="emailhost" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="emailport" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailkey1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="fbgroup1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailadr2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailpas2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailkey2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
-                <FIELD NAME="config0" TYPE="text" SEQUENCE="false" NOTNULL="false"/>
-                <FIELD NAME="config" TYPE="text" SEQUENCE="false" NOTNULL="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

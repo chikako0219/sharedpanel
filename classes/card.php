@@ -46,7 +46,7 @@ class card
         global $DB;
         $cards = $DB->get_records('sharedpanel_cards', ['sharedpanelid' => $this->moduleinstance->id, 'inputsrc' => $inputsrc], 'id DESC');
 
-        return current($cards);
+        return $cards ? current($cards) : false;
     }
 
     static function get_tags($cardid) {

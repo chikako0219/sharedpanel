@@ -2,6 +2,8 @@
 
 namespace mod_sharedpanel;
 
+defined('MOODLE_INTERNAL') || die();
+
 use core\notification;
 
 class html_writer extends \html_writer
