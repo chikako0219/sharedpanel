@@ -36,11 +36,11 @@ class card
                   ";
 
         if ($order === 'like') {
-            $sql .= " ORDER BY like_count_0 DESC, card_likes.ltype ASC";
+            $sql .= " ORDER BY timecreated DESC, like_count_0 DESC, card_likes.ltype ASC";
         } else if ($order === 'newest') {
-            $sql .= " ORDER BY  card_likes.ltype DESC, cards.timecreated DESC";
+            $sql .= " ORDER BY timecreated DESC, card_likes.ltype DESC, cards.timecreated DESC";
         } else if ($order === 'important') {
-            $sql .= " ORDER BY like_count_1 DESC, card_likes.ltype DESC";
+            $sql .= " ORDER BY timecreated DESC, like_count_1 DESC, card_likes.ltype DESC";
         }
 
         return $DB->get_records_sql($sql, ['sharedpanelid' => $this->moduleinstance->id]);
