@@ -10,22 +10,14 @@ class evernote extends card
 
     private $email_addr;
     private $email_password;
-
     private $email_port;
-
-    private $error;
 
     private $cardObj;
 
     function __construct($modinstance) {
-        $this->error = new \stdClass();
-        $this->error->code = 0;
-        $this->error->message = "";
-
         $this->email_addr = $modinstance->emailadr1;
         $this->email_password = aes::get_aes_decrypt_string($modinstance->emailpas1, $modinstance->encryptionkey);
         $this->email_port = 993;
-
         $this->cardObj = new card($modinstance);
 
         parent::__construct($modinstance);

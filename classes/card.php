@@ -5,9 +5,13 @@ namespace mod_sharedpanel;
 class card
 {
     protected $moduleinstance;
+    protected $error;
 
     function __construct($modinstance) {
         $this->moduleinstance = $modinstance;
+        $this->error = new \stdClass();
+        $this->error->code = 0;
+        $this->error->message = "";
     }
 
     function get_gcards($hidden = 0, $order = 'rating DESC') {

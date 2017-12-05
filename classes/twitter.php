@@ -11,13 +11,7 @@ include __DIR__ . "/../lib/twitteroauth/autoload.php";
 
 class twitter extends card
 {
-    private $error;
-
     public function __construct($modinstance) {
-        $this->error = new \stdClass();
-        $this->error->code = 0;
-        $this->error->message = "";
-
         parent::__construct($modinstance);
     }
 
