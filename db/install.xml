@@ -30,6 +30,9 @@
                 <FIELD NAME="emailadr2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailpas2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailkey2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="line_channel_id" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="line_channel_secret" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="line_channel_access_token" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

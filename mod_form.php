@@ -117,6 +117,29 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->addElement('text', 'emailkey2', 'メール表題に含まれるキーワード(Evernote用)');
         $mform->setType('emailkey2', PARAM_TEXT);
 
+        /**
+         * LINE
+         */
+        $mform->addElement('header', 'sharedpanelfieldset_line', 'LINE');
+        $mform->setExpanded('sharedpanelfieldset_line');
+
+        $mform->addElement('text', 'line_channel_id', 'Channel ID');
+        $mform->setType('line_channel_id', PARAM_TEXT);
+
+        $mform->addElement('text', 'line_channel_secret', 'Channel secret key');
+        $mform->setType('line_channel_secret', PARAM_TEXT);
+
+        $mform->addElement('text', 'line_channel_access_token', 'Channel access token');
+        $mform->setType('line_channel_access_token', PARAM_TEXT);
+
+        $mform->addElement('html', '<h5>Webhook URL</h5>');
+        if (strpos('https://', $CFG->wwwroot)) {
+            $instance = $this->get_instance();
+            $mform->addElement('html', $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instance);
+        } else {
+            $mform->addElement('html', '<div class="well">LINEインポートはHTTPS環境下でしか利用できません。MoodleサーバをHTTPS環境下で動作させる必要があります。</div>');
+        }
+
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
 

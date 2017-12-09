@@ -44,7 +44,7 @@ function xmldb_sharedpanel_upgrade($oldversion) {
 
     if ($oldversion < 2016121200) {
         $table = new xmldb_table('sharedpanel');
-        $field = new xmldb_field('encryptionkey', XMLDB_TYPE_TEXT, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0,
+        $field = new xmldb_field('encryptionkey', XMLDB_TYPE_TEXT, '10', false, XMLDB_NOTNULL, null, 0,
             'timemodified');
 
         if (!$dbman->field_exists($table, $field)) {
@@ -68,7 +68,7 @@ function xmldb_sharedpanel_upgrade($oldversion) {
             $table->deleteField('config');
         }
 
-        $field = new xmldb_field('emailhost', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, false, null, null, 'emailpas1');
+        $field = new xmldb_field('emailhost', XMLDB_TYPE_CHAR, '255', false, false, null, null, 'emailpas1');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
@@ -86,12 +86,29 @@ function xmldb_sharedpanel_upgrade($oldversion) {
         if ($dbman->field_exists($table, $field)) {
             $table->deleteField('config');
         }
-
-        $field = new xmldb_field('emailport', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, false, null, null, 'emailhost');
+        $field = new xmldb_field('emailport', XMLDB_TYPE_INTEGER, '10', false, false, null, null, 'emailhost');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
         upgrade_mod_savepoint(true, 2017120101, 'sharedpanel');
+    }
+
+    if ($oldversion < 2017120601) {
+        $table = new xmldb_table('sharedpanel');
+
+        $field = new xmldb_field('line_channel_id', XMLDB_TYPE_CHAR, '255', false, false, null, null, 'emailkey2');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('line_channel_secret', XMLDB_TYPE_CHAR, '255', false, false, null, null, 'line_channel_id');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('line_channel_access_token', XMLDB_TYPE_CHAR, '255', false, false, null, null, 'line_channel_id');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2017120601, 'sharedpanel');
     }
 
     return true;
