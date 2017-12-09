@@ -90,9 +90,6 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->addElement('passwordunmask', 'emailpas1', 'パスワード');
         $mform->setType('emailpas1', PARAM_TEXT);
 
-        $mform->addElement('text', 'emailkey1', 'メール表題に含まれるキーワード');
-        $mform->setType('emailkey1', PARAM_TEXT);
-
         /**
          * Facebook
          */
@@ -133,7 +130,7 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->setType('line_channel_access_token', PARAM_TEXT);
 
         $mform->addElement('html', '<h5>Webhook URL</h5>');
-        if (strpos('https://', $CFG->wwwroot)) {
+        if (($_SERVER['HTTPS'] === 'on')) {
             $instance = $this->get_instance();
             $mform->addElement('html', $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instance);
         } else {
