@@ -19,7 +19,7 @@ class card
         return $DB->get_records('sharedpanel_gcards', ['sharedpanelid' => $this->moduleinstance->id, 'hidden' => $hidden], $order);
     }
 
-    function get_cards($order = 'like') {
+    function get_cards($order = 'like', $hidden = 0) {
         global $DB;
 
         $sql = "SELECT cards.*, card_likes.ltype, 
@@ -94,10 +94,24 @@ class card
         return $DB->update_record('sharedpanel_cards', $data);
     }
 
-    function delete_cards($cardid) {
+    function delete_card($cardid) {
         global $DB;
 
         $DB->delete_records('sharedpanel_card_likes', ['cardid' => $cardid]);
         return $DB->delete_records('sharedpanel_cards', ['id' => $cardid]);
+    }
+
+    function switch_hide_card($cardid) {
+        global $DB;
+
+        $card = $DB->get_record('sharedpanel_cards', ['id' => $cardid]);
+
+        if ($card->hidden == 1) {
+            $card->hidden = 0;
+        } else {
+            $card->hidden = 1;
+        }
+
+        return $DB->update_record('sharedpanel_cards', $card);
     }
 }

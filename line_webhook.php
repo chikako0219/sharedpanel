@@ -54,7 +54,7 @@ foreach ($events as $event) {
             ];
             $fs->create_file_from_string($filerecord, $response->getRawBody());
             $url = \moodle_url::make_pluginfile_url($context->id, 'mod_sharedpanel', 'attachment', $event->getMessageId(), '/', 'attacnhemt.jpg');
-            $html = html_writer::empty_tag('img', ['src' => $url->out(false)]);
+            $html = html_writer::empty_tag('img', ['src' => $url->out(false), 'width' => '250px']);
 
             $cardObj->add_card($html, $event->getUserId(), 'line', $event->getReplyToken());
         } else {
