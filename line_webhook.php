@@ -27,9 +27,9 @@ if ($id) {
  * Validate LINE signature
  */
 $signature = base64_encode(hash_hmac('sha256', $events, $sharedpanel->line_channel_secret, true));
-if (!array_key_exists('X-Line-Signature', $_SERVER) || $_SERVER['X-Line-Signature'] !== $signature) {
+if (!array_key_exists('HTTP_X_LINE_CHANNELSIGNATURE', $_SERVER) || $_SERVER['HTTP_X_LINE_CHANNELSIGNATURE'] !== $signature) {
     error_log('Invalid key');
-    error_log($_SERVER['X-Line-Signature']);
+    error_log($_SERVER['HTTP_X_LINE_CHANNELSIGNATURE']);
     error_log($signature);
     die();
 }
