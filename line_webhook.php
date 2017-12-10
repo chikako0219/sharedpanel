@@ -22,10 +22,7 @@ if ($id) {
     $course = $DB->get_record('course', ['id' => $sharedpanel->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('sharedpanel', $sharedpanel->id, $course->id, false, MUST_EXIST);
     $context = \context_module::instance($cm->id);
-
-    error_log('Context OK');
 } else {
-    error_log('Invalid context cm');
     die();
 }
 
@@ -37,8 +34,6 @@ $httpClient = new CurlHTTPClient($sharedpanel->line_channel_access_token);
 $bot = new LINEBot($httpClient, ['channelSecret' => $sharedpanel->line_channel_secret]);
 $signature = $_SERVER['HTTP_' . LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
-
-error_log(var_dump($events));
 
 foreach ($events as $event) {
     $cardObj = new card($sharedpanel);
