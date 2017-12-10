@@ -19,6 +19,7 @@ if ($id) {
     $cm = get_coursemodule_from_instance('sharedpanel', $sharedpanel->id, $course->id, false, MUST_EXIST);
     $context = \context_module::instance($cm->id);
 } else {
+    error_log('Invalid context cm');
     die();
 }
 
@@ -27,6 +28,7 @@ if ($id) {
  */
 $signature = base64_encode(hash_hmac('sha256', $events, $sharedpanel->line_channel_secret, true));
 if (!array_key_exists('X-Line-Signature', $_SERVER) || $_SERVER['X-Line-Signature'] !== $signature) {
+    error_log('Invalid key');
     die();
 }
 
