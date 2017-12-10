@@ -52,10 +52,6 @@ $PAGE->set_context($context);
 // Output starts here.
 echo $OUTPUT->header();
 
-// LINE
-include_once(dirname(__FILE__) . '/line.php');
-//add_card_from_line($sharedpanel);
-
 // Twitter
 $twitterObj = new twitter($sharedpanel);
 $cardids_twitter = $twitterObj->import();
@@ -109,4 +105,3 @@ echo html_writer::message(notification::SUCCESS, 'インポート処理が完了
 //----------------------------------------------------------------------------
 // Finish the page.
 echo $OUTPUT->footer();
-
