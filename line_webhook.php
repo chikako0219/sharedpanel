@@ -8,6 +8,8 @@ require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib/line/LINEBot.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
+http_response_code(200);
+
 $id = required_param('id', PARAM_INT);
 
 $events = file_get_contents('php://input');
@@ -21,6 +23,18 @@ if ($id) {
 } else {
     error_log('Invalid context cm');
     die();
+}
+
+/**
+ * Load LINE
+ */
+$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($sharedpanel->line_channel_access_token);
+$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $sharedpanel->line_channel_secret]);
+$signature = $_SERVER['HTTP_' . \LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
+try {
+    $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
+} catch(\LINE\LINEBot\Exception\InvalidSignatureException $e) {
+    error_log('parseEventRequest failed. InvalidSignatureException => '.var_export($e, true));
 }
 
 /**
@@ -47,8 +61,6 @@ if ($events->{'events'}[0]->{'type'} === 'message') {
     $message_userid = $events->{'events'}[0]->{'source'}->{'userId'};
     $message_replytoken = $events->{'events'}[0]->{'replyToken'};
 
-    $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($sharedpanel->line_channel_access_token);
-    $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $sharedpanel->line_channel_secret]);
     $response = $bot->getMessageContent($message_id);
     if (!$response->isSucceeded()) {
         die();
