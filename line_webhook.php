@@ -33,19 +33,9 @@ $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $sharedpanel->line_cha
 $signature = $_SERVER['HTTP_' . \LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 try {
     $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
+    error_log(var_dump($events));
 } catch(\LINE\LINEBot\Exception\InvalidSignatureException $e) {
     error_log('parseEventRequest failed. InvalidSignatureException => '.var_export($e, true));
-}
-
-/**
- * Validate LINE signature
- */
-$signature = base64_encode(hash_hmac('sha256', $events, $sharedpanel->line_channel_secret, true));
-if (!array_key_exists('HTTP_X_LINE_CHANNELSIGNATURE', $_SERVER) || $_SERVER['HTTP_X_LINE_CHANNELSIGNATURE'] !== $signature) {
-    error_log('Invalid key');
-    error_log($_SERVER['HTTP_X_LINE_CHANNELSIGNATURE']);
-    error_log($signature);
-    die();
 }
 
 /**
