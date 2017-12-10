@@ -15,7 +15,8 @@ $events = file_get_contents('php://input');
 $sharedpanel = null;
 if ($id) {
     $sharedpanel = $DB->get_record('sharedpanel', ['id' => $id]);
-    $cm = get_coursemodule_from_id('sharedpanel', $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $sharedpanel->course], '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('sharedpanel', $sharedpanel->id, $course->id, false, MUST_EXIST);
     $context = \context_module::instance($cm->id);
 } else {
     die();
@@ -25,7 +26,7 @@ if ($id) {
  * Validate LINE signature
  */
 $signature = base64_encode(hash_hmac('sha256', $events, $sharedpanel->line_channel_secret, true));
-if (!$_SERVER['X-Line-Signature'] === $signature) {
+if (!array_key_exists('X-Line-Signature', $_SERVER) || $_SERVER['X-Line-Signature'] !== $signature) {
     die();
 }
 
