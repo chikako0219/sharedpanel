@@ -4,15 +4,17 @@ namespace mod_sharedpanel;
 
 global $DB;
 
+use LINE\LINEBot;
+use LINE\LINEBot\HTTPClient\CurlHTTPClient;
+
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib/line/LINEBot.php');
+require_once(__DIR__ . '/lib/line/autoload.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
 http_response_code(200);
 
 $id = required_param('id', PARAM_INT);
-
-$events = file_get_contents('php://input');
 
 $sharedpanel = null;
 if ($id) {
@@ -20,6 +22,8 @@ if ($id) {
     $course = $DB->get_record('course', ['id' => $sharedpanel->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('sharedpanel', $sharedpanel->id, $course->id, false, MUST_EXIST);
     $context = \context_module::instance($cm->id);
+
+    error_log('Context OK');
 } else {
     error_log('Invalid context cm');
     die();
@@ -28,74 +32,41 @@ if ($id) {
 /**
  * Load LINE
  */
-$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($sharedpanel->line_channel_access_token);
-$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $sharedpanel->line_channel_secret]);
-$signature = $_SERVER['HTTP_' . \LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
-try {
-    $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
-    error_log(var_dump($events));
-} catch(\LINE\LINEBot\Exception\InvalidSignatureException $e) {
-    error_log('parseEventRequest failed. InvalidSignatureException => '.var_export($e, true));
-}
 
-/**
- * Decode JSON
- */
-$events = json_decode($events);
+$httpClient = new CurlHTTPClient($sharedpanel->line_channel_access_token);
+$bot = new LINEBot($httpClient, ['channelSecret' => $sharedpanel->line_channel_secret]);
+$signature = $_SERVER['HTTP_' . LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
+$events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 
-/**
- * Create card
- */
-if ($events->{'events'}[0]->{'type'} === 'message') {
-    $message_id = $events->{'events'}[0]->{'message'}->{'id'};
-    $message_userid = $events->{'events'}[0]->{'source'}->{'userId'};
-    $message_replytoken = $events->{'events'}[0]->{'replyToken'};
+error_log(var_dump($events));
 
-    $response = $bot->getMessageContent($message_id);
-    if (!$response->isSucceeded()) {
-        die();
-    }
+foreach ($events as $event) {
+    $cardObj = new card($sharedpanel);
+    if ($event instanceof LINEBot\Event\MessageEvent\TextMessage) {
+        $cardObj->add_card($event->getText(), $event->getUserId(), 'line', $event->getReplyToken());
+    } else if ($event instanceof LINEBot\Event\MessageEvent\ImageMessage) {
+        $fs = get_file_storage();
+        $response = $bot->getMessageContent($event->getMessageId());
+        if ($response->isSucceeded()) {
+            $filerecord = [
+                'contextid' => $context->id,
+                'component' => 'mod_sharedpanel',
+                'filearea' => 'attachment',
+                'itemid' => $event->getMessageId(),
+                'filepath' => '/',
+                'filename' => 'attacnhemt.jpg',
+                'userid' => 1
+            ];
+            $fs->create_file_from_string($filerecord, $response->getRawBody());
+            $url = \moodle_url::make_pluginfile_url($context->id, 'mod_sharedpanel', 'attachment', $event->getMessageId(), '/', 'attacnhemt.jpg');
+            $html = html_writer::empty_tag('img', ['src' => $url->out(false)]);
 
-    switch ($events->{'events'}[0]->{'type'}) {
-        case 'message':
-            $message_text = $events->{'events'}[0]->{'message'}->{'text'};
-            $cardObj = new card($sharedpanel);
-            $cardObj->add_card($message_text, $message_userid, 'line', $message_replytoken);
-
-            $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('カードを作成しました。');
-            $response = $bot->replyMessage($message_replytoken, $textMessageBuilder);
-
-            break;
-
-        case 'image' :
-            $fs = get_file_storage();
-
-            $response = $bot->getMessageContent($message_id);
-            if ($response->isSucceeded()) {
-                $tempfile = tmpfile();
-                fwrite($tempfile, $response->getRawBody());
-
-                $filerecord = array(
-                    'contextid' => $context->id,
-                    'component' => 'mod_sharedpanel',
-                    'filearea' => 'attachment',
-                    'itemid' => $message_id,
-                    'filepath' => '/',
-                    'filename' => 'attacnhemt.jpg',
-                    'userid' => 1
-                );
-
-                $fs->create_file_from_string($filerecord, $tempfile);
-
-                $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('画像を投稿しました。');
-                $response = $bot->replyMessage($message_replytoken, $textMessageBuilder);
-            } else {
-                $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('画像投稿に失敗しました。');
-                $response = $bot->replyMessage($message_replytoken, $textMessageBuilder);
-
-                error_log($response->getHTTPStatus() . ' ' . $response->getRawBody());
-            }
-            break;
+            $cardObj->add_card($html, $event->getUserId(), 'line', $event->getReplyToken());
+        } else {
+            $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('画像投稿に失敗しました。');
+            $response = $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
+            error_log($response->getHTTPStatus() . ' ' . $response->getRawBody());
+        }
     }
 }
 
