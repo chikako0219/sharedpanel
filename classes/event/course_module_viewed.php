@@ -17,12 +17,12 @@
 /**
  * Defines the view event.
  *
- * @package    mod_newmodule
+ * @package    mod_sharedpanel
  * @copyright  2014 Daniel Neis Araujo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_newmodule\event;
+namespace mod_sharedpanel\event;
 defined('MOODLE_INTERNAL') || die();
 
 class course_module_viewed extends \core\event\course_module_viewed {

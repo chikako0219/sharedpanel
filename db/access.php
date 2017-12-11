@@ -39,8 +39,8 @@
  *
  * The variable name for the capability definitions array is $capabilities
  *
- * @package    mod_newmodule
- * @copyright  2011 Your Name
+ * @package    mod_sharedpanel
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
