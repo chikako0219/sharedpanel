@@ -15,13 +15,20 @@ class twitter extends card
         parent::__construct($modinstance);
     }
 
+    public function is_enabled() {
+        $config = get_config('sharedpanel');
+        if (empty($config->TWconsumerKey) ||
+            empty($config->TWconsumerSecret) ||
+            empty($config->TWaccessToken) ||
+            empty($config->TWaccessTokenSecret)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function import() {
         $config = get_config('sharedpanel');
-        if (empty($config->TWconsumerKey) || empty($config->TWconsumerSecret) || empty($config->TWaccessToken) || empty($config->TWaccessTokenSecret)) {
-            $this->error->message = "認証情報が入力されていません。";
-            return false;
-        }
-
         $connection = new TwitterOAuth(
             trim($config->TWconsumerKey),
             trim($config->TWconsumerSecret),

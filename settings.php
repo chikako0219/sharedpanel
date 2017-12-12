@@ -31,9 +31,8 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('sharedpanel/requiremodintro',
         get_string('requiremodintro', 'sharedpanel'), get_string('configrequiremodintro', 'sharedpanel'), 1));
 
-    //--- original settings -----------------------------------------------------------------------------------
+    //--- facebook settings -----------------------------------------------------------------------------------
     $settings->add(new admin_setting_heading('sharedpanel/facebook', get_string('facebook', 'sharedpanel'), get_string('facebook', 'sharedpanel')));
-
     $settings->add(new admin_setting_configtext('sharedpanel/FBappID',
         get_string('FBappID', 'sharedpanel'),
         get_string('FBappID_help', 'sharedpanel'), ''));
@@ -50,8 +49,8 @@ if ($ADMIN->fulltree) {
         get_string('FBtoken', 'sharedpanel'),
         get_string('FBtoken_help', 'sharedpanel'), ''));
 
+    //--- Twitter settings -----------------------------------------------------------------------------------
     $settings->add(new admin_setting_heading('sharedpanel/twitter', get_string('twitter', 'sharedpanel'), get_string('twitter', 'sharedpanel')));
-
     $settings->add(new admin_setting_configtext('sharedpanel/TWconsumerKey',
         get_string('TWconsumerKey', 'sharedpanel'),
         get_string('TWconsumerKey_help', 'sharedpanel'), ''));

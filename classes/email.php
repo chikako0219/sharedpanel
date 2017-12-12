@@ -24,6 +24,16 @@ class email extends card
         parent::__construct($modinstance);
     }
 
+    public function is_enabled() {
+        if (empty($this->moduleinstance->emailhost) ||
+            empty($this->moduleinstance->emailport) ||
+            empty($this->email_addr) ||
+            empty($this->email_password)) {
+            return false;
+        }
+        return true;
+    }
+
     public function get($date = null) {
         global $DB;
 

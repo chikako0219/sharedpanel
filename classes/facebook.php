@@ -12,6 +12,17 @@ class facebook extends card
         parent::__construct($modinstance);
     }
 
+    public function is_enabled() {
+        if (empty($this->moduleinstance->FBappID) ||
+            empty($this->moduleinstance->FBsecret) ||
+            empty($this->FBredirectUrl) ||
+            empty($this->FBtoken)
+        ) {
+            return false;
+        }
+        return true;
+    }
+
     public function import() {
         $config = get_config('sharedpanel');
         if (empty($config->FBappID) || empty($config->FBredirectUrl) || empty($config->FBsecret) || empty($config->FBtoken)) {

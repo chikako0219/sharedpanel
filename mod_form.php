@@ -129,12 +129,14 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->addElement('text', 'line_channel_access_token', 'Channel access token');
         $mform->setType('line_channel_access_token', PARAM_TEXT);
 
-        $mform->addElement('html', '<h5>Webhook URL</h5>');
-        if (($_SERVER['HTTPS'] === 'on')) {
-            $instance = $this->get_instance();
-            $mform->addElement('html', '<div class="well">' . $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instance . '</div>');
-        } else {
-            $mform->addElement('html', '<div class="well">LINEインポートはHTTPS環境下でしか利用できません。MoodleサーバをHTTPS環境下で動作させる必要があります。</div>');
+        $instance = $this->get_instance();
+        if ($instance) {
+            $mform->addElement('html', '<h5>Webhook URL</h5>');
+            if (($_SERVER['HTTPS'] === 'on')) {
+                $mform->addElement('html', '<div class="well">' . $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instance . '</div>');
+            } else {
+                $mform->addElement('html', '<div class="well">LINEインポートはHTTPS環境下でしか利用できません。MoodleサーバをHTTPS環境下で動作させる必要があります。</div>');
+            }
         }
 
         // Add standard elements, common to all modules.
