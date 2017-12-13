@@ -114,7 +114,18 @@ function xmldb_sharedpanel_upgrade($oldversion) {
     if ($oldversion < 2017121201) {
         $table = new xmldb_table('sharedpanel_lineids');
         if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10');
+            $table->add_field('sharedpanelid', XMLDB_TYPE_INTEGER, '10', false, false, null, null, 'id');
+            $table->add_field('lineid', XMLDB_TYPE_CHAR, '255', false, false, null, null, 'sharedpanelid');
+            $table->add_field('lineuserid', XMLDB_TYPE_CHAR, '255', false, false, null, null, 'lineid');
+            $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', false, false, null, null, 'lineuserid');
+            $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', false, false, null, null, 'lineuserid');
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
             $dbman->create_table($table);
+            $index1 = new xmldb_index('sharedpanelid', XMLDB_INDEX_NOTUNIQUE, ['sharedpanelid']);
+            $dbman->add_index($table, $index1);
         }
         $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, '10', false, false, null, null, null);
         if (!$dbman->field_exists($table, $field)) {

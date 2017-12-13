@@ -28,9 +28,11 @@ class lineid
         if ($DB->record_exists('sharedpanel_lineids', ['userid' => $userid, 'sharedpanelid' => $this->moduleinstance->id])) {
             $data = self::get($userid);
             $data->lineid = $lineid;
+            $data->timemodified = time();
             return $DB->update_record('sharedpanel_lineids', $data);
         } else {
             $data->timecreated = time();
+            $data->timemodified = time();
             return $DB->insert_record('sharedpanel_lineids', $data);
         }
     }
