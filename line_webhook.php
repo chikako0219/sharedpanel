@@ -26,6 +26,8 @@ if ($id) {
     die();
 }
 
+$cardObj = new card($sharedpanel);
+
 /**
  * Load LINE
  */
@@ -35,17 +37,16 @@ $bot = new LINEBot($httpClient, ['channelSecret' => $sharedpanel->line_channel_s
 $signature = $_SERVER['HTTP_' . LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 
-error_log(var_dump($events));
+error_log($events);
 
 foreach ($events as $event) {
-    $cardObj = new card($sharedpanel);
     if ($event instanceof LINEBot\Event\MessageEvent\TextMessage) {
         if (strpos($event->getText(), 'line_')) {
             $lineidObj = new lineid($sharedpanel);
 
             $userid = str_replace('line_', '', $event->getText());
 
-            error_log(var_dump($userid));
+            error_log($userid);
 
 
             if (!$lineidObj->set_line_userid($userid, $event->getUserId())) {
