@@ -1,103 +1,53 @@
 <?php
-// LINE ------------------------------------------
 
-require_once("locallib.php");
+namespace mod_sharedpanel;
 
-function add_card_from_line($sharedpanel) {
-    global $DB, $USER, $CFG;
+use mod_sharedpanel\form\line_form;
 
-    $maxnumatatime = 10;  // only $maxnumatatime messages are imported at a time
+require_once(__DIR__ . '/../../config.php');
+require_once(dirname(__FILE__) . '/lib.php');
 
-//    $andkey= $sharedpanel->hashtag1;
-    $andkey = "";
-    echo "<br/><hr>importing line ($andkey) ... <br/> ";
-    ob_flush();
-    flush();
+global $DB, $PAGE, $OUTPUT, $USER;
 
-    $co = 0;
-    $dir = $CFG->dataroot . '/sharedpanel/line/';
-    foreach (scandir($dir) as $file) {
-        $ma = explode('-', $file);
-        if (count($ma) > 1) {
-            $timestamp = $ma[0];
-            $message_id = $ma[1];
-            $userid = $ma[2];
-        } else {
-            continue;
-        }
+$id = optional_param('id', 0, PARAM_INT);
+$n = optional_param('n', 0, PARAM_INT);
 
-        $ret1 = "";
-        $content = "";
-
-        // 現状、message と image が別のカードでインポートされる ... どのようにくっつけるか
-
-        if (preg_match('/[.]message/', $file)) {
-            $content = file_get_contents($dir . $file);
-            // 絵文字などを変換してDBエラーにならないようにする
-            $content = mod_sharedpanel_utf8mb4_encode_numericentity($content);
-            // URI を link に
-            // http://www.phppro.jp/qa/688
-            $pat_sub = preg_quote('-._~%:/?#[]@!$&\'()*+,;=', '/');
-            $pat = '/((http|https):\/\/[0-9a-z' . $pat_sub . ']+)/i';
-            $rep = '<a href="\\1" target="_BLANK">\\1</a>';
-            $content = preg_replace($pat, $rep, $content);
-            $ret1 .= '<br>' . $content . '<br>' . '<br>';
-        }
-
-        if (preg_match('/[.]image$/', $file)) {
-            $ret1 .= "<img src='data:image/gif;base64," . base64_encode(file_get_contents($dir . $file)) . "' width=250px>" . '<br>' . $content . '<br>' . '<br>';
-        }
-
-        if ($andkey !== "") {
-            $ret1 .= "(search key = $andkey)";
-        }
-        $name = $userid;  // 本当はIDでなく名前を入れたいが、とりあえず。
-        $time = $timestamp;
-
-        // DBにあるカードと重複していれば登録しない（次の投稿の処理へ）
-        $samecard = $DB->get_record('sharedpanel_cards', array('timeposted' => $time, 'inputsrc' => 'LINE', 'sharedpanelid' => $sharedpanel->id, 'hidden' => 0));
-        if ($samecard != null) {
-            echo "Not imported : same line message by $name ($time).<br>\n";
-            ob_flush();
-            flush();
-            continue;
-        }
-        // content に $andkey が含まれなければ登録しない（次の投稿の処理へ）
-        if ($andkey !== "" && !preg_match("/$andkey/", $content)) {
-            continue;
-        }
-
-        // DBにカードを追加
-        $data = new stdClass;
-        $data->sharedpanelid = $sharedpanel->id;
-        $data->userid = $USER->id;
-        $data->timeposted = $time;
-        $data->timecreated = time();
-        $data->timemodified = $data->timecreated;
-        $data->inputsrc = "LINE";
-        $data->content = $ret1;
-        $data->sender = $name; // ."<img src='$link'>";
-
-        $data->id = $DB->insert_record('sharedpanel_cards', $data);
-
-        foreach (mod_sharedpanel_get_tags($content) as $tagstr) {
-            // DBにタグを追加
-            $tag = new stdClass;
-            $tag->cardid = $data->id;
-            $tag->userid = $USER->id;
-            $tag->timecreated = $data->timecreated;
-            $tag->tag = $tagstr;
-            $tag->id = $DB->insert_record('sharedpanel_card_tags', $tag);
-        }
-        echo "A card imported from LINE : a message by $name ($time).<br>\n";
-        ob_flush();
-        flush();
-
-        $co++;
-        if ($co >= $maxnumatatime) {
-            echo "Only $maxnumatatime messages are imported at a time. Quitting.\n";
-            break;
-        }
-    } // foreach (scandir($dir) as $file)
+if ($id) {
+    $cm = get_coursemodule_from_id('sharedpanel', $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+    $sharedpanel = $DB->get_record('sharedpanel', ['id' => $cm->instance], '*', MUST_EXIST);
+} else if ($n) {
+    $sharedpanel = $DB->get_record('sharedpanel', ['id' => $n], '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $sharedpanel->course], '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('sharedpanel', $sharedpanel->id, $course->id, false, MUST_EXIST);
+} else {
+    print_error('You must specify a course_module ID or an instance ID');
 }
 
+$context = \context_module::instance($cm->id);
+require_login();
+
+$PAGE->set_cm($cm);
+$PAGE->set_url('/mod/sharedpanel/view.php', array('id' => $cm->id));
+$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_title(format_string($sharedpanel->name));
+$PAGE->set_pagelayout('incourse');
+$PAGE->set_context($context);
+
+$mform = new line_form(null,
+    ['instance' => $sharedpanel->id]);
+
+if ($mform->is_cancelled()) {
+    redirect(new \moodle_url('view.php', ['id' => $cm->id]), "キャンセルしました。", 3);
+} else if ($data = $mform->get_data()) {
+    $lineidObj = new lineid($sharedpanel);
+    if ($lineidObj->set_line_id($USER->id, $data->lineid)) {
+        redirect(new \moodle_url('view.php', ['id' => $cm->id]), "LINE IDを登録しました。", 3);
+    }
+}
+
+echo $OUTPUT->header();
+
+$mform->display();
+
+echo $OUTPUT->footer();

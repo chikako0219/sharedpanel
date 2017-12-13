@@ -38,7 +38,23 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 foreach ($events as $event) {
     $cardObj = new card($sharedpanel);
     if ($event instanceof LINEBot\Event\MessageEvent\TextMessage) {
-        $cardObj->add_card($event->getText(), $event->getUserId(), 'line', $event->getReplyToken());
+        if (strpos($event->getText(), 'line_')) {
+            $lineidObj = new lineid($sharedpanel);
+
+            $userid = str_replace('line_', '', $event->getText());
+
+            if (!$lineidObj->set_line_userid($userid, $event->getUserId())) {
+                $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder(
+                    'もう一度入力してください。\n 例えば、ログインIDがb1007222の場合、"line_b1007222"と入力してください。'
+                );
+                $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
+            } else {
+                $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder('ユーザーID' . $userid . 'を登録しました。');
+                $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
+            }
+        } else {
+            $cardObj->add_card($event->getText(), $event->getUserId(), 'line', $event->getReplyToken());
+        }
     } else if ($event instanceof LINEBot\Event\MessageEvent\ImageMessage) {
         $fs = get_file_storage();
         $response = $bot->getMessageContent($event->getMessageId());
@@ -57,8 +73,11 @@ foreach ($events as $event) {
             $html = html_writer::empty_tag('img', ['src' => $url->out(false), 'width' => '250px']);
 
             $cardObj->add_card($html, $event->getUserId(), 'line', $event->getReplyToken());
+
+            $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder('画像を投稿しました。');
+            $response = $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
         } else {
-            $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('画像投稿に失敗しました。');
+            $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder('画像投稿に失敗しました。');
             $response = $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
             error_log($response->getHTTPStatus() . ' ' . $response->getRawBody());
         }

@@ -111,5 +111,49 @@ function xmldb_sharedpanel_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2017120601, 'sharedpanel');
     }
 
+    if ($oldversion < 2017121201) {
+        $table = new xmldb_table('sharedpanel_lineids');
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, '10', false, false, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('sharedpanelid', XMLDB_TYPE_INTEGER, '10', false, false, null, null, 'id');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('lineid', XMLDB_TYPE_CHAR, '255', false, false, null, null, 'sharedpanelid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('lineuserid', XMLDB_TYPE_CHAR, '255', false, false, null, null, 'lineid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('timecreated', XMLDB_TYPE_INTEGER, '10', false, false, null, null, 'lineuserid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2017121201, 'sharedpanel');
+    }
+
+    if ($oldversion < 2017121202) {
+        $table = new xmldb_table('sharedpanel_lineids');
+        $field = new xmldb_field('timemodified', XMLDB_TYPE_INTEGER, '10', false, false, null, null, 'lineuserid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+    }
+
+    if ($oldversion < 2017121302) {
+        $table = new xmldb_table('sharedpanel_lineids');
+        $field = new xmldb_field('userid', XMLDB_TYPE_INTEGER, '10', false, true, null, null, 'sharedpanelid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+    }
+
     return true;
 }

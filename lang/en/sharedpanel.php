@@ -56,6 +56,7 @@ $string['cardsender'] =  'Card sender';
 $string['camera'] =  'Send camera image and text from smartphone/tablet';
 $string['groupcard'] = 'Add grouping frame';
 $string['postmessage'] = 'Post message';
+$string['postmessage_from_line'] = 'Post from LINE';
 $string['sort'] = 'Sort by important!';
 $string['sortbylike1'] = 'Sort by interesting';
 

@@ -19,7 +19,7 @@ class card
         return $DB->get_records('sharedpanel_gcards', ['sharedpanelid' => $this->moduleinstance->id, 'hidden' => $hidden], $order);
     }
 
-    function get_cards($order = 'like', $hidden = 0) {
+    function get_cards($order = 'like') {
         global $DB;
 
         $sql = "SELECT cards.*, card_likes.ltype, 
@@ -31,7 +31,7 @@ class card
                               WHERE likes.cardid = cards.id AND rating != 0 AND ltype = 1) like_count_1
                   FROM {sharedpanel_cards} cards
              LEFT JOIN {sharedpanel_card_likes} card_likes ON card_likes.cardid = cards.id 
-                 WHERE cards.sharedpanelid = :sharedpanelid
+                 WHERE cards.sharedpanelid = :sharedpanelid AND cards.hidden = 0
                  GROUP BY cards.id
                   ";
 

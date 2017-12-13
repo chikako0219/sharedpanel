@@ -104,6 +104,9 @@ echo html_writer::start_div('btn-group');
 echo html_writer::link(new moodle_url('camera/com.php', ['id' => $id, 'n' => $sharedpanel->id]), get_string('postmessage', 'sharedpanel'), ['class' => 'btn']);
 echo html_writer::end_div();
 echo html_writer::start_div('btn-group');
+echo html_writer::link(new moodle_url('line.php', ['id' => $id, 'n' => $sharedpanel->id]), get_string('postmessage_from_line', 'sharedpanel'), ['class' => 'btn']);
+echo html_writer::end_div();
+echo html_writer::start_div('btn-group');
 echo html_writer::empty_tag('input',
     ['type' => 'button', 'value' => get_string('print', 'sharedpanel'), 'onclick' => 'window.print()', 'style' => 'margin:1ex;', 'class' => 'btn']);
 echo html_writer::end_div();

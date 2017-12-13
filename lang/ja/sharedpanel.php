@@ -51,6 +51,7 @@ $string['facebookimport'] = 'Facebookからインポートする';
 $string['sortedas'] = 'いいね!の多い順、投稿日時の新しい順に並んでいます。';
 $string['post'] = 'Moodle上で投稿する';
 $string['postmessage'] = 'スマホ・タブレットなどからテキスト・画像を投稿';
+$string['postmessage_from_line'] = 'LINEから投稿';
 $string['cardcontent'] = 'カードの内容';
 $string['cardsender'] = 'カードの送信者';
 $string['camera'] = '写真を送信';
