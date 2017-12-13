@@ -54,6 +54,10 @@ foreach ($events as $event) {
             }
         } else {
             $cardObj->add_card($event->getText(), $event->getUserId(), 'line', $event->getReplyToken());
+            $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder(
+                'メッセージを投稿しました。'
+            );
+            $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
         }
     } else if ($event instanceof LINEBot\Event\MessageEvent\ImageMessage) {
         $fs = get_file_storage();
@@ -75,11 +79,10 @@ foreach ($events as $event) {
             $cardObj->add_card($html, $event->getUserId(), 'line', $event->getReplyToken());
 
             $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder('画像を投稿しました。');
-            $response = $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
+            $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
         } else {
             $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder('画像投稿に失敗しました。');
             $response = $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
-            error_log($response->getHTTPStatus() . ' ' . $response->getRawBody());
         }
     }
 }
