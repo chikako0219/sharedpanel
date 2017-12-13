@@ -35,6 +35,8 @@ $bot = new LINEBot($httpClient, ['channelSecret' => $sharedpanel->line_channel_s
 $signature = $_SERVER['HTTP_' . LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 
+error_log(var_dump($events));
+
 foreach ($events as $event) {
     $cardObj = new card($sharedpanel);
     if ($event instanceof LINEBot\Event\MessageEvent\TextMessage) {
@@ -42,6 +44,9 @@ foreach ($events as $event) {
             $lineidObj = new lineid($sharedpanel);
 
             $userid = str_replace('line_', '', $event->getText());
+
+            error_log(var_dump($userid));
+
 
             if (!$lineidObj->set_line_userid($userid, $event->getUserId())) {
                 $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder(
@@ -53,6 +58,8 @@ foreach ($events as $event) {
                 $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
             }
         } else {
+            error_log("add card");
+
             $cardObj->add_card($event->getText(), $event->getUserId(), 'line', $event->getReplyToken());
             $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder(
                 'メッセージを投稿しました。'
@@ -82,7 +89,7 @@ foreach ($events as $event) {
             $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
         } else {
             $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder('画像投稿に失敗しました。');
-            $response = $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
+            $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
         }
     }
 }
