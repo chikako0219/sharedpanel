@@ -19,8 +19,13 @@ class lineid
 
     function get_by_line_userid($lineuserid) {
         global $DB;
-        if ($DB->record_exists('sharedpanel_lineids', ['lineuserid' => $lineuserid, 'sharedpanelid' => $this->moduleinstance->id])) {
-            return $DB->get_record('sharedpanel_lineids', ['lineuserid' => $lineuserid, 'sharedpanelid' => $this->moduleinstance->id]);
+        $lineid = $DB->get_record_select(
+            'sharedpanel_lineids',
+            "sharedpanelid = :sharedpanelid AND ".$DB->sql_compare_text('lineuserid')." = :lineuserid",
+            ['lineuserid' => $lineuserid, 'sharedpanelid' => $this->moduleinstance->id]);
+
+        if ($lineid) {
+            return $lineid;
         } else {
             return false;
         }

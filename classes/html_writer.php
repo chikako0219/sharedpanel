@@ -46,7 +46,9 @@ class html_writer extends \html_writer
             $html .= html_writer::span($dellink, '', ['style' => 'background-color:lightblue; font-size:25px; padding:1px;']);
         }
 
-        $instance = $DB->get_record('sharedpanel', ['id' => $context->instanceid]);
+        $cm = get_coursemodule_from_id('sharedpanel', $context->instanceid);
+
+        $instance = $DB->get_record('sharedpanel', ['id' => $cm->instance]);
 
         $tags = card::get_tags($card->id);
         foreach ($tags as $tag) {
