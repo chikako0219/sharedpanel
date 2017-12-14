@@ -44,15 +44,15 @@ foreach ($events as $event) {
         if (preg_match("/^line_/", $event->getText())) {
             $lineidObj = new lineid($sharedpanel);
 
-            $userid = str_replace('line_', '', $event->getText());
+            $username = str_replace('line_', '', $event->getText());
 
-            if (!$lineidObj->set_line_userid($userid, $event->getUserId())) {
+            if (!$lineidObj->set_line_userid($username, $event->getUserId())) {
                 $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder(
                     'もう一度入力してください。\n 例えば、ログインIDがb1007222の場合、"line_b1007222"と入力してください。'
                 );
                 $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
             } else {
-                $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder('ユーザーID' . $userid . 'を登録しました。');
+                $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder('ユーザーID' . $username . 'を登録しました。');
                 $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
             }
         } else {

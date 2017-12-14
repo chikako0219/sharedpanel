@@ -37,15 +37,17 @@ class lineid
         }
     }
 
-    function set_line_userid($userid, $lineuserid) {
+    function set_line_userid($username, $lineuserid) {
         global $DB;
 
-        if (!$DB->record_exists('user', ['username' => $userid])) {
+        if (!$DB->record_exists('user', ['username' => $username])) {
             return false;
         }
 
-        if ($DB->record_exists('sharedpanel_lineids', ['userid' => $userid, 'sharedpanelid' => $this->moduleinstance->id])) {
-            $data = self::get($userid);
+        $user = \core_user::get_user_by_username($username);
+
+        if ($DB->record_exists('sharedpanel_lineids', ['userid' => $user->id, 'sharedpanelid' => $this->moduleinstance->id])) {
+            $data = self::get($user->id);
             $data->lineuserid = $lineuserid;
             return $DB->update_record('sharedpanel_lineids', $data);
         } else {
