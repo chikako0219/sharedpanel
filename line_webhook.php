@@ -56,8 +56,6 @@ foreach ($events as $event) {
                 $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
             }
         } else {
-            error_log("add card");
-
             $cardObj->add_card($event->getText(), $event->getUserId(), 'line', $event->getReplyToken());
             $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder(
                 'メッセージを投稿しました。'

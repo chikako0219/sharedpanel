@@ -35,7 +35,7 @@ class html_writer extends \html_writer
         return $OUTPUT->user_picture($user) . html_writer::link(new \moodle_url('/user/profile.php', ['id' => $user->id]), fullname($user));
     }
 
-    public static function card($context, $card, $tstyle) {
+    public static function card(\context_module $context, $card, $tstyle) {
         global $DB, $USER;
 
         $html = \html_writer::start_div('all-style0 card', ['id' => 'card' . $card->id, 'style' => $tstyle]);
@@ -46,6 +46,8 @@ class html_writer extends \html_writer
             $html .= html_writer::span($dellink, '', ['style' => 'background-color:lightblue; font-size:25px; padding:1px;']);
         }
 
+        $instance = $DB->get_record('sharedpanel', ['id' => $context->instanceid]);
+
         $tags = card::get_tags($card->id);
         foreach ($tags as $tag) {
             $html .= html_writer::span(\html_writer::link(new \moodle_url(''), $tag->tag));
@@ -55,6 +57,13 @@ class html_writer extends \html_writer
         // コンテンツ要素
         $cardcontent = $card->content;
         // 日付などを別途表示
+        if ($card->inputsrc === 'line') {
+            $lineObj = new lineid($instance);
+            $sender = $lineObj->get_by_line_userid($card->sender);
+            $user = \core_user::get_user($sender->userid);
+            $card->sender = fullname($user);
+        }
+
         $cardcontent .= html_writer::div(
             '<br/><br/>' . date('c', $card->timeposted) . "<br/>" . $card->sender . "<br/> from " . $card->inputsrc
             , '', ['style' => 'font-size:60%;line-height:100%;']);

@@ -12,9 +12,18 @@ class lineid
         $this->moduleinstance = $modinstance;
     }
 
-    function get($userid) {
+    function get_by_userid($userid) {
         global $DB;
         return $DB->get_record('sharedpanel_lineids', ['userid' => $userid, 'sharedpanelid' => $this->moduleinstance->id]);
+    }
+
+    function get_by_line_userid($lineuserid) {
+        global $DB;
+        if ($DB->record_exists('sharedpanel_lineids', ['lineuserid' => $lineuserid, 'sharedpanelid' => $this->moduleinstance->id])) {
+            return $DB->get_record('sharedpanel_lineids', ['lineuserid' => $lineuserid, 'sharedpanelid' => $this->moduleinstance->id]);
+        } else {
+            return false;
+        }
     }
 
     function set_line_id($userid, $lineid) {
@@ -26,7 +35,7 @@ class lineid
         $data->userid = $userid;
 
         if ($DB->record_exists('sharedpanel_lineids', ['userid' => $userid, 'sharedpanelid' => $this->moduleinstance->id])) {
-            $data = self::get($userid);
+            $data = self::get_by_userid($userid);
             $data->lineid = $lineid;
             $data->timemodified = time();
             return $DB->update_record('sharedpanel_lineids', $data);
@@ -47,7 +56,7 @@ class lineid
         $user = \core_user::get_user_by_username($username);
 
         if ($DB->record_exists('sharedpanel_lineids', ['userid' => $user->id, 'sharedpanelid' => $this->moduleinstance->id])) {
-            $data = self::get($user->id);
+            $data = self::get_by_userid($user->id);
             $data->lineuserid = $lineuserid;
             return $DB->update_record('sharedpanel_lineids', $data);
         } else {
