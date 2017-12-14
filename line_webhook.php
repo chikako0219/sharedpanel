@@ -41,13 +41,10 @@ error_log($events);
 
 foreach ($events as $event) {
     if ($event instanceof LINEBot\Event\MessageEvent\TextMessage) {
-        if (strpos($event->getText(), 'line_')) {
+        if (preg_match("/^line_/", $event->getText())) {
             $lineidObj = new lineid($sharedpanel);
 
             $userid = str_replace('line_', '', $event->getText());
-
-            error_log($userid);
-
 
             if (!$lineidObj->set_line_userid($userid, $event->getUserId())) {
                 $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder(
