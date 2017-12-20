@@ -122,7 +122,7 @@ if ($evernoteObj->is_enabled()) {
 $total_count = count($cardids_twitter) + count($cardids_emails) + count($cardids_evernote);
 echo html_writer::message(notification::SUCCESS, 'インポート処理が完了しました。インポートした件数は' . $total_count . '件です。');
 
-echo html_writer::link(new \moodle_url('view.php', ['id' => $sharedpanel->id]), '戻る');
+echo html_writer::link(new \moodle_url('view.php', ['id' => $cm->id]), '戻る', ['class' => 'btn']);
 
 //----------------------------------------------------------------------------
 // Finish the page.
