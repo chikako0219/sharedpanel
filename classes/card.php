@@ -84,6 +84,18 @@ class card
         return $DB->insert_record('sharedpanel_cards', $data);
     }
 
+    function add_gcard($userid, $content) {
+        global $DB;
+
+        $data = new \stdClass;
+        $data->sharedpanelid = $this->moduleinstance->id;
+        $data->userid = $userid;
+        $data->timecreated = time();
+        $data->content = $content;
+
+        return $DB->insert_record('sharedpanel_gcards', $data);
+    }
+
     function update_cards($cardid, $content) {
         global $DB;
 

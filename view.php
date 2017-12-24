@@ -126,7 +126,7 @@ if (has_capability('moodle/course:manageactivities', $context)) {
     echo html_writer::end_div();
 
     echo \html_writer::start_div('btn-group');
-    echo html_writer::link(new moodle_url('gcard.php', ['id' => $id]), get_string('groupcard', 'sharedpanel'), ['class' => 'btn']);
+    echo html_writer::link(new moodle_url('gcard.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('groupcard', 'sharedpanel'), ['class' => 'btn']);
     echo html_writer::end_div();
 
     echo html_writer::end_div();
@@ -174,11 +174,11 @@ if ($sharedpanel_dispgcard) {
         echo html_writer::start_div('all-style0 card', ['id' => 'gcard' . $gcardnum, 'style' => $tstyle]);
         echo html_writer::div($gcardcontent, 'all-style2', ['style' => 'height:' . $gcard->sizey . 'px; width:' . $gcard->sizex . 'px;']);
         echo html_writer::start_div('all-style3', ['style' => 'width:' . $gcard->sizex . 'px;']);
-        echo html_writer::span($likeslink);
+//        echo html_writer::span($likeslink);
         // 削除リンク要素 （教師だけに表示）
         if (has_capability('moodle/course:manageactivities', $context)) {
-            $dellink = html_writer::link(new moodle_url('delgcard.php', ['id' => $id, 'c' => $gcard->id]), '削除する');
-            echo html_writer::span($dellink, ['style' => 'margin-left:5em;']);
+            $dellink = html_writer::link(new moodle_url('delgcard.php', ['id' => $cm->id, 'gcard' => $gcard->id, 'sesskey' => sesskey()]), '削除する');
+            echo html_writer::span($dellink, '', ['style' => 'margin-left:5em;']);
         }
         echo html_writer::end_div();
         echo html_writer::end_div();

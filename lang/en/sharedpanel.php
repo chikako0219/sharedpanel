@@ -63,6 +63,8 @@ $string['sortbylike1'] = 'Sort by interesting';
 $string['important'] =  'Important';
 $string['interesting'] =  'Interesting';
 
+$string['gcardcontent'] =  'Content of group card';
+
 $string['facebook'] =  'Facebook';
 $string['twitter'] =  'Twitter';
 

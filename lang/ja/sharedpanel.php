@@ -62,6 +62,8 @@ $string['sortbylike1'] = '面白いね!の多い順でソート';
 $string['important'] =  '重要だね';
 $string['interesting'] =  '面白いね';
 
+$string['gcardcontent'] =  'グループカードの本文';
+
 $string['facebook'] =  'Facebook';
 $string['twitter'] =  'Twitter';
 

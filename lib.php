@@ -126,6 +126,7 @@ function sharedpanel_delete_instance($id) {
 
     $DB->delete_records('sharedpanel_cards', ['sharedpanelid' => $sharedpanel->id]);
     $DB->delete_records('sharedpanel_gcards', ['sharedpanelid' => $sharedpanel->id]);
+    $DB->delete_records('sharedpanel_lineids', ['sharedpanelid' => $sharedpanel->id]);
     $DB->delete_records('sharedpanel', ['id' => $sharedpanel->id]);
 
     return true;

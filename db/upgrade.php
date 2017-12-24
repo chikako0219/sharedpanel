@@ -166,5 +166,13 @@ function xmldb_sharedpanel_upgrade($oldversion) {
         }
     }
 
+    if ($oldversion < 2017122101) {
+        $table = new xmldb_table('sharedpanel_card_tags');
+        $field = new xmldb_field('type', XMLDB_TYPE_CHAR, '255', false, true, null, null, 'tag');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+    }
+
     return true;
 }
