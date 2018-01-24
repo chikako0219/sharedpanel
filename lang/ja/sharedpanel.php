@@ -84,3 +84,7 @@ $string['TWaccessToken'] = 'Twitter accessToken';
 $string['TWaccessToken_help'] = 'Twitter accessToken';
 $string['TWaccessTokenSecret'] = 'Twitter accessTokenSecret';
 $string['TWaccessTokenSecret_help'] = 'Twitter accessTokenSecret';
+
+$string['gcard_n_deleted'] = '';
+
+$string['error_required_id'] = 'You must specify a course_module ID or an instance ID';

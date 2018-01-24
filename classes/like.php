@@ -41,26 +41,33 @@ class like
         $like->cardid = $cardid;
         $like->userid = $userid;
         $like->timecreated = time();
-        $like->rating = 1;
-        $like->comment = '';
         $like->ltype = $ltype;
 
         return $DB->insert_record('sharedpanel_card_likes', $like);
-    }
-
-    function update($cardid, $userid, $ltype) {
-        global $DB;
-
-        $like = self::get($cardid, $userid, $ltype);
-        $like->rating = 1;
-        return $DB->update_record('sharedpanel_card_likes', $like);
     }
 
     function unset($cardid, $userid, $ltype) {
         global $DB;
 
         $like = $DB->get_record('sharedpanel_card_likes', ['cardid' => $cardid, 'userid' => $userid, 'ltype' => $ltype]);
-        $like->rating = 0;
-        return $DB->update_record('sharedpanel_card_likes', $like);
+        return $DB->delete_records('sharedpanel_card_likes', ['id' => $like->id]);
+    }
+
+    function count($cardid, $userid, $ltype = null) {
+        global $DB;
+
+        $cond = ['cardid' => $cardid, 'userid' => $userid];
+        if (!is_null($ltype) && $ltype == 0) {
+            $cond['ltype'] = 0;
+        } elseif (!is_null($ltype) && $ltype == 1) {
+            $cond['ltype'] = 1;
+        }
+
+        return $DB->count_records('sharedpanel_card_likes', $cond);
+    }
+
+    function is_liked($cardid, $userid, $ltype = null){
+        global $DB;
+        return $DB->record_exists('sharedpanel_card_likes', ['cardid' => $cardid, 'userid' => $userid, 'ltype' => $ltype]);
     }
 }

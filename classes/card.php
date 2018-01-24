@@ -20,30 +20,25 @@ class card
     }
 
     function get_cards($order = 'like') {
-        global $DB;
+        global $DB, $USER;
 
-        $sql = "SELECT cards.*, card_likes.ltype, 
-                      (SELECT COUNT(id) 
-                               FROM {sharedpanel_card_likes} likes 
-                              WHERE likes.cardid = cards.id AND rating != 0 AND ltype = 0) like_count_0,
-                      (SELECT COUNT(id) 
-                               FROM {sharedpanel_card_likes} likes 
-                              WHERE likes.cardid = cards.id AND rating != 0 AND ltype = 1) like_count_1
-                  FROM {sharedpanel_cards} cards
-             LEFT JOIN {sharedpanel_card_likes} card_likes ON card_likes.cardid = cards.id 
-                 WHERE cards.sharedpanelid = :sharedpanelid AND cards.hidden = 0
-                 GROUP BY cards.id
-                  ";
+        $sql = "
+            SELECT *, (select count(*) from {sharedpanel_card_likes} l where l.userid = :userid and l.ltype = :ltype and l.cardid = c.id) likes 
+              FROM {sharedpanel_cards} c
+        ";
 
+        $ltype = 0;
         if ($order === 'like') {
-            $sql .= " ORDER BY timecreated DESC, like_count_0 DESC, card_likes.ltype ASC";
+            $ltype = 0;
+            $sql .= " ORDER BY likes DESC, c.timecreated DESC";
         } else if ($order === 'newest') {
-            $sql .= " ORDER BY timecreated DESC, card_likes.ltype DESC, cards.timecreated DESC";
+            $sql .= " ORDER BY c.timecreated DESC";
         } else if ($order === 'important') {
-            $sql .= " ORDER BY timecreated DESC, like_count_1 DESC, card_likes.ltype DESC";
+            $ltype = 1;
+            $sql .= " ORDER BY likes DESC, c.timecreated DESC";
         }
 
-        return $DB->get_records_sql($sql, ['sharedpanelid' => $this->moduleinstance->id]);
+        return $DB->get_records_sql($sql, ['userid' => $USER->id, 'ltype' => $ltype]);
     }
 
     function get_last_card($inputsrc) {

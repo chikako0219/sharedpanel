@@ -2,7 +2,7 @@
 
 namespace mod_sharedpanel;
 
-global $DB, $PAGE, $OUTPUT, $USER;
+global $DB, $PAGE, $USER;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
@@ -32,25 +32,22 @@ $PAGE->set_context($context);
 $likeObj = new like($sharedpanel);
 
 $msg = "";
-$like = $likeObj->get($cardid, $USER->id, $ltype);
+$like = $likeObj->is_liked($cardid, $USER->id, $ltype);
 if (!$like) {
-    $like = $likeObj->set($cardid, $ltype);
+    $like = $likeObj->set($cardid, $USER->id, $ltype);
     $msg .= "カード #" . $cardid . " に いいね! しました。<br>";
-} else if ($like->rating == 0) {
-    $like = $likeObj->update($cardid, $USER->id, $ltype);
-    $msg .= "カード #" . $cardid . " に いいね! しました。（変更）<br>";
 } else {
     $like = $likeObj->unset($cardid, $USER->id, $ltype);
     $msg .= "カード #" . $cardid . " の いいね! を解除しました。<br>";
 }
 
-if ($ltype == 0) {
-    $likes = $likeObj->gets($cardid, $ltype, true);
-    if ($like) {
-        $card = $DB->get_record('sharedpanel_cards', ['sharedpanelid' => $sharedpanel->id, 'hidden' => 0, 'id' => $cardid]);
-        $card->rating = count($likes);
-        $card->id = $DB->update_record('sharedpanel_cards', $card);
-    }
-}
+//if ($ltype == 0) {
+//    $likes = $likeObj->gets($cardid, $ltype, true);
+//    if ($like) {
+//        $card = $DB->get_record('sharedpanel_cards', ['sharedpanelid' => $sharedpanel->id, 'hidden' => 0, 'id' => $cardid]);
+//        $card->rating = count($likes);
+//        $card->id = $DB->update_record('sharedpanel_cards', $card);
+//    }
+//}
 
 redirect(new \moodle_url('view.php', ['id' => $id]), $msg, 2);

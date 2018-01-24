@@ -64,8 +64,8 @@ if (file_exists($styfile)) {
 $PAGE->requires->jquery();
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->jquery_plugin('ui-css');
-$PAGE->requires->js(new moodle_url('js/jsPlumb-2.1.5-min.js'));
-$PAGE->requires->js(new moodle_url('js/card_admin.js'));
+//$PAGE->requires->js(new moodle_url('js/jsPlumb-2.1.5-min.js'));
+//$PAGE->requires->js(new moodle_url('js/card_admin.js'));
 
 $PAGE->set_cm($cm);
 $PAGE->set_context($context);
@@ -125,10 +125,6 @@ if (has_capability('moodle/course:manageactivities', $context)) {
     echo html_writer::link(new moodle_url('post.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('post', 'sharedpanel'), ['class' => 'btn']);
     echo html_writer::end_div();
 
-    echo \html_writer::start_div('btn-group');
-    echo html_writer::link(new moodle_url('gcard.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('groupcard', 'sharedpanel'), ['class' => 'btn']);
-    echo html_writer::end_div();
-
     echo html_writer::end_div();
 }
 
@@ -137,54 +133,13 @@ echo html_writer::empty_tag('hr');
 // CARDのデータをDBから取得
 $ratingmap = [];
 if ($sortby) {
-    $cards = $cardObj->get_cards('important');
-} else {
     $cards = $cardObj->get_cards('like');
+} else {
+    $cards = $cardObj->get_cards('important');
 }
 
-// Group (Category) Card
-$gcards = $cardObj->get_gcards(0, 'rating DESC');
-
-echo html_writer::start_div('', ['id' => 'diagramContainer']);
-
-// Groupカード ----------------------------------------------
-if ($sharedpanel_dispgcard) {
-    $leftpos = 300;
-    $toppos = 300;
-    $gcardnum = 0;
-    foreach ($gcards as $gcard) {  // 各Groupカード
-        if ($gcard->positionx == 0 and $gcard->positiony == 0) {
-            $tstyle = "left:${leftpos}px;top:${toppos}px;";
-            $leftpos += 300;
-            $toppos += 10;
-            if ($leftpos > 1200) {
-                $leftpos = 300;
-                $toppos += 440;
-            }
-        } else {
-            $tstyle = "left:" . $gcard->positionx . "px;top:" . $gcard->positiony . "px;'";
-        }
-        $gcardnum = $gcard->id;
-
-        // コンテンツ要素
-        $gcardcontent = $gcard->content;
-
-        // 上記要素を使って、Groupカードの表示
-        $tstyle .= ' width:' . $gcard->sizex . 'px';
-        echo html_writer::start_div('all-style0 card', ['id' => 'gcard' . $gcardnum, 'style' => $tstyle]);
-        echo html_writer::div($gcardcontent, 'all-style2', ['style' => 'height:' . $gcard->sizey . 'px; width:' . $gcard->sizex . 'px;']);
-        echo html_writer::start_div('all-style3', ['style' => 'width:' . $gcard->sizex . 'px;']);
-//        echo html_writer::span($likeslink);
-        // 削除リンク要素 （教師だけに表示）
-        if (has_capability('moodle/course:manageactivities', $context)) {
-            $dellink = html_writer::link(new moodle_url('delgcard.php', ['id' => $cm->id, 'gcard' => $gcard->id, 'sesskey' => sesskey()]), '削除する');
-            echo html_writer::span($dellink, '', ['style' => 'margin-left:5em;']);
-        }
-        echo html_writer::end_div();
-        echo html_writer::end_div();
-    }
-}
-// Groupカード ----------------------------------------------
+echo html_writer::start_div('', ['id' => '', 'class' => '']);
+echo html_writer::start_div('', ['id' => 'diagramContainer', 'class' => 'row-fluid']);
 
 $leftpos = 420;
 $toppos = 370;
@@ -202,13 +157,14 @@ foreach ($cards as $card) {  // 各カード
         $tstyle = "style='left:" . $card->positionx . "px;top:" . $card->positiony . "px;'";
     }
 
-    echo \mod_sharedpanel\html_writer::card($context, $card, $tstyle);
+    echo \mod_sharedpanel\html_writer::card($sharedpanel, $context, $card);
 
     $cnum++;
 }  // foreach ($cards as $card)
 echo html_writer::end_div();
+echo html_writer::end_div();
 
-echo '(total: ' . $cnum . 'cards)';
+echo '(total: ' . count($cards) . 'cards)';
 
 //----------------------------------------------------------------------------
 // Finish the page.
