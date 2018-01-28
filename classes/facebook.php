@@ -38,19 +38,13 @@ class facebook extends card
             'app_secret' => $config->FBsecret,
             'default_graph_version' => 'v2.10',
         ]);
-
         $access_token = $fb->getApp()->getAccessToken();
-
-        $response = $fb->get(
-            $this->moduleinstance->fbgroup1,
-            $access_token->getValue()
-        );
-
         try {
             $response = $fb->get(
-                $this->moduleinstance->fbgroup1,
+                '/' . $this->moduleinstance->fbgroup1 . '/feed',
                 $access_token->getValue()
             );
+            $body = $response->getDecodedBody();
         } catch (FacebookResponseException $e) {
             echo 'Graph returned an error: ' . $e->getMessage();
             exit;
@@ -58,8 +52,17 @@ class facebook extends card
             echo 'Facebook SDK returned an error: ' . $e->getMessage();
             exit;
         }
-        $graphNode = $response->getGraphNode();
 
+        $cardObj = new card($this->moduleinstance);
+        $cardids = [];
+
+        foreach ($body['data'] as $data) {
+            if (array_key_exists('message', $data)) {
+                $cardids[] = $cardObj->add($data['message'], 'facebook', 'facebook', $data['id'], strtotime($data['updated_time']));
+            }
+        }
+
+        return $cardids;
     }
 
     public function get_error() {

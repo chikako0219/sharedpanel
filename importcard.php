@@ -53,71 +53,71 @@ $PAGE->set_context($context);
 // Output starts here.
 echo $OUTPUT->header();
 
-$cardids_twitter = $cardids_emails = $cardids_evernote = null;
+$cardids_twitter = $cardids_emails = $cardids_evernote = $cardids_facebook = null;
 
-///**
-// * Twitter
-// */
-//$twitterObj = new twitter($sharedpanel);
-//if ($twitterObj->is_enabled()) {
-//    $cardids_twitter = $twitterObj->import();
-//    if ($cardids_twitter != false || is_null($cardids_twitter) || is_array($cardids_twitter)) {
-//        if (count($cardids_twitter) == 0) {
-//            echo html_writer::message(notification::INFO, 'Twitter:' . '新規ツイートはありませんでした。');
-//        } else {
-//            echo html_writer::message(notification::SUCCESS, 'Twitter:' . 'インポートに成功しました。');
-//        }
-//    } else {
-//        echo html_writer::message(notification::ERROR, 'Twitter:' . 'インポートに失敗しました。');
-//        $error = $twitterObj->get_error();
-//        debugging($error->code . ":" . $error->message);
-//    }
-//} else {
-//    echo html_writer::message(notification::INFO, 'Twitter:' . '認証情報が設定されていないため、スキップします。');
-//}
-//
-///**
-// * email
-// */
-//$emailObj = new email($sharedpanel);
-//if ($emailObj->is_enabled()) {
-//    $cardids_emails = $emailObj->import();
-//
-//    if ($cardids_emails != false || is_null($cardids_emails) || is_array($cardids_emails)) {
-//        if (count($cardids_emails) == 0) {
-//            echo html_writer::message(notification::INFO, 'メール:' . '新規メールはありませんでした。');
-//        } else {
-//            echo html_writer::message(notification::SUCCESS, 'メール:' . count($cardids_emails) . '件をメールからインポートしました。');
-//        }
-//    } else {
-//        echo html_writer::message(notification::ERROR, 'メール:' . 'インポートに失敗しました。');
-//        $error = $emailObj->get_error();
-//        debugging($error->code . ":" . $error->message);
-//    }
-//} else {
-//    echo html_writer::message(notification::INFO, 'メール:' . '認証情報が設定されていないため、スキップします。');
-//}
-//
-///**
-// * Evernote
-// */
-//$evernoteObj = new evernote($sharedpanel);
-//if ($evernoteObj->is_enabled()) {
-//    $cardids_evernote = $evernoteObj->import();
-//    if ($cardids_evernote != false || is_null($cardids_evernote) || is_array($cardids_evernote)) {
-//        if (count($cardids_evernote) == 0) {
-//            echo html_writer::message(notification::INFO, 'Evernote:' . '新規はありませんでした。');
-//        } else {
-//            echo html_writer::message(notification::SUCCESS, 'Evernote:' . count($cardids_evernote) . '件をインポートしました。');
-//        }
-//    } else {
-//        echo html_writer::message(notification::ERROR, 'Evernote:' . 'インポートに失敗しました。');
-//        $error = $emailObj->get_error();
-//        debugging($error->code . ":" . $error->message);
-//    }
-//} else {
-//    echo html_writer::message(notification::INFO, 'Evernote:' . '認証情報が設定されていないため、スキップします。');
-//}
+/**
+ * Twitter
+ */
+$twitterObj = new twitter($sharedpanel);
+if ($twitterObj->is_enabled()) {
+    $cardids_twitter = $twitterObj->import();
+    if ($cardids_twitter != false || is_null($cardids_twitter) || is_array($cardids_twitter)) {
+        if (count($cardids_twitter) == 0) {
+            echo html_writer::message(notification::INFO, 'Twitter:' . '新規ツイートはありませんでした。');
+        } else {
+            echo html_writer::message(notification::SUCCESS, 'Twitter:' . 'インポートに成功しました。');
+        }
+    } else {
+        echo html_writer::message(notification::ERROR, 'Twitter:' . 'インポートに失敗しました。');
+        $error = $twitterObj->get_error();
+        debugging($error->code . ":" . $error->message);
+    }
+} else {
+    echo html_writer::message(notification::INFO, 'Twitter:' . '認証情報が設定されていないため、スキップします。');
+}
+
+/**
+ * email
+ */
+$emailObj = new email($sharedpanel);
+if ($emailObj->is_enabled()) {
+    $cardids_emails = $emailObj->import();
+
+    if ($cardids_emails != false || is_null($cardids_emails) || is_array($cardids_emails)) {
+        if (count($cardids_emails) == 0) {
+            echo html_writer::message(notification::INFO, 'メール:' . '新規メールはありませんでした。');
+        } else {
+            echo html_writer::message(notification::SUCCESS, 'メール:' . count($cardids_emails) . '件をメールからインポートしました。');
+        }
+    } else {
+        echo html_writer::message(notification::ERROR, 'メール:' . 'インポートに失敗しました。');
+        $error = $emailObj->get_error();
+        debugging($error->code . ":" . $error->message);
+    }
+} else {
+    echo html_writer::message(notification::INFO, 'メール:' . '認証情報が設定されていないため、スキップします。');
+}
+
+/**
+ * Evernote
+ */
+$evernoteObj = new evernote($sharedpanel);
+if ($evernoteObj->is_enabled()) {
+    $cardids_evernote = $evernoteObj->import();
+    if ($cardids_evernote != false || is_null($cardids_evernote) || is_array($cardids_evernote)) {
+        if (count($cardids_evernote) == 0) {
+            echo html_writer::message(notification::INFO, 'Evernote:' . '新規はありませんでした。');
+        } else {
+            echo html_writer::message(notification::SUCCESS, 'Evernote:' . count($cardids_evernote) . '件をインポートしました。');
+        }
+    } else {
+        echo html_writer::message(notification::ERROR, 'Evernote:' . 'インポートに失敗しました。');
+        $error = $emailObj->get_error();
+        debugging($error->code . ":" . $error->message);
+    }
+} else {
+    echo html_writer::message(notification::INFO, 'Evernote:' . '認証情報が設定されていないため、スキップします。');
+}
 
 /**
  * Facebook
@@ -125,9 +125,22 @@ $cardids_twitter = $cardids_emails = $cardids_evernote = null;
 $facebookObj = new facebook($sharedpanel);
 if($facebookObj->is_enabled()){
     $cardids_facebook = $facebookObj->import();
+    if ($cardids_facebook != false || is_null($cardids_facebook) || is_array($cardids_facebook)) {
+        if (count($cardids_evernote) == 0) {
+            echo html_writer::message(notification::INFO, 'Facebook:' . '新規はありませんでした。');
+        } else {
+            echo html_writer::message(notification::SUCCESS, 'Facebook:' . count($cardids_facebook) . '件をインポートしました。');
+        }
+    } else {
+        echo html_writer::message(notification::ERROR, 'Facebook:' . 'インポートに失敗しました。');
+        $error = $facebookObj->get_error();
+        debugging($error->code . ":" . $error->message);
+    }
+}else{
+    echo html_writer::message(notification::INFO, 'Evernote:' . '認証情報が設定されていないため、スキップします。');
 }
 
-$total_count = count($cardids_twitter) + count($cardids_emails) + count($cardids_evernote);
+$total_count = count($cardids_twitter) + count($cardids_emails) + count($cardids_evernote) + count($cardids_facebook);
 echo html_writer::message(notification::SUCCESS, 'インポート処理が完了しました。インポートした件数は' . $total_count . '件です。');
 
 echo html_writer::link(new \moodle_url('view.php', ['id' => $cm->id]), '戻る', ['class' => 'btn']);
