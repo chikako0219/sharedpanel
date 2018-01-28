@@ -67,7 +67,7 @@ class twitter extends card
             $content = $tweet->text;
             $content = mod_sharedpanel_utf8mb4_encode_numericentity($content);
             $username = mod_sharedpanel_utf8mb4_encode_numericentity($tweet->user->name);
-            $cardids[] = $cardObj->add_card($content, $username, 'twitter', $tweet->id, strtotime($tweet->created_at));
+            $cardids[] = $cardObj->add($content, $username, 'twitter', $tweet->id, strtotime($tweet->created_at));
         }
 
         return $cardids;

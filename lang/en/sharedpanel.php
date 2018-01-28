@@ -49,6 +49,12 @@ $string['backtopanel'] = 'Back to Panel';
 $string['import'] = 'Import posts and email';
 $string['facebookimport'] = 'Import from Facebook';
 
+$string['post_message'] = 'Post message';
+$string['message'] = 'Message';
+$string['name'] = 'Name';
+
+$string['msg_post_success'] = '投稿しました。';
+
 $string['sortedas'] = 'Sorted by number of likes, and newer timestamp of posting.';
 $string['post'] = 'Post';
 $string['cardcontent'] = 'Card content';
@@ -59,6 +65,7 @@ $string['postmessage'] = 'Post message';
 $string['postmessage_from_line'] = 'Post from LINE';
 $string['sort'] = 'Sort by important!';
 $string['sortbylike1'] = 'Sort by interesting';
+$string['post_card'] = 'Add card';
 
 $string['important'] =  'Important';
 $string['interesting'] =  'Interesting';

@@ -5,16 +5,15 @@
     <TABLES>
         <TABLE NAME="sharedpanel" COMMENT="Table for sharedpanel instance">
             <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"/>
                 <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"
-                       COMMENT="Course sharedpanel activity belongs to" PREVIOUS="id" NEXT="name"/>
+                       COMMENT="Course sharedpanel activity belongs to" PREVIOUS="id"/>
                 <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"
-                       COMMENT="name field for moodle instances" PREVIOUS="course" NEXT="intro"/>
+                       COMMENT="name field for moodle instances" PREVIOUS="course"/>
                 <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false"
-                       COMMENT="General introduction of the sharedpanel activity" PREVIOUS="name" NEXT="introformat"/>
+                       COMMENT="General introduction of the sharedpanel activity"/>
                 <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0"
-                       SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro"
-                       NEXT="timecreated"/>
+                       SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)"/>
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"
                        PREVIOUS="introformat" NEXT="timemodified"/>
                 <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"
@@ -47,9 +46,7 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="sharedpanelid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="userid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true"/>
-                <FIELD NAME="rating" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="content" TYPE="text" SEQUENCE="false" NOTNULL="true"/>
-                <FIELD NAME="comment" TYPE="text" SEQUENCE="false" NOTNULL="true"/>
                 <FIELD NAME="hidden" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="timeposted" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -57,12 +54,16 @@
                 <FIELD NAME="inputsrc" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="true"/>
                 <FIELD NAME="messageid" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="true"/>
                 <FIELD NAME="sender" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="true"/>
-                <FIELD NAME="positionx" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="positiony" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="attachment_filename" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="gravity" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
             </KEYS>
+            <INDEXES>
+                <INDEX NAME="sharedpanelid" UNIQUE="false" FIELDS="sharedpanelid"/>
+                <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
+            </INDEXES>
         </TABLE>
 
         <TABLE NAME="sharedpanel_card_likes" COMMENT="Defines sharedpanel_card_likes">
@@ -76,6 +77,10 @@
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
             </KEYS>
+            <INDEXES>
+                <INDEX NAME="cardid" UNIQUE="false" FIELDS="cardid"/>
+                <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
+            </INDEXES>
         </TABLE>
 
         <TABLE NAME="sharedpanel_card_tags" COMMENT="Defines sharedpanel_card_tags">
@@ -84,12 +89,15 @@
                 <FIELD NAME="cardid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="tag" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
             </KEYS>
+            <INDEXES>
+                <INDEX NAME="cardid" UNIQUE="false" FIELDS="cardid"/>
+                <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
+            </INDEXES>
         </TABLE>
 
         <TABLE NAME="sharedpanel_lineids" COMMENT="Defines sharedpanel_gcards">
@@ -107,6 +115,8 @@
             </KEYS>
             <INDEXES>
                 <INDEX NAME="sharedpanelid" UNIQUE="false" FIELDS="sharedpanelid"/>
+                <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
+                <INDEX NAME="lineid" UNIQUE="false" FIELDS="lineid"/>
             </INDEXES>
         </TABLE>
     </TABLES>

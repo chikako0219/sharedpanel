@@ -9,19 +9,18 @@ class tag
     private $moduleinstance;
     private $type;
 
-    function __construct($modinstance, $type) {
+    function __construct($modinstance) {
         $this->moduleinstance = $modinstance;
-        $this->type = $type;
     }
 
     function get($cardid) {
         global $DB;
-        return $DB->get_record('sharedpanel_card_tags', ['cardid' => $cardid, 'type' => $this->type]);
+        return $DB->get_record('sharedpanel_card_tags', ['cardid' => $cardid]);
     }
 
     function is_exists($cardid) {
         global $DB;
-        return $DB->record_exists('sharedpanel_card_tags', ['cardid' => $cardid, 'type' => $this->type]);
+        return $DB->record_exists('sharedpanel_card_tags', ['cardid' => $cardid]);
     }
 
     function set($cardid, $tag, $userid) {
@@ -31,7 +30,6 @@ class tag
         $data->cardid = $cardid;
         $data->userid = $userid;
         $data->tag = $tag;
-        $data->type = $this->type;
         $data->timecreated = time();
 
         return $DB->insert_record('sharedpanel_card_tags', $data);
@@ -49,6 +47,6 @@ class tag
     function unset($cardid) {
         global $DB;
 
-        return $DB->delete_records('sharedpanel_card_tags', ['cardid' => $cardid, 'type' => $this->type]);
+        return $DB->delete_records('sharedpanel_card_tags', ['cardid' => $cardid]);
     }
 }

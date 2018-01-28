@@ -133,9 +133,9 @@ echo html_writer::empty_tag('hr');
 // CARDのデータをDBから取得
 $ratingmap = [];
 if ($sortby) {
-    $cards = $cardObj->get_cards('like');
+    $cards = $cardObj->gets('like');
 } else {
-    $cards = $cardObj->get_cards('important');
+    $cards = $cardObj->gets('important');
 }
 
 echo html_writer::start_div('', ['id' => '', 'class' => '']);
@@ -143,23 +143,8 @@ echo html_writer::start_div('', ['id' => 'diagramContainer', 'class' => 'row-flu
 
 $leftpos = 420;
 $toppos = 370;
-$cnum = 0;
 foreach ($cards as $card) {  // 各カード
-    if ($card->positionx == 0 and $card->positiony == 0) {
-        $tstyle = "style='left:${leftpos}px;top:${toppos}px;'";
-        $leftpos += 300;
-        $toppos += 10;
-        if ($leftpos > 1200) {
-            $leftpos = 420;
-            $toppos += 440;
-        }
-    } else {
-        $tstyle = "style='left:" . $card->positionx . "px;top:" . $card->positiony . "px;'";
-    }
-
     echo \mod_sharedpanel\html_writer::card($sharedpanel, $context, $card);
-
-    $cnum++;
 }  // foreach ($cards as $card)
 echo html_writer::end_div();
 echo html_writer::end_div();

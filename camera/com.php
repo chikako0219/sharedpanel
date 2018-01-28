@@ -1,49 +1,63 @@
-<!DOCTYPE HTML>
-<!-- Thanks to http://labs.opentone.co.jp/?p=4051 -->
-<!-- Thanks to http://qiita.com/yasumodev/items/c9f8e8f588ded6b179c9 -->
-<html lang="ja">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.2">
-<title>メッセージを投稿</title>
-</head>
-
-<style>
-label {
-  color: white;  
-  background-color: orange;
-  padding: 16px;
-  line-height: 80px;
-  border-radius: 10px;
-  font-size: 30px;
-}
-</style>
-
 <?php
-if (!$_GET['n']){
-  echo "SharedPanel ID が必要です";
-  exit;
+/**
+ * Notice :
+ * This page allows access to guests(no login users).
+ * Guest users can post only.
+ */
+
+namespace mod_sharedpanel;
+
+require_once('../../../config.php');
+
+global $DB;
+
+$cmid = required_param('id', PARAM_INT);
+$instanceid = required_param('n', PARAM_INT);
+$content = optional_param('cameracomment', null, PARAM_TEXT);
+$name = optional_param('name', 'guest', PARAM_TEXT);
+
+if (!is_null($content)) {
+    $instance = $DB->get_record('sharedpanel', ['id' => $instanceid]);
+
+    $cardObj = new card($instance);
+    $cardObj->add($content, $name, 'camera');
+
+    echo html_writer::div(get_string('msg_post_success', 'mod_sharedpanel'));
 }
-?>
 
-<body>
-    <form action="cameraupload.php" method="post" enctype="multipart/form-data">
-    <!--
-    <label for="capture">
-       ＋写真を撮る
-           <input type="file" id="capture" name="capture" accept="image/*" capture="camera" style="display:none;" />
-    </label>
-      <br/><br/>
-    -->
-      メッセージ: <br/> <textarea name="cameracomment" style='width:20em; height:5em;'></textarea><br/>
-      名前<span style='font-size:70%;'>（任意）</span>: <br/> <input type="text" name="name" /><br/>
-      <br/>
-      <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>" />
-      <input type="hidden" name="n"  value="<?php echo $_GET['n']; ?>" />
-      <input type="submit" value="メッセージを投稿" />
-    </form>
+echo html_writer::start_tag('html');
 
-<?php echo "<br/><span style='font-size:70%;'><a href='../view.php?id=".$_GET['id']."'>カード一覧を表示する</a></span>"; ?>
+echo html_writer::start_tag('head');
+echo html_writer::empty_tag('meta', ['http-equiv' => 'Content-Type', 'content' => 'text/html; charset=utf-8']);
+echo html_writer::empty_tag('meta', ['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.2']);
+echo html_writer::tag('title', get_string('post_message', 'mod_sharedpanel'));
+//echo html_writer::empty_tag('link', ['href' => 'style-camera.css', 'rel' => 'stylesheet', 'type' => 'text/css']);
+echo html_writer::end_tag('head');
 
-</body>
-</html>
+echo html_writer::start_tag('body');
+echo html_writer::start_tag('form', ['action' => 'com.php', 'method' => 'post', 'enctype' => 'multipart/form-data']);
+
+echo html_writer::start_div();
+echo html_writer::tag('label', get_string('message', 'mod_sharedpanel'), ['for' => 'cameracomment']);
+echo html_writer::start_div();
+echo html_writer::tag('textarea', '', ['name' => 'cameracomment', 'style' => 'width:20em; height:5em;']);
+echo html_writer::end_div();
+echo html_writer::end_div();
+
+echo html_writer::start_div();
+echo html_writer::tag('label', get_string('name', 'mod_sharedpanel'), ['for' => 'cameracomment']);
+echo html_writer::start_div();
+echo html_writer::empty_tag('input', ['name' => 'name', 'type' => 'text']);
+echo html_writer::end_div();
+echo html_writer::end_div();
+
+echo html_writer::empty_tag('hr');
+
+echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'id', 'value' => $cmid]);
+echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'n', 'value' => $instanceid]);
+
+echo html_writer::empty_tag('input', ['type' => 'submit', 'value' => get_string('message', 'mod_sharedpanel')]);
+echo html_writer::end_tag('form');
+
+echo html_writer::end_tag('body');
+echo html_writer::end_tag('html');

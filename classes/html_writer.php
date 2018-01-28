@@ -34,6 +34,7 @@ class html_writer extends \html_writer
      * @param $userid
      * @return string
      * @throws \dml_exception
+     * @throws \moodle_exception
      */
     public static function userlink($userid) {
         global $OUTPUT;
@@ -43,7 +44,7 @@ class html_writer extends \html_writer
     }
 
     public static function card($instance, $context, $card) {
-        global $USER, $DB, $OUTPUT;
+        global $USER, $OUTPUT;
 
         $likeObj = new like($instance);
 
@@ -68,7 +69,33 @@ class html_writer extends \html_writer
         $html .= html_writer::start_div('card-body');
         $html .= html_writer::span($card->content);
         $html .= html_writer::span(
-            '<br/><br/>' . date('c', $card->timeposted) . "<br/>" . $card->sender . "<br/> from " . $card->inputsrc);
+            '<br/><br/>' . userdate($card->timeposted) . "<br/>" . $card->sender . "<br/> from " . $card->inputsrc);
+
+        if (!is_null($card->attachment_filename) && !empty($card->attachment_filename)) {
+            $fs = get_file_storage();
+            $file = $fs->get_file(
+                $context->id,
+                'mod_sharedpanel',
+                'attachment',
+                $card->id,
+                '/',
+                $card->attachment_filename
+            );
+
+            $url = \moodle_url::make_pluginfile_url(
+                $context->id,
+                $file->get_component(),
+                $file->get_filearea(),
+                $file->get_itemid(),
+                $file->get_filepath(),
+                $file->get_filename()
+            );
+
+            $html .= html_writer::span(
+                html_writer::empty_tag('img', ['src' => $url->out(), 'class' => 'card-body-attachment'])
+            );
+        }
+
         $html .= html_writer::end_div();
 
         $html .= html_writer::start_div('card-footer');
@@ -97,12 +124,6 @@ class html_writer extends \html_writer
             new \moodle_url('likes.php', ['id' => $context->instanceid, 'c' => $card->id, 'sesskey' => sesskey(), 'ltype' => 1]),
             get_string('important', 'sharedpanel') . $like_icon_1
         );
-
-        //@TODO SQLの外出し
-//        $ratingsum1 = $DB->get_record_sql(
-//            'SELECT sum(rating) as sumr FROM {sharedpanel_card_likes} WHERE cardid = :cardid AND ltype = :ltype',
-//            ['cardid' => $card->id, 'ltype' => 1]);
-//        $cardrating1 = $ratingsum1->sumr;
 
         if ($like_count_0 > 0) {
             $link_like .= html_writer::empty_tag('img', ['src' => 'red.png']) . "($like_count_0)";

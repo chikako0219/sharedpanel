@@ -93,7 +93,7 @@ class email extends card
 
             $subject = mb_convert_encoding(imap_base64($body), 'utf-8', 'auto');
 
-            $cardid = $this->cardObj->add_card($subject, $head->fromaddress, 'email', $messageid);
+            $cardid = $this->cardObj->add($subject, $head->fromaddress, 'email', $messageid);
             $cardids[] = $cardid;
             foreach (mod_sharedpanel_get_tags($subject) as $tagstr) {
                 $tagObj = new tag($this->moduleinstance);

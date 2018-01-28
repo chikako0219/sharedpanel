@@ -32,6 +32,10 @@
     overflow-x: hidden;
 }
 
+.card-body-attachment {
+    width: 100%;
+}
+
 .card-footer {
     width: 100%;
     height: auto;

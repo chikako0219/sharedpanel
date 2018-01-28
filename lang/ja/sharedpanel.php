@@ -45,6 +45,12 @@ $string['configrequiremodintro'] = '活動説明を必須とするかどうか';
 $string['print'] = '印刷する';
 $string['backtopanel'] = 'パネルにもどる';
 
+$string['post_message'] = 'メッセージを投稿';
+$string['message'] = 'メッセージ';
+$string['name'] = '名前';
+
+$string['msg_post_success'] = '投稿しました。';
+
 $string['import'] = 'Twitter/Email/Evernoteからインポートする';
 $string['facebookimport'] = 'Facebookからインポートする';
 
@@ -58,6 +64,7 @@ $string['camera'] = '写真を送信';
 $string['groupcard'] = 'グルーピング枠を追加';
 $string['sort'] = '重要だね!の多い順でソート';
 $string['sortbylike1'] = '面白いね!の多い順でソート';
+$string['post_card'] = 'カードを投稿';
 
 $string['important'] =  '重要だね';
 $string['interesting'] =  '面白いね';

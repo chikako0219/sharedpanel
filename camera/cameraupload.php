@@ -16,6 +16,10 @@
 //
 require_once('../../../config.php');
 
+global $DB;
+
+require_login();
+
 $id = required_param('id', PARAM_INT);
 $sharedpanelid = optional_param('n', 0, PARAM_INT);
 
@@ -25,7 +29,16 @@ $cameracomment = htmlspecialchars($cameracomment, ENT_QUOTES);
 $name = required_param('name', PARAM_TEXT);
 $name = htmlspecialchars($name, ENT_QUOTES);
 
-require_login();
+$instance = $DB->get_record('sharedpanel', ['id' => $n], '*', MUST_EXIST);
+
+//Save Card
+$cardObj = new \mod_sharedpanel\card($instance);
+$cardid = $cardObj->add($cameracomment, '0', 'camera');
+
+if (is_uploaded_file($_FILES["capture"]["tmp_name"])) {
+    $_FILES["capture"]["tmp_name"];
+    $cardObj->add_attachment($context, $cardid, $_FILES["capture"]["tmp_name"]);
+}
 
 header("Refresh: 3; URL=" . $CFG->wwwroot . "/mod/sharedpanel/view.php?id=" . $id);
 ?>

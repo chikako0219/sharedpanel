@@ -56,7 +56,7 @@ foreach ($events as $event) {
                 $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);
             }
         } else {
-            $cardObj->add_card($event->getText(), $event->getUserId(), 'line', $event->getReplyToken());
+            $cardObj->add($event->getText(), $event->getUserId(), 'line', $event->getReplyToken());
             $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder(
                 'メッセージを投稿しました。'
             );
@@ -79,7 +79,7 @@ foreach ($events as $event) {
             $url = \moodle_url::make_pluginfile_url($context->id, 'mod_sharedpanel', 'attachment', $event->getMessageId(), '/', 'attacnhemt.jpg');
             $html = html_writer::empty_tag('img', ['src' => $url->out(false), 'width' => '250px']);
 
-            $cardObj->add_card($html, $event->getUserId(), 'line', $event->getReplyToken());
+            $cardObj->add($html, $event->getUserId(), 'line', $event->getReplyToken());
 
             $textMessageBuilder = new LINEBot\MessageBuilder\TextMessageBuilder('画像を投稿しました。');
             $bot->replyMessage($event->getReplyToken(), $textMessageBuilder);

@@ -24,42 +24,15 @@ namespace mod_sharedpanel;
 
 global $CFG, $DB, $PAGE, $OUTPUT, $USER;
 
+use mod_sharedpanel\form\post_form;
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
-// --------------------------------------------------------------------------------
-
-//moodleform is defined in formslib.php
 require_once("$CFG->libdir/formslib.php");
 require_once("locallib.php");
 
 confirm_sesskey();
-
-class post_form extends \moodleform
-{
-    //Add elements to form
-    public function definition() {
-        global $CFG;
-
-        $mform = $this->_form; // Don't forget the underscore!
-        $cm = $this->_customdata['cm'];
-
-        $mform->addElement('editor', 'content', get_string('cardcontent', 'sharedpanel'));
-        $mform->setType('content', PARAM_RAW);
-        $mform->addRule('content', get_string('required'), 'required', null, 'client');
-
-        $mform->addElement('filepicker', 'userfile', get_string('file'), null, array('maxbytes' => 10 * 1000 * 1000, 'accepted_types' => '*'));
-
-        $mform->addElement('text', 'tag', get_string('tag'));
-        $mform->setType('tag', PARAM_NOTAGS);
-
-        $mform->addElement('hidden', 'id', $cm->id);
-        $mform->setType('id', PARAM_INT);
-
-        $this->add_action_buttons(true);
-
-    }
-}
 
 // --------------------------------------------------------------------------------
 
@@ -87,21 +60,17 @@ $mform = new post_form(null, array('cm' => $cm));
 //Form processing and displaying is done here
 if ($mform->is_cancelled()) {
     redirect(new \moodle_url('view.php', ['id' => $id]), "キャンセルしました。", 3);
-} else if ($fromform = $mform->get_data()) {
+} else if ($data = $mform->get_data()) {
     $cardObj = new card($sharedpanel);
 
-    $content = "";
-    $filecontent = $mform->get_file_content('userfile');
-    $tag = $fromform->tag;
-    if ($filecontent) {
-        $content .= \html_writer::empty_tag('img',
-            ['src' => 'data:image/gif;base64,' . mod_sharedpanel_compress_img($filecontent, 600), 'style' => 'width=85%']);
-        $content .= '<br>';
+    $tag = $data->tag;
+
+    $cardid = $cardObj->add($data->content["text"], fullname($USER->id), 'moodle');
+
+    // If attach file...
+    if ($filecontent = $mform->get_file_content('attachment')) {
+        $cardObj->add_attachment($context, $cardid, $filecontent, $mform->get_new_filename('attachment'));
     }
-
-    $content .= $fromform->content["text"];
-
-    $cardid = $cardObj->add_card($content, fullname($USER->id));
 
     if ($tag) {
         $tagObj = new tag($sharedpanel);

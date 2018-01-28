@@ -14,12 +14,12 @@ class card
         $this->error->message = "";
     }
 
-    function get_gcards($hidden = 0, $order = 'rating DESC') {
+    function get($cardid) {
         global $DB;
-        return $DB->get_records('sharedpanel_gcards', ['sharedpanelid' => $this->moduleinstance->id, 'hidden' => $hidden], $order);
+        return $DB->get_record('sharedpanel_cards', ['id' => $cardid]);
     }
 
-    function get_cards($order = 'like') {
+    function gets($order = 'like') {
         global $DB, $USER;
 
         $sql = "
@@ -30,12 +30,12 @@ class card
         $ltype = 0;
         if ($order === 'like') {
             $ltype = 0;
-            $sql .= " ORDER BY likes DESC, c.timecreated DESC";
+            $sql .= " ORDER BY likes DESC, c.timecreated DESC, c.gravity ASC";
         } else if ($order === 'newest') {
-            $sql .= " ORDER BY c.timecreated DESC";
+            $sql .= " ORDER BY c.timecreated DESC, c.gravity ASC";
         } else if ($order === 'important') {
             $ltype = 1;
-            $sql .= " ORDER BY likes DESC, c.timecreated DESC";
+            $sql .= " ORDER BY likes DESC, c.timecreated DESC, c.gravity ASC";
         }
 
         return $DB->get_records_sql($sql, ['userid' => $USER->id, 'ltype' => $ltype]);
@@ -53,7 +53,7 @@ class card
         return $DB->get_records('sharedpanel_card_tags', ['cardid' => $cardid]);
     }
 
-    function add_card($content, $sender, $inputsrc = 'moodle', $messageid = "", $timeupdated = "") {
+    function add($content, $sender, $inputsrc = 'moodle', $messageid = "", $timeupdated = "") {
         global $DB, $USER;
 
         $data = new \stdClass;
@@ -66,32 +66,45 @@ class card
         }
         $data->timecreated = time();
         $data->timemodified = time();
-        $data->rating = 0;
         $data->sender = $sender;
         $data->messageid = $messageid;
         $data->content = $content;
-        $data->comment = '';
         $data->hidden = 0;
         $data->inputsrc = $inputsrc;
-        $data->positionx = 0;
-        $data->positiony = 0;
+        $data->attachment_filename = '';
+        $cards = self::gets();
+        if (!$cards) {
+            $data->gravity = 0;
+        } else {
+            $card = end($cards);
+            $data->gravity = $card->gravity + 1;
+        }
 
         return $DB->insert_record('sharedpanel_cards', $data);
     }
 
-    function add_gcard($userid, $content) {
+    function add_attachment($context, $cardid, $content, $filename) {
         global $DB;
 
-        $data = new \stdClass;
-        $data->sharedpanelid = $this->moduleinstance->id;
-        $data->userid = $userid;
-        $data->timecreated = time();
-        $data->content = $content;
+        $fs = get_file_storage();
 
-        return $DB->insert_record('sharedpanel_gcards', $data);
+        $fileinfo = [
+            'contextid' => $context->id,
+            'component' => 'mod_sharedpanel',
+            'filearea' => 'attachment',
+            'itemid' => $cardid,
+            'filepath' => '/',
+            'filename' => $filename
+        ];
+        $fs->create_file_from_string($fileinfo, $content);
+
+        $card = self::get($cardid);
+        $card->attachment_filename = $filename;
+
+        return $DB->update_record('sharedpanel_cards', $card);
     }
 
-    function update_cards($cardid, $content) {
+    function update($cardid, $content) {
         global $DB;
 
         $data = new \stdClass();
@@ -101,7 +114,7 @@ class card
         return $DB->update_record('sharedpanel_cards', $data);
     }
 
-    function delete_card($cardid) {
+    function delete($cardid) {
         global $DB;
 
         $DB->delete_records('sharedpanel_card_likes', ['cardid' => $cardid]);
