@@ -87,11 +87,11 @@ echo get_string('sortedas', 'sharedpanel');
 echo \html_writer::start_div('btn-toolbar');
 
 echo html_writer::start_div('btn-group');
-echo html_writer::link(new moodle_url('view.php', ['id' => $id]), get_string('sort', 'sharedpanel'), ['class' => 'btn']);
+echo html_writer::link(new moodle_url('view.php', ['id' => $id]), get_string('sort', 'sharedpanel'), ['class' => 'btn btn-primary']);
 echo html_writer::end_div();
 
 echo html_writer::start_div('btn-group');
-echo html_writer::link(new moodle_url('view.php', ['id' => $id, 'sortby' => 1]), get_string('sortbylike1', 'sharedpanel'), ['class' => 'btn']);
+echo html_writer::link(new moodle_url('view.php', ['id' => $id, 'sortby' => 1]), get_string('sortbylike1', 'sharedpanel'), ['class' => 'btn btn-primary']);
 echo html_writer::end_div();
 
 echo html_writer::end_div();
@@ -101,14 +101,14 @@ echo html_writer::empty_tag('hr');
 
 echo \html_writer::start_div('btn-toolbar');
 echo html_writer::start_div('btn-group');
-echo html_writer::link(new moodle_url('camera/com.php', ['id' => $id, 'n' => $sharedpanel->id]), get_string('postmessage', 'sharedpanel'), ['class' => 'btn']);
+echo html_writer::link(new moodle_url('camera/com.php', ['id' => $id, 'n' => $sharedpanel->id]), get_string('postmessage', 'sharedpanel'), ['class' => 'btn btn-primary']);
 echo html_writer::end_div();
 echo html_writer::start_div('btn-group');
-echo html_writer::link(new moodle_url('line.php', ['id' => $id, 'n' => $sharedpanel->id]), get_string('postmessage_from_line', 'sharedpanel'), ['class' => 'btn']);
+echo html_writer::link(new moodle_url('line.php', ['id' => $id, 'n' => $sharedpanel->id]), get_string('postmessage_from_line', 'sharedpanel'), ['class' => 'btn btn-primary']);
 echo html_writer::end_div();
 echo html_writer::start_div('btn-group');
 echo html_writer::empty_tag('input',
-    ['type' => 'button', 'value' => get_string('print', 'sharedpanel'), 'onclick' => 'window.print()', 'style' => 'margin:1ex;', 'class' => 'btn']);
+    ['type' => 'button', 'value' => get_string('print', 'sharedpanel'), 'onclick' => 'window.print()', 'style' => 'margin:1ex;', 'class' => 'btn btn-primary']);
 echo html_writer::end_div();
 echo html_writer::end_div();
 
@@ -118,11 +118,11 @@ if (has_capability('moodle/course:manageactivities', $context)) {
     echo \html_writer::start_div('btn-toolbar');
 
     echo \html_writer::start_div('btn-group');
-    echo html_writer::link(new moodle_url('importcard.php', ['id' => $id]), get_string('import', 'sharedpanel'), ['class' => 'btn']);
+    echo html_writer::link(new moodle_url('importcard.php', ['id' => $id]), get_string('import', 'sharedpanel'), ['class' => 'btn btn-primary']);
     echo html_writer::end_div();
 
     echo \html_writer::start_div('btn-group');
-    echo html_writer::link(new moodle_url('post.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('post', 'sharedpanel'), ['class' => 'btn']);
+    echo html_writer::link(new moodle_url('post.php', ['id' => $id, 'sesskey' => sesskey()]), get_string('post', 'sharedpanel'), ['class' => 'btn btn-primary']);
     echo html_writer::end_div();
 
     echo html_writer::end_div();
