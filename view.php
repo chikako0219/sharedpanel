@@ -138,8 +138,8 @@ if ($sortby) {
     $cards = $cardObj->gets('important');
 }
 
-echo html_writer::start_div('', ['id' => '', 'class' => '']);
-echo html_writer::start_div('', ['id' => 'diagramContainer', 'class' => 'row-fluid']);
+echo html_writer::start_div('', ['id' => '', 'class' => 'container']);
+echo html_writer::start_div('', ['id' => 'diagramContainer', 'class' => 'row']);
 
 $leftpos = 420;
 $toppos = 370;
