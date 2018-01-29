@@ -48,7 +48,7 @@ class html_writer extends \html_writer
 
         $likeObj = new like($instance);
 
-        $html = \html_writer::start_div('card span3', ['id' => 'card' . $card->id]);
+        $html = \html_writer::start_div('card span3 col', ['id' => 'card' . $card->id]);
 
         //@TODO typeによって追加でclassを渡す。
         $tags = card::get_tags($card->id);

@@ -115,7 +115,6 @@
             <INDEXES>
                 <INDEX NAME="sharedpanelid" UNIQUE="false" FIELDS="sharedpanelid"/>
                 <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
-                <INDEX NAME="lineid" UNIQUE="false" FIELDS="lineid"/>
             </INDEXES>
         </TABLE>
     </TABLES>
