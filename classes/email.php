@@ -17,7 +17,7 @@ class email extends card
 
     function __construct($modinstance) {
         $this->email_addr = $modinstance->emailadr1;
-        $this->email_password = aes::get_aes_decrypt_string($modinstance->emailpas1, $modinstance->encryptionkey);
+        $this->email_password = $modinstance->emailpas1;
         $this->email_port = 993;
         $this->cardObj = new card($modinstance);
 
@@ -67,7 +67,8 @@ class email extends card
     public function import() {
         global $DB, $USER;
 
-        $mbox = imap_open('{' . $this->moduleinstance->emailhost . ':' . $this->moduleinstance->emailport . '/novalidate-cert/imap/ssl}' . "INBOX", $this->email_addr, $this->email_password, OP_READONLY);
+        $mailbox = '{' . $this->moduleinstance->emailhost . ':' . $this->moduleinstance->emailport . '/novalidate-cert/imap/ssl}' . "INBOX";
+        $mbox = imap_open($mailbox, $this->email_addr, $this->email_password, OP_READONLY);
         if (!$mbox) {
             $this->error->message = imap_last_error();
             return false;

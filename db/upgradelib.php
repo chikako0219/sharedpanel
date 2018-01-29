@@ -23,24 +23,3 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
-require_once(__DIR__ . '/../classes/aes.php');
-
-/**
- * Fill new field courseid in tables feedback_completed or feedback_completedtmp
- *
- * @param bool $tmp use for temporary table
- */
-function mod_sharedpanel_upgrade_encryptionkey($tmp = false) {
-    global $DB;
-
-    $sharedpanels = $DB->get_records('sharedpanel', ['encryptionkey' => 0]);
-    foreach ($sharedpanels as $sharedpanel) {
-        $dataobject = new stdClass();
-        $dataobject->id = $sharedpanel->id;
-        $dataobject->encryptionkey = \mod_sharedpanel\aes::generate_key();
-        $dataobject->emailpas1 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas1, $dataobject->encryptionkey);
-        $dataobject->emailpas2 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas2, $dataobject->encryptionkey);
-        $DB->update_record('sharedpanel', $dataobject);
-    }
-}

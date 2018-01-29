@@ -24,7 +24,7 @@ class card
 
         $sql = "
             SELECT *, (select count(*) from {sharedpanel_card_likes} l where l.userid = :userid and l.ltype = :ltype and l.cardid = c.id) likes 
-              FROM {sharedpanel_cards} c
+              FROM {sharedpanel_cards} c WHERE c.hidden = 0 
         ";
 
         $ltype = 0;
@@ -104,6 +104,27 @@ class card
         return $DB->update_record('sharedpanel_cards', $card);
     }
 
+    function add_attachment_by_pathname($context, $cardid, $filepath, $filename){
+        global $DB;
+
+        $fs = get_file_storage();
+
+        $fileinfo = [
+            'contextid' => $context->id,
+            'component' => 'mod_sharedpanel',
+            'filearea' => 'attachment',
+            'itemid' => $cardid,
+            'filepath' => '/',
+            'filename' => $filename
+        ];
+        $fs->create_file_from_pathname($fileinfo, $filepath);
+
+        $card = self::get($cardid);
+        $card->attachment_filename = $filename;
+
+        return $DB->update_record('sharedpanel_cards', $card);
+    }
+
     function update($cardid, $content) {
         global $DB;
 
@@ -117,8 +138,10 @@ class card
     function delete($cardid) {
         global $DB;
 
-        $DB->delete_records('sharedpanel_card_likes', ['cardid' => $cardid]);
-        return $DB->delete_records('sharedpanel_cards', ['id' => $cardid]);
+        $card = self::get($cardid);
+        $card->hidden = 1;
+
+        return $DB->update_record('sharedpanel_cards', $card);
     }
 
     function switch_hide_card($cardid) {

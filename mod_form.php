@@ -132,7 +132,7 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $instance = $this->get_instance();
         if ($instance) {
             $mform->addElement('html', '<h5>Webhook URL</h5>');
-            if (($_SERVER['HTTPS'] === 'on')) {
+            if ((array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on')) {
                 $mform->addElement('html', '<div class="well">' . $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instance . '</div>');
             } else {
                 $mform->addElement('html', '<div class="well">LINEインポートはHTTPS環境下でしか利用できません。MoodleサーバをHTTPS環境下で動作させる必要があります。</div>');

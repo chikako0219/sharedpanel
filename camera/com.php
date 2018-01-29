@@ -20,7 +20,11 @@ if (!is_null($content)) {
     $instance = $DB->get_record('sharedpanel', ['id' => $instanceid]);
 
     $cardObj = new card($instance);
-    $cardObj->add($content, $name, 'camera');
+    $cardid = $cardObj->add($content, $name, 'camera');
+
+    if (array_key_exists('capture', $_FILES)) {
+        $cardObj->add_attachment_by_pathname($content, $cardid, $_FILES['tmp_name'], $_FILES['name']);
+    }
 
     echo html_writer::div(get_string('msg_post_success', 'mod_sharedpanel'));
 }

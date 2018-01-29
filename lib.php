@@ -68,11 +68,6 @@ function sharedpanel_add_instance(stdClass $sharedpanel, mod_sharedpanel_mod_for
     global $DB;
 
     $sharedpanel->timecreated = time();
-    $encryption_key = \mod_sharedpanel\aes::generate_key();
-
-    $sharedpanel->encryptionkey = $encryption_key;
-    $sharedpanel->emailpas1 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas1, $sharedpanel->encryptionkey);
-    $sharedpanel->emailpas2 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas2, $sharedpanel->encryptionkey);
 
     return $DB->insert_record('sharedpanel', $sharedpanel);
 }
@@ -95,8 +90,6 @@ function sharedpanel_update_instance(stdClass $sharedpanel, mod_sharedpanel_mod_
 
     $sharedpanel->id = $sharedpanel->instance;
     $sharedpanel->timemodified = time();
-    $sharedpanel->emailpas1 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas1, $data->encryptionkey);
-    $sharedpanel->emailpas2 = \mod_sharedpanel\aes::get_aes_encrypt_string($sharedpanel->emailpas2, $data->encryptionkey);
 
     return $DB->update_record('sharedpanel', $sharedpanel);
 }
@@ -125,7 +118,6 @@ function sharedpanel_delete_instance($id) {
     }
 
     $DB->delete_records('sharedpanel_cards', ['sharedpanelid' => $sharedpanel->id]);
-    $DB->delete_records('sharedpanel_gcards', ['sharedpanelid' => $sharedpanel->id]);
     $DB->delete_records('sharedpanel_lineids', ['sharedpanelid' => $sharedpanel->id]);
     $DB->delete_records('sharedpanel', ['id' => $sharedpanel->id]);
 

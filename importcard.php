@@ -126,7 +126,7 @@ $facebookObj = new facebook($sharedpanel);
 if($facebookObj->is_enabled()){
     $cardids_facebook = $facebookObj->import();
     if ($cardids_facebook != false || is_null($cardids_facebook) || is_array($cardids_facebook)) {
-        if (count($cardids_evernote) == 0) {
+        if (count($cardids_facebook) == 0) {
             echo html_writer::message(notification::INFO, 'Facebook:' . '新規はありませんでした。');
         } else {
             echo html_writer::message(notification::SUCCESS, 'Facebook:' . count($cardids_facebook) . '件をインポートしました。');

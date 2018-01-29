@@ -63,8 +63,8 @@ class mod_sharedpanel_upgradelib_testcase extends advanced_testcase
         $sharedpanels = $DB->get_records('sharedpanel');
         $i = 0;
         foreach($sharedpanels as $sharedpanel){
-            $emailpas1 = \mod_sharedpanel\aes::get_aes_decrypt_string($sharedpanel->emailpas1, $sharedpanel->encryptionkey);
-            $emailpas2 = \mod_sharedpanel\aes::get_aes_decrypt_string($sharedpanel->emailpas2, $sharedpanel->encryptionkey);
+            $emailpas1 = $sharedpanel->emailpas1;
+            $emailpas2 = $sharedpanel->emailpas2;
 
             $this->assertEquals('emailpas' . $i, $emailpas1);
             $this->assertEquals('emailpas' . $i, $emailpas2);
