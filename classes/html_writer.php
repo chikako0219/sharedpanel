@@ -45,14 +45,33 @@ class html_writer extends \html_writer
 
     public static function card($instance, $context, $card) {
         global $USER, $OUTPUT;
+        switch ($card->inputsrc) {
+            case "facebook" :
+                $class = "-facebook";
+                break;
+            case "twitter" :
+                $class = "-twitter";
+                break;
+            case "moodle" :
+                $class = "-moodle";
+                break;
+            case "line" :
+                $class = "-line";
+                break;
+            case "camera" :
+                $class = "-camera";
+                break;
+            default :
+                $class = "";
+                break;
+        }
 
         $likeObj = new like($instance);
 
         $html = \html_writer::start_div('card span3 col-md-3', ['id' => 'card' . $card->id]);
 
-        //@TODO typeによって追加でclassを渡す。
         $tags = card::get_tags($card->id);
-        $html .= html_writer::start_div('card-header-common');
+        $html .= html_writer::start_div('card-header card-header' . $class);
 
         if (has_capability('moodle/course:manageactivities', $context)) {
             $dellink = new \moodle_url('deletecard.php', ['id' => $context->instanceid, 'c' => $card->id, 'sesskey' => sesskey()]);
@@ -66,11 +85,12 @@ class html_writer extends \html_writer
         }
         $html .= html_writer::end_div();
 
-        $html .= html_writer::start_div('card-body');
+        $html .= html_writer::start_div('card-body card-body' . $class);
         $html .= html_writer::span($card->content);
         $html .= html_writer::span(
             '<br/><br/>' . userdate($card->timeposted) . "<br/>" . $card->sender . "<br/> from " . $card->inputsrc);
 
+        //If attachment exists
         if (!is_null($card->attachment_filename) && !empty($card->attachment_filename)) {
             $fs = get_file_storage();
             $file = $fs->get_file(
@@ -82,23 +102,36 @@ class html_writer extends \html_writer
                 $card->attachment_filename
             );
 
-            $url = \moodle_url::make_pluginfile_url(
-                $context->id,
-                $file->get_component(),
-                $file->get_filearea(),
-                $file->get_itemid(),
-                $file->get_filepath(),
-                $file->get_filename()
-            );
-
-            $html .= html_writer::span(
-                html_writer::empty_tag('img', ['src' => $url->out(), 'class' => 'card-body-attachment'])
-            );
+            //Output image attachment or make download link
+            if ($file->get_mimetype() === 'image/png' || $file->get_mimetype() === 'image/jpeg' || $file->get_mimetype() === 'image/gif') {
+                $url = \moodle_url::make_pluginfile_url(
+                    $context->id,
+                    $file->get_component(),
+                    $file->get_filearea(),
+                    $file->get_itemid(),
+                    $file->get_filepath(),
+                    $file->get_filename()
+                );
+                $html .= html_writer::span(
+                    html_writer::empty_tag('img', ['src' => $url->out(), 'class' => 'card-body-attachment'])
+                );
+            } else {
+                $url = \moodle_url::make_pluginfile_url(
+                    $context->id,
+                    $file->get_component(),
+                    $file->get_filearea(),
+                    $file->get_itemid(),
+                    $file->get_filepath(),
+                    $file->get_filename(),
+                    true
+                );
+                $html .= html_writer::span(html_writer::link($url, get_string('download'), ['class' => 'btn btn-success']));
+            }
         }
 
         $html .= html_writer::end_div();
 
-        $html .= html_writer::start_div('card-footer');
+        $html .= html_writer::start_div('card-footer card-footer' . $class);
         $like = $likeObj->get($card->id, $USER->id, 0);
 
         $like_count_0 = $likeObj->count($card->id, null, 0);

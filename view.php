@@ -44,28 +44,12 @@ if ($id) {
 $context = context_module::instance($cm->id);
 require_login();
 
-// Groupカード（カテゴリ分け）を表示するかどうか
-$sharedpanel_dispgcard = true;
-// ２つ目のいいねを使うか
-$sharedpanel_likes2 = true;
-// sender を表示するかどうか
-$dispname = false;
-
-// パネル毎にCSSを変える ... 仮実装
-//$styfile= $CFG->dataroot.'/sharedpanel/style.css.'.$sharedpanel->id;
-$styfile = __DIR__ . '/css/style.css.' . $sharedpanel->id;
-if (file_exists($styfile)) {
-    $PAGE->requires->css($styfile);
-} else {
-    $PAGE->requires->css(new moodle_url("style.css"));
-}
+$PAGE->requires->css(new moodle_url("style.css"));
 
 // Print the page header.
 $PAGE->requires->jquery();
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->jquery_plugin('ui-css');
-//$PAGE->requires->js(new moodle_url('js/jsPlumb-2.1.5-min.js'));
-//$PAGE->requires->js(new moodle_url('js/card_admin.js'));
 
 $PAGE->set_cm($cm);
 $PAGE->set_context($context);
@@ -130,7 +114,6 @@ if (has_capability('moodle/course:manageactivities', $context)) {
 
 echo html_writer::empty_tag('hr');
 
-// CARDのデータをDBから取得
 $ratingmap = [];
 if ($sortby) {
     $cards = $cardObj->gets('like');
@@ -141,11 +124,9 @@ if ($sortby) {
 echo html_writer::start_div('', ['id' => '', 'class' => 'container']);
 echo html_writer::start_div('', ['id' => 'diagramContainer', 'class' => 'row']);
 
-$leftpos = 420;
-$toppos = 370;
-foreach ($cards as $card) {  // 各カード
+foreach ($cards as $card) {
     echo \mod_sharedpanel\html_writer::card($sharedpanel, $context, $card);
-}  // foreach ($cards as $card)
+}
 echo html_writer::end_div();
 echo html_writer::end_div();
 

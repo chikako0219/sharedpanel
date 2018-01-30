@@ -4,12 +4,15 @@
     height: auto;
 }
 
+/**
+Card general
+ */
 .card {
     padding: 15px;
     margin-left: 0 !important;
 }
 
-.card-header-common {
+.card-header {
     word-wrap: break-word;
     width: 100%;
     height: 30px;
@@ -47,298 +50,116 @@
     padding: 5px;
 }
 
+/**
+Card facebook
+ */
+.card-header-facebook {
+    background-color: #F0FFFF;
+}
+
+.card-body-facebook {
+    background-color: #F0FFFF;
+}
+
+.card-footer-facebook {
+    background-color: #F0FFFF;
+}
+
+/**
+Card evernote
+ */
+.card-header-evernote {
+    background-color: #4E20FF;
+}
+
+.card-body-evernote {
+    background-color: #4E20FF;
+    border-color: #FE201F;
+}
+
+.card-footer-evernote {
+    background-color: #F0FFFF;
+    border-color: #1E90FF;
+}
+
+/**
+Card email
+ */
+.card-header-email {
+    background-color: #1E90FF;
+}
+
+.card-body-email {
+    background-color: #1E90FF;
+    border-color: #1E90FF;
+}
+
+.card-footer-email {
+    background-color: #F0FFFF;
+    border-color: #1E90FF;
+}
+
+/**
+Card Twitter
+ */
+.card-header-twitter {
+    background-color: #1e90ff6b;
+}
+
+.card-body-twitter {
+    background-color: #1e90ff6b;
+}
+
+.card-footer-twitter {
+    background-color: #1e90ff6b;
+}
+
+/**
+Card Moodle
+ */
+/*Moodle-Direct*/
+.card-header-moodle {
+    background-color: #1e97ff9c;
+}
+
+.card-body-moodle {
+    background-color: #1e97ff9c;
+}
+
+.card-footer-moodle {
+    background-color: #1e97ff9c;
+}
+
+/**
+Card Camera
+ */
+.card-header-camera {
+    background-color: #F0FFFF;
+}
+
+.card-body-camera {
+    background-color: #F0FFFF;
+}
+
+.card-footer-camera {
+    background-color: #F0FFFF;
+}
+
+/**
+Card LINE
+ */
+.card-header-line {
+    background-color: #1E90FF;
+}
+
+.card-body-line {
+    background-color: #1E90FF;
+}
+
+.card-footer-line {
+    background-color: #F0FFFF;
+}
+
 .card-icon-del {
     background-color: lightblue;
-}
-
-/*全体部分　共通設定スタイル*/
-.all-style0 {
-    word-wrap: break-word;
-    float: left;
-    border-collapse: separate;
-    border-spacing: 3px;
-    margin-top: 10px;
-}
-
-/*タグ部分　共通設定スタイル*/
-/*view.phpの高低が優先されているっぽい*/
-.all-style1 {
-    word-wrap: break-word;
-    width: 260px;
-    height: 20px;
-    font-size: small;
-    text-align: left;
-    border-style: solid;
-    padding: 10px;
-}
-
-/*本文　共通設定スタイル*/
-/*view.phpで高低が定義されているっぽい*/
-.all-style2 {
-    width: 260px;
-    height: 350px;
-    background-color: #ddeeff;
-    font-size: x-large;
-    line-height: 110%;
-    text-align: left;
-    border-style: solid;
-    padding: 10px;
-}
-
-.all-style2::-webkit-scrollbar {
-}
-
-/*いいね・削除ボタン　共通設定スタイル*/
-.all-style3 {
-    width: 260px;
-    height: 60px;
-    background-color: black;
-    color: white;
-    font-size: small;
-    text-align: left;
-    border-style: solid;
-    border-color: black;
-    padding: 10px;
-    font: white;
-}
-
-.facebook-style0 {
-    word-wrap: break-word;
-    float: left;
-    border-collapse: separate;
-    border-spacing: 3px;
-    opacity: 0.8;
-}
-
-/*Facebookタグ部分　個別設定スタイル*/
-/*以下，色以外について削除．色以外はall_style1で統一*/
-.facebook-style1 {
-    word-wrap: break-word;
-    width: 260px;
-    height: 20px;
-    background-color: #1E90FF;
-    font-size: small;
-    text-align: left;
-    border: #1E90FF;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-    font: white;
-}
-
-/*Facebook本文部分　個別設定スタイル*/
-/*以下，色以外について削除．色以外はall_style2で統一*/
-.facebook-style2 {
-    background-color: #F0FFFF;
-    font-size: x-large;
-    text-align: left;
-    border: #1E90FF;
-    overflow: scroll;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-}
-
-/*Evernote*/
-.evernote-style0 {
-    word-wrap: break-word;
-    float: left;
-    border-collapse: separate;
-    border-spacing: 3px;
-    opacity: 0.8;
-}
-
-.evernote-style1 {
-    word-wrap: break-word;
-    width: 260px;
-    height: 20px;
-    background-color: #4E20FF;
-    font-size: small;
-    text-align: left;
-    border: #FE201F;
-    border-style: solid;
-    border-color: #FE902F;
-    padding: 10px;
-    font: white;
-}
-
-.evernote-style2 {
-    background-color: #F0FFFF;
-    font-size: x-large;
-    text-align: left;
-    border: #1E90FF;
-    overflow: scroll;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-}
-
-/*Mail*/
-.email-style0 {
-    word-wrap: break-word;
-    float: left;
-    border-collapse: separate;
-    border-spacing: 3px;
-    opacity: 0.8;
-}
-
-.email-style1 {
-    word-wrap: break-word;
-    width: 260px;
-    height: 20px;
-    background-color: #1E90FF;
-    font-size: small;
-    text-align: left;
-    border: #1E90FF;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-    font: white;
-}
-
-.email-style2 {
-    background-color: #F0FFFF;
-    font-size: x-large;
-    text-align: left;
-    border: #1E90FF;
-    overflow: scroll;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-}
-
-/*Twitter*/
-.twitter-style0 {
-    word-wrap: break-word;
-    float: left;
-    border-collapse: separate;
-    border-spacing: 3px;
-    opacity: 0.8;
-}
-
-.twitter-style1 {
-    word-wrap: break-word;
-    width: 260px;
-    height: 20px;
-    background-color: #1E90FF;
-    font-size: small;
-    text-align: left;
-    border: #1E90FF;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-    font: white;
-}
-
-.twitter-style2 {
-    background-color: #F0FFFF;
-    font-size: x-large;
-    text-align: left;
-    border: #1E90FF;
-    overflow: scroll;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-}
-
-/*Moodle-Direct*/
-.moodlepost-style0 {
-    word-wrap: break-word;
-    float: left;
-    border-collapse: separate;
-    border-spacing: 3px;
-    opacity: 0.8;
-}
-
-.moodlepost-style1 {
-    word-wrap: break-word;
-    width: 260px;
-    height: 20px;
-    background-color: #1E90FF;
-    font-size: small;
-    text-align: left;
-    border: #1E90FF;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-    font: white;
-}
-
-.moodlepost-style2 {
-    background-color: #F0FFFF;
-    font-size: x-large;
-    text-align: left;
-    border: #1E90FF;
-    overflow: scroll;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-}
-
-/*Application*/
-.camera-style0 {
-    word-wrap: break-word;
-    float: left;
-    border-collapse: separate;
-    border-spacing: 3px;
-    opacity: 0.8;
-}
-
-.camera-style1 {
-    word-wrap: break-word;
-    width: 260px;
-    height: 20px;
-    background-color: #1E90FF;
-    font-size: small;
-    text-align: left;
-    border: #1E90FF;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-    font: white;
-}
-
-.camera-style2 {
-    background-color: #F0FFFF;
-    font-size: x-large;
-    text-align: left;
-    border: #1E90FF;
-    overflow: scroll;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-}
-
-/*Application*/
-.LINE-style0 {
-    word-wrap: break-word;
-    float: left;
-    border-collapse: separate;
-    border-spacing: 3px;
-    opacity: 0.8;
-}
-
-.LINE-style1 {
-    word-wrap: break-word;
-    width: 260px;
-    height: 20px;
-    background-color: #1E90FF;
-    font-size: small;
-    text-align: left;
-    border: #1E90FF;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
-    font: white;
-}
-
-.LINE-style2 {
-    background-color: #F0FFFF;
-    font-size: x-large;
-    text-align: left;
-    border: #1E90FF;
-    overflow: scroll;
-    border-style: solid;
-    border-color: #1E90FF;
-    padding: 10px;
 }
