@@ -149,15 +149,15 @@ Card Camera
 Card LINE
  */
 .card-header-line {
-    background-color: #1E90FF;
+    background-color: #1e90ff54;
 }
 
 .card-body-line {
-    background-color: #1E90FF;
+    background-color: #1e90ff54;
 }
 
 .card-footer-line {
-    background-color: #F0FFFF;
+    background-color: #1e90ff54;
 }
 
 .card-icon-del {
