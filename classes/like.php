@@ -53,10 +53,14 @@ class like
         return $DB->delete_records('sharedpanel_card_likes', ['id' => $like->id]);
     }
 
-    function count($cardid, $userid, $ltype = null) {
+    function count($cardid, $userid = null, $ltype = null) {
         global $DB;
 
-        $cond = ['cardid' => $cardid, 'userid' => $userid];
+        if (is_null($userid)) {
+            $cond = ['cardid' => $cardid];
+        } else {
+            $cond = ['cardid' => $cardid, 'userid' => $userid];
+        }
         if (!is_null($ltype) && $ltype == 0) {
             $cond['ltype'] = 0;
         } elseif (!is_null($ltype) && $ltype == 1) {
@@ -66,7 +70,7 @@ class like
         return $DB->count_records('sharedpanel_card_likes', $cond);
     }
 
-    function is_liked($cardid, $userid, $ltype = null){
+    function is_liked($cardid, $userid, $ltype = null) {
         global $DB;
         return $DB->record_exists('sharedpanel_card_likes', ['cardid' => $cardid, 'userid' => $userid, 'ltype' => $ltype]);
     }

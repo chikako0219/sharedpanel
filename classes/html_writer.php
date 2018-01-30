@@ -101,8 +101,10 @@ class html_writer extends \html_writer
         $html .= html_writer::start_div('card-footer');
         $like = $likeObj->get($card->id, $USER->id, 0);
 
-        $like_count_0 = $likeObj->count($card->id, $USER->id, 0);
+        $like_count_0 = $likeObj->count($card->id, null, 0);
+        $like_count_0_all = $likeObj->count($card->id, $USER->id, 0);
         $like_count_1 = $likeObj->count($card->id, $USER->id, 1);
+        $like_count_1_all = $likeObj->count($card->id, null, 1);
 
         if ($like != false && $like_count_0 > 0) {
             $like_icon_0 = html_writer::span('✓', '', ['style' => 'font-size:17px;color:red;vertical-align:bottom;']);
@@ -125,11 +127,11 @@ class html_writer extends \html_writer
             get_string('important', 'sharedpanel') . $like_icon_1
         );
 
-        if ($like_count_0 > 0) {
+        if ($like_count_0_all > 0) {
             $link_like .= html_writer::empty_tag('img', ['src' => 'red.png']) . "($like_count_0)";
         }
         $html .= html_writer::div($link_like);
-        if ($like_count_1 > 0) {
+        if ($like_count_1_all > 0) {
             $link_unlike .= html_writer::empty_tag('img', ['src' => 'blue.png']) . "($like_count_1)";
         }
         $html .= html_writer::div($link_unlike);
