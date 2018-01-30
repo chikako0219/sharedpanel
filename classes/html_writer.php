@@ -140,15 +140,15 @@ class html_writer extends \html_writer
         $like_count_1_all = $likeObj->count($card->id, null, 1);
 
         if ($like != false && $like_count_0 > 0) {
-            $like_icon_0 = html_writer::span('✓', '', ['style' => 'font-size:17px;color:red;vertical-align:bottom;']);
+            $like_icon_0 = html_writer::span('✓', '', ['style' => 'color:red;']);
         } else {
-            $like_icon_0 = html_writer::span('□', '', ['style' => 'font-size:27px;color:red;vertical-align:middle;']);
+            $like_icon_0 = html_writer::span('□', '', ['style' => 'color:red;']);
         }
 
         if ($like != false && $like_count_1 > 0) {
-            $like_icon_1 = html_writer::span('✓', '', ['style' => 'font-size:17px;color:red;vertical-align:bottom;']);
+            $like_icon_1 = html_writer::span('✓', '', ['style' => 'color:red;']);
         } else {
-            $like_icon_1 = html_writer::span('□', '', ['style' => 'font-size:27px;color:red;vertical-align:middle;']);
+            $like_icon_1 = html_writer::span('□', '', ['style' => 'color:red;']);
         }
 
         $link_like = html_writer::link(
