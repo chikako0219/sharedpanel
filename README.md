@@ -47,9 +47,9 @@ $ php /path/to/moodle/admin/cli/upgrade.php
 # Facebook/Twitter/Mail(IMAPS) Integrations
 Shared Panel allows to import cards from Facebook, Twitter and Email(IMAPS). For more information about setting, please refer below.
 
-* [[Facebook]]
-* [[Twitter]]
-* [[Email]]
+* [Facebook](https://github.com/chikako0219/sharedpanel/wiki/Facebook)
+* [Twitter](https://github.com/chikako0219/sharedpanel/wiki/Twitter)
+* [Email](https://github.com/chikako0219/sharedpanel/wiki/Email)
 
 # Author
 Chikako Nagaoka & KITA Toshihiro
