@@ -1,15 +1,9 @@
 [![Build Status](https://travis-ci.org/yuesan/sharedpanel.svg?branch=master)](https://travis-ci.org/yuesan/sharedpanel)
 
-# SharedPanel
+# Shared Panel
 
-Please note that this versin of sharedpanel needs facebook graph API account
+Please note that this version of Shared Panell needs facebook graph API account
 and Twitter API account if you want to import post from Facebook and Twitter.
-
-This package includes "twitteroauth.php" and "OAuth.php".
-See the license description in each subdirectory.
-Except these subdirectories, SharedPanel is licensed under GPL v3 or later.
-
-http://www.gnu.org/copyleft/gpl.html
 
 In this Plugin, you can do:
 
@@ -21,13 +15,34 @@ In this Plugin, you can do:
 Input texts and pictures to Moodle directly without logging in Moodle.
 
 # How to install
+## Download Shared Panel
+You can download Shared Panel from github.
+We highly recommend to download from "Release" tag.
 
-1) Download SharedPanel plugin to your Moodle server from following URI.
-2) Unzip sharedpanel.zip and move sharedpanel folder into Moodle mod/ folder,
-   and as admin click 'Site administration - Notifications' to let Moodle install sharedpanel
-   (like a typical module installation).
-3) Get Access Token
-If you want to import post from Facebook and Twitter, you need to get Access Token.
+### Download from Release tag (Recommend)
+Download latest Shared Panel from  `Source code (zip)`. 
+https://github.com/chikako0219/sharedpanel/releases
+
+### Download from git master branch (For developer)
+
+``` shell
+$ git clone https://github.com/chikako0219/sharedpanel.git /path/to/moodle/mod/sharedpanel
+```
+
+### Unzip and deploy to Moodle
+In this case, filename is `sharedpanel.zip`. Please rewrite filename.
+
+```
+$ unzip sharedpanel.zip /path/to/moodle/mod/sharedpanel
+```
+
+## Run install wizard
+
+Login to Moodle as admin and run installation. Or, you can install with cli.
+
+``` shell
+$ php /path/to/moodle/admin/cli/upgrade.php
+```
 
 # Facebook/Twitter/Mail(IMAPS) Integrations
 Shared Panel allows to import cards from Facebook, Twitter and Email(IMAPS). For more information about setting, please refer below.
@@ -45,7 +60,7 @@ Chikako Nagaoka & KITA Toshihiro
 # License
 GNU GPL v3
 
-# Libries
+# Libraries
 Shared Panel is using libraries below.
 
 ## facebook/graph-sdk
@@ -106,4 +121,3 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations
 under the License.
 ```
-
