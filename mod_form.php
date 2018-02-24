@@ -86,6 +86,9 @@ class mod_sharedpanel_mod_form extends moodleform_mod
 
         $mform->addElement('text', 'emailport', 'IMAPサーバポート番号');
         $mform->setType('emailport', PARAM_INT);
+        $mform->setDefault('emailport', 143);
+
+        $mform->addElement('advcheckbox', 'emailisssl', 'SSLを使用する');
 
         $mform->addElement('passwordunmask', 'emailpas1', 'パスワード');
         $mform->setType('emailpas1', PARAM_TEXT);

@@ -40,7 +40,22 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_sharedpanel_upgrade($oldversion) {
     global $DB;
 
-    $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
+    $dbman = $DB->get_manager();
+    if ($oldversion < 2018022301) {
+        $table = new xmldb_table('sharedpanel');
+        $field = new xmldb_field('emailisssl', XMLDB_TYPE_INTEGER, '1', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'emailhost');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('emailport', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '443', 'emailisssl');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2018022301, 'sharedpanel');
+    }
+
 
     return true;
 }

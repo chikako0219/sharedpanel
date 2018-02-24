@@ -63,7 +63,13 @@ class evernote extends card
     public function import() {
         global $DB, $USER;
 
-        $mbox = imap_open('{' . $this->moduleinstance->emailhost . ':' . $this->moduleinstance->emailport . '/novalidate-cert/imap/ssl}' . "INBOX", $this->email_addr, $this->email_password, OP_READONLY);
+        if ($this->moduleinstance->emailisssl === '1') {
+            $mailbox = '{' . $this->moduleinstance->emailhost . ':' . $this->moduleinstance->emailport . '/novalidate-cert/imap/ssl}' . "INBOX";
+        } else {
+            $mailbox = '{' . $this->moduleinstance->emailhost . ':' . $this->moduleinstance->emailport . '/novalidate-cert/imap}' . "INBOX";
+        }
+
+        $mbox = imap_open($mailbox, $this->email_addr, $this->email_password, OP_READONLY);
         if (!$mbox) {
             $this->error->message = imap_last_error();
             return false;

@@ -22,6 +22,7 @@
                 <FIELD NAME="emailadr1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailpas1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailhost" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="emailisssl" TYPE="int" LENGTH="1" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailport" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailkey1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="fbgroup1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
