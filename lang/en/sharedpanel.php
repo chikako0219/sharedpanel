@@ -92,3 +92,37 @@ $string['TWaccessToken'] = 'Twitter accessToken';
 $string['TWaccessToken_help'] = 'Twitter accessToken';
 $string['TWaccessTokenSecret'] = 'Twitter accessTokenSecret';
 $string['TWaccessTokenSecret_help'] = 'Twitter accessTokenSecret';
+
+$string['line_your_line'] = 'あなたのLINE';
+$string['line_lineid_required'] = 'LINE IDは必須項目です。';
+
+$string['upload_required_comment'] = 'コメントは必須です';
+$string['upload_optional_name'] = '名前(任意)';
+
+$string['deletecard_no_permission'] = 'あなたはこのカードを削除することが出来ません。';
+$string['deletecard_delete_success'] = 'カード #{$a}を削除(非表示)にしました。';
+
+$string['import_twitter_no_tweets'] = '新規ツイートはありませんでした。';
+$string['import_mail_no_mails'] = '新規メールはありませんでした。';
+$string['import_no_new'] = '{$a}:新規はありませんでした。';
+$string['import_success'] = '{$a->source}:{$a->count}件インポートに成功しました。';
+$string['import_failed'] = '{$a}:インポートに失敗しました。';
+$string['import_no_authinfo'] = '{$a}:認証情報が設定されていないため、スキップします。';
+$string['import_finished'] = 'インポート処理が完了しました。インポートした件数は{$a}件です。';
+
+$string['form_import_tweet_hashtag'] = 'インポートするTweetのハッシュタグ';
+$string['form_emailadr1'] = 'インポート対象のメールアドレス';
+$string['form_emailadr2'] = 'インポート対象のメールアドレス(Evernote用)';
+$string['form_emailkey1'] = 'メール表題に含まれるキーワード';
+$string['form_emailkey2'] = 'メール表題に含まれるキーワード(Evernote用)';
+$string['form_emailpas2'] = 'パスワード(Evernote用)';
+$string['form_emailhost'] = 'IMAPサーバURI';
+$string['form_emailport'] = 'IMAPサーバポート番号';
+$string['form_emailisssl'] = 'SSLを使用する';
+$string['form_password'] = 'パスワード';
+$string['form_fbgroup1'] = 'FacebookグループID';
+
+$string['form_line_warning_https'] = 'LINEインポートはHTTPS環境下でしか利用できません。MoodleサーバをHTTPS環境下で動作させる必要があります。';
+
+$string['post_cancel'] = 'キャンセルしました。';
+$string['post_saved'] = '保存されました。';

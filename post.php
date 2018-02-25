@@ -59,7 +59,7 @@ $mform = new post_form(null, array('cm' => $cm));
 
 //Form processing and displaying is done here
 if ($mform->is_cancelled()) {
-    redirect(new \moodle_url('view.php', ['id' => $id]), "キャンセルしました。", 3);
+    redirect(new \moodle_url('view.php', ['id' => $id]), get_string('post_cancel', 'mod_sharedpanel'), 3);
 } else if ($data = $mform->get_data()) {
     $cardObj = new card($sharedpanel);
 
@@ -81,7 +81,7 @@ if ($mform->is_cancelled()) {
         }
     }
 
-    redirect(new \moodle_url('view.php', ['id' => $id]), "保存されました。", 5);
+    redirect(new \moodle_url('view.php', ['id' => $id]), get_string('post_saved', 'mod_sharedpanel'), 5);
 } else {
     echo $OUTPUT->header();
     $mform->display();

@@ -21,7 +21,7 @@ class line_form extends \moodleform
         $mform->addElement("hidden", "n", $instanceid);
         $mform->setType("n", PARAM_INT);
 
-        $mform->addElement('header', 'header_question', 'あなたのLINE');
+        $mform->addElement('header', 'header_question', get_string('line_your_line', 'mod_sharedpanel'));
         $mform->setExpanded('header_question');
 
         $mform->addElement('text', 'lineid', 'LINE ID');
@@ -30,8 +30,8 @@ class line_form extends \moodleform
         if ($line = $lineidObj->get($USER->id)) {
             $mform->setDefault('lineid', $line->lineid);
         }
-        $mform->addRule('lineid', 'LINE IDは必須です', 'required');
+        $mform->addRule('lineid', get_string('line_lineid_required', 'mod_sharedpanel'), 'required');
 
-        $this->add_action_buttons(true, "保存する");
+        $this->add_action_buttons(true, get_string('save', 'core'));
     }
 }

@@ -63,17 +63,20 @@ if ($twitterObj->is_enabled()) {
     $cardids_twitter = $twitterObj->import();
     if ($cardids_twitter != false || is_null($cardids_twitter) || is_array($cardids_twitter)) {
         if (count($cardids_twitter) == 0) {
-            echo html_writer::message(notification::INFO, 'Twitter:' . '新規ツイートはありませんでした。');
+            echo html_writer::message(notification::INFO, get_string('import_twitter_no_tweets', 'mod_sharedpanel'));
         } else {
-            echo html_writer::message(notification::SUCCESS, 'Twitter:' . 'インポートに成功しました。');
+            $str = new \stdClass();
+            $str->source = 'Twitter';
+            $str->count = count($cardids_twitter);
+            echo html_writer::message(notification::SUCCESS, get_string('import_success', 'mod_sharedpanel', $str));
         }
     } else {
-        echo html_writer::message(notification::ERROR, 'Twitter:' . 'インポートに失敗しました。');
+        echo html_writer::message(notification::ERROR, get_string('import_failed', 'mod_sharedpanel', 'Twitter'));
         $error = $twitterObj->get_error();
         debugging($error->code . ":" . $error->message);
     }
 } else {
-    echo html_writer::message(notification::INFO, 'Twitter:' . '認証情報が設定されていないため、スキップします。');
+    echo html_writer::message(notification::INFO, get_string('import_no_authinfo', 'mod_sharedpanel', 'Twitter'));
 }
 
 /**
@@ -85,17 +88,20 @@ if ($emailObj->is_enabled()) {
 
     if ($cardids_emails != false || is_null($cardids_emails) || is_array($cardids_emails)) {
         if (count($cardids_emails) == 0) {
-            echo html_writer::message(notification::INFO, 'メール:' . '新規メールはありませんでした。');
+            echo html_writer::message(notification::INFO, get_string('import_mail_no_mails', 'mod_sharedpanel'));
         } else {
-            echo html_writer::message(notification::SUCCESS, 'メール:' . count($cardids_emails) . '件をメールからインポートしました。');
+            $str = new \stdClass();
+            $str->count = count($cardids_emails);
+            $str->source = 'email';
+            echo html_writer::message(notification::SUCCESS, get_string('import_success', 'mod_sharedpanel', $str));
         }
     } else {
-        echo html_writer::message(notification::ERROR, 'メール:' . 'インポートに失敗しました。');
+        echo html_writer::message(notification::ERROR,  get_string('import_failed', 'mod_sharedpanel', 'mail'));
         $error = $emailObj->get_error();
         debugging($error->code . ":" . $error->message);
     }
 } else {
-    echo html_writer::message(notification::INFO, 'メール:' . '認証情報が設定されていないため、スキップします。');
+    echo html_writer::message(notification::INFO, get_string('import_no_authinfo', 'mod_sharedpanel', 'mail'));
 }
 
 /**
@@ -106,17 +112,20 @@ if ($evernoteObj->is_enabled()) {
     $cardids_evernote = $evernoteObj->import();
     if ($cardids_evernote != false || is_null($cardids_evernote) || is_array($cardids_evernote)) {
         if (count($cardids_evernote) == 0) {
-            echo html_writer::message(notification::INFO, 'Evernote:' . '新規はありませんでした。');
+            echo html_writer::message(notification::INFO, 'Evernote:' . get_string('import_mail_no_mails', 'mod_sharedpanel'));
         } else {
-            echo html_writer::message(notification::SUCCESS, 'Evernote:' . count($cardids_evernote) . '件をインポートしました。');
+            $str = new \stdClass();
+            $str->count = count($cardids_evernote);
+            $str->source = 'Evernote';
+            echo html_writer::message(notification::SUCCESS, get_string('import_success', 'mod_sharedpanel', $str));
         }
     } else {
-        echo html_writer::message(notification::ERROR, 'Evernote:' . 'インポートに失敗しました。');
+        echo html_writer::message(notification::ERROR,  get_string('import_failed', 'mod_sharedpanel', 'Evernote'));
         $error = $emailObj->get_error();
         debugging($error->code . ":" . $error->message);
     }
 } else {
-    echo html_writer::message(notification::INFO, 'Evernote:' . '認証情報が設定されていないため、スキップします。');
+    echo html_writer::message(notification::INFO, get_string('import_no_authinfo', 'mod_sharedpanel', 'Evernote'));
 }
 
 /**
@@ -127,23 +136,26 @@ if($facebookObj->is_enabled()){
     $cardids_facebook = $facebookObj->import();
     if ($cardids_facebook != false || is_null($cardids_facebook) || is_array($cardids_facebook)) {
         if (count($cardids_facebook) == 0) {
-            echo html_writer::message(notification::INFO, 'Facebook:' . '新規はありませんでした。');
+            echo html_writer::message(notification::INFO, get_string('import_no_new', 'mod_sharedpanel', 'Facebook'));
         } else {
-            echo html_writer::message(notification::SUCCESS, 'Facebook:' . count($cardids_facebook) . '件をインポートしました。');
+            $str = new \stdClass();
+            $str->count = count($cardids_facebook);
+            $str->source = 'Facebook';
+            echo html_writer::message(notification::SUCCESS, get_string('import_success', 'mod_sharedpanel', $str));
         }
     } else {
-        echo html_writer::message(notification::ERROR, 'Facebook:' . 'インポートに失敗しました。');
+        echo html_writer::message(notification::ERROR,  get_string('import_failed', 'mod_sharedpanel', 'Facebook'));
         $error = $facebookObj->get_error();
         debugging($error->code . ":" . $error->message);
     }
 }else{
-    echo html_writer::message(notification::INFO, 'Evernote:' . '認証情報が設定されていないため、スキップします。');
+    echo html_writer::message(notification::INFO, get_string('import_no_authinfo', 'mod_sharedpanel', 'Facebook'));
 }
 
 $total_count = count($cardids_twitter) + count($cardids_emails) + count($cardids_evernote) + count($cardids_facebook);
-echo html_writer::message(notification::SUCCESS, 'インポート処理が完了しました。インポートした件数は' . $total_count . '件です。');
+echo html_writer::message(notification::SUCCESS, get_string('import_finished', 'mod_sharedpanel', $total_count));
 
-echo html_writer::link(new \moodle_url('view.php', ['id' => $cm->id]), '戻る', ['class' => 'btn']);
+echo html_writer::link(new \moodle_url('view.php', ['id' => $cm->id]), get_string('back', 'core'), ['class' => 'btn']);
 
 //----------------------------------------------------------------------------
 // Finish the page.

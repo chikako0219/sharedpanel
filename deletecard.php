@@ -25,9 +25,9 @@ $PAGE->set_context($context);
 if (has_capability('moodle/course:manageactivities', $context)) {
     $cardObj = new \mod_sharedpanel\card($sharedpanel);
     $cardObj->delete($c);
-    $msg = "card #6 deleted (hidden).<br>";
+    $msg = get_string('deletecard_delete_success', 'mod_sharedpanel', $c);
 } else {
-    $msg = "You have no permission to delete it.<br>";
+    $msg = get_string('deletecard_no_permission', 'mod_sharedpanel');
 }
 
 redirect(new moodle_url('view.php', ['id' => $id]), $msg, 3);

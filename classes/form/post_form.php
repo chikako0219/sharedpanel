@@ -9,7 +9,7 @@ require_once "$CFG->libdir/formslib.php";
 class post_form extends \moodleform
 {
     public function definition() {
-        $mform = $this->_form; // Don't forget the underscore!
+        $mform = $this->_form;
         $cm = $this->_customdata['cm'];
 
         $mform->addElement('header', 'header', get_string('post_card', 'sharedpanel'));

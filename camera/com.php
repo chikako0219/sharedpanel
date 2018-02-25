@@ -2,7 +2,7 @@
 /**
  * Notice :
  * This page allows access to guests(no login users).
- * Guest users can post only.
+ * Guests can post only.
  */
 
 namespace mod_sharedpanel;

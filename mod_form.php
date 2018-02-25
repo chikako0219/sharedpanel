@@ -66,7 +66,7 @@ class mod_sharedpanel_mod_form extends moodleform_mod
          */
         $mform->addElement('header', 'sharedpanelfieldset_twitter', 'Twitter');
         $mform->setExpanded('sharedpanelfieldset_twitter');
-        $mform->addElement('text', 'hashtag1', 'インポートするTweetのハッシュタグ');
+        $mform->addElement('text', 'hashtag1', get_string('form_import_tweet_hashtag', 'mod_sharedpanel'));
         $mform->setType('hashtag1', PARAM_TEXT);
 
         /**
@@ -75,22 +75,21 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->addElement('header', 'sharedpanelfieldset_email', 'Email');
         $mform->setExpanded('sharedpanelfieldset_email');
 
-        $mform->addElement('text', 'emailadr1', 'インポート対象のメールアドレス');
+        $mform->addElement('text', 'emailadr1', get_string('form_emailadr1', 'mod_sharedpanel'));
         $mform->setType('emailadr1', PARAM_TEXT);
 
-        $mform->addElement('text', 'emailkey1', 'メール表題に含まれるキーワード');
+        $mform->addElement('text', 'emailkey1', get_string('form_emailkey1', 'mod_sharedpanel'));
         $mform->setType('emailkey1', PARAM_TEXT);
 
-        $mform->addElement('text', 'emailhost', 'IMAPサーバURI');
+        $mform->addElement('text', 'emailhost', get_string('form_emailhost', 'mod_sharedpanel'));
         $mform->setType('emailhost', PARAM_TEXT);
 
-        $mform->addElement('text', 'emailport', 'IMAPサーバポート番号');
+        $mform->addElement('text', 'emailport', get_string('form_emailport', 'mod_sharedpanel'));
         $mform->setType('emailport', PARAM_INT);
-        $mform->setDefault('emailport', 143);
 
-        $mform->addElement('advcheckbox', 'emailisssl', 'SSLを使用する');
+        $mform->addElement('advcheckbox', 'emailisssl', get_string('form_emailisssl', 'mod_sharedpanel'));
 
-        $mform->addElement('passwordunmask', 'emailpas1', 'パスワード');
+        $mform->addElement('passwordunmask', 'emailpas1', get_string('password', 'core'));
         $mform->setType('emailpas1', PARAM_TEXT);
 
         /**
@@ -99,7 +98,7 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->addElement('header', 'sharedpanelfieldset_facebook', 'Facebook');
         $mform->setExpanded('sharedpanelfieldset_facebook');
 
-        $mform->addElement('text', 'fbgroup1', 'FacebookグループID');
+        $mform->addElement('text', 'fbgroup1', get_string('form_fbgroup1', 'mod_sharedpanel'));
         $mform->setType('fbgroup1', PARAM_TEXT);
 
         /**
@@ -108,13 +107,13 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->addElement('header', 'sharedpanelfieldset_evernote', 'Evernote');
         $mform->setExpanded('sharedpanelfieldset_evernote');
 
-        $mform->addElement('text', 'emailadr2', 'インポート対象のメールアドレス(Evernote用)');
+        $mform->addElement('text', 'emailadr2', get_string('form_emailadr2', 'mod_sharedpanel'));
         $mform->setType('emailadr2', PARAM_TEXT);
 
-        $mform->addElement('passwordunmask', 'emailpas2', 'パスワード(Evernote用)');
+        $mform->addElement('passwordunmask', 'emailpas2', get_string('form_emailpas2', 'mod_sharedpanel'));
         $mform->setType('emailpas2', PARAM_RAW);
 
-        $mform->addElement('text', 'emailkey2', 'メール表題に含まれるキーワード(Evernote用)');
+        $mform->addElement('text', 'emailkey2', get_string('form_emailkey2', 'mod_sharedpanel'));
         $mform->setType('emailkey2', PARAM_TEXT);
 
         /**
@@ -138,7 +137,7 @@ class mod_sharedpanel_mod_form extends moodleform_mod
             if ((array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on')) {
                 $mform->addElement('html', '<div class="well">' . $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instance . '</div>');
             } else {
-                $mform->addElement('html', '<div class="well">LINEインポートはHTTPS環境下でしか利用できません。MoodleサーバをHTTPS環境下で動作させる必要があります。</div>');
+                $mform->addElement('html', '<div class="well">' . get_string('form_line_warning_https', 'mod_sharedpanel') .'</div>');
             }
         }
 
