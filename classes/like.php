@@ -60,7 +60,7 @@ class like
         return $DB->insert_record('sharedpanel_card_likes', $like);
     }
 
-    public function unset($cardid, $userid, $ltype) {
+    public function delete($cardid, $userid, $ltype) {
         global $DB;
 
         $like = $DB->get_record('sharedpanel_card_likes', ['cardid' => $cardid, 'userid' => $userid, 'ltype' => $ltype]);

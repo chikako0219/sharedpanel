@@ -57,7 +57,7 @@ class tag
         return $DB->update_record('sharedpanel_card_tags', $data);
     }
 
-    public function unset($cardid) {
+    public function delete($cardid) {
         global $DB;
 
         return $DB->delete_records('sharedpanel_card_tags', ['cardid' => $cardid]);

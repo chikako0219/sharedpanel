@@ -51,7 +51,7 @@ if (!$like) {
     $like = $likeobj->set($cardid, $USER->id, $ltype);
     $msg .= get_string('like_set_like', 'mod_sharedpanel', $cardid);
 } else {
-    $like = $likeobj->unset($cardid, $USER->id, $ltype);
+    $like = $likeobj->delete($cardid, $USER->id, $ltype);
     $msg .= get_string('like_set_unlike', 'mod_sharedpanel', $cardid);
 }
 
