@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_sharedpanel;
 
@@ -8,23 +22,26 @@ class evernote extends card
 {
     protected $moduleinstance;
 
-    private $email_addr;
-    private $email_password;
-    private $email_port;
+    private $emailaddr;
+    private $emailpassword;
+    private $emailport;
 
-    private $cardObj;
+    private $cardobj;
 
-    function __construct($modinstance) {
-        $this->email_addr = $modinstance->emailadr1;
-        $this->email_password = $modinstance->emailpas1;
-        $this->email_port = 993;
-        $this->cardObj = new card($modinstance);
+    public function __construct($modinstance) {
+        $this->emailaddr = $modinstance->emailadr1;
+        $this->emailpassword = $modinstance->emailpas1;
+        $this->emailport = 993;
+        $this->cardobj = new card($modinstance);
 
         parent::__construct($modinstance);
     }
 
     public function is_enabled() {
-        if (empty($this->moduleinstance->emailhost) || empty($this->moduleinstance->emailport) || empty($this->email_addr) || empty($this->email_password)) {
+        if (empty($this->moduleinstance->emailhost)
+            || empty($this->moduleinstance->emailport)
+            || empty($this->emailaddr)
+            || empty($this->emailpassword)) {
             return false;
         }
         return true;
@@ -64,12 +81,20 @@ class evernote extends card
         global $DB, $USER;
 
         if ($this->moduleinstance->emailisssl === '1') {
-            $mailbox = '{' . $this->moduleinstance->emailhost . ':' . $this->moduleinstance->emailport . '/novalidate-cert/imap/ssl}' . "INBOX";
+            $mailbox = '{' . $this->moduleinstance->emailhost .
+                ':' .
+                $this->moduleinstance->emailport .
+                '/novalidate-cert/imap/ssl}' .
+                "INBOX";
         } else {
-            $mailbox = '{' . $this->moduleinstance->emailhost . ':' . $this->moduleinstance->emailport . '/novalidate-cert/imap}' . "INBOX";
+            $mailbox = '{' . $this->moduleinstance->emailhost .
+                ':' .
+                $this->moduleinstance->emailport .
+                '/novalidate-cert/imap}' .
+                "INBOX";
         }
 
-        $mbox = imap_open($mailbox, $this->email_addr, $this->email_password, OP_READONLY);
+        $mbox = imap_open($mailbox, $this->emailaddr, $this->emailpassword, OP_READONLY);
         if (!$mbox) {
             $this->error->message = imap_last_error();
             return false;
@@ -95,11 +120,11 @@ class evernote extends card
 
             $subject = mb_convert_encoding(imap_base64($body), 'utf-8', 'auto');
 
-            $cardid = $this->cardObj->add($subject, $head->fromaddress, 'evernote', $messageid);
+            $cardid = $this->cardobj->add($subject, $head->fromaddress, 'evernote', $messageid);
             $cardids[] = $cardid;
             foreach (mod_sharedpanel_get_tags($subject) as $tagstr) {
-                $tagObj = new tag($this->moduleinstance);
-                $tagObj->set($cardid, $tagstr, $USER->id);
+                $tagobj = new tag($this->moduleinstance);
+                $tagobj->set($cardid, $tagstr, $USER->id);
             }
         }
 

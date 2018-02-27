@@ -31,36 +31,6 @@ function mod_sharedpanel_get_tags($s) {
     return $ta;
 }
 
-function mod_sharedpanel_compress_img($attached, $width) {
-    $imagea = imagecreatefromstring($attached);
-    $imagea = imagescale($imagea, $width, -1);  // proportionally compress image with $width
-    $jpegfile = tempnam("/tmp", "email-jpg-");
-    imagejpeg($imagea, $jpegfile);
-    imagedestroy($imagea);
-    $attached = base64_encode(file_get_contents($jpegfile));
-    unlink($jpegfile);
-    return $attached;
-}
-
-function mod_sharedpanel_compress_img_base64($attached, $width) {
-    $imagea = imap_base64($attached);
-    $imagea = imagecreatefromstring($imagea);
-    $imagea = imagescale($imagea, $width, -1);  // proportionally compress image with $width
-    $jpegfile = tempnam("/tmp", "email-jpg-");
-    imagejpeg($imagea, $jpegfile);
-    imagedestroy($imagea);
-    $attached = base64_encode(file_get_contents($jpegfile));
-    unlink($jpegfile);
-    return $attached;
-}
-
-/**
- * UTF-8 の4バイト文字を HTML 数値文字参照に変換する
- * MySQL 5.5 で導入された utf8mb4 を使えない場合
- *
- * @param $str
- * @return mixed
- */
 function mod_sharedpanel_utf8mb4_encode_numericentity($str) {
     $re = '/[^\x{0}-\x{FFFF}]/u';
     return preg_replace_callback($re, function ($m) {
@@ -74,26 +44,11 @@ function mod_sharedpanel_utf8mb4_encode_numericentity($str) {
     }, $str);
 }
 
-function mod_sharedpanel_get_sharedpanel_cardid(){
+function mod_sharedpanel_get_sharedpanel_cardid() {
     global $DB;
 
     $cards = $DB->get_records('sharedpanel_cards', null, 'DESC');
     $card = current($cards);
 
     return $card->id;
-}
-
-function mod_sharedpanel_rotatecompress_img($imgname, $width) {
-    $imagea = imagecreatefromjpeg($imgname);
-    $exif_data = exif_read_data($imgname);
-    if (isset($exif_data['Orientation']) && $exif_data['Orientation'] == 6) {
-        $imagea = imagerotate($imagea, 270, 0);
-    }
-    $imagea = imagescale($imagea, $width, -1); // proportionally compress image with $width
-    $jpegfile = tempnam("/tmp", "email-jpg-");
-    imagejpeg($imagea, $jpegfile);
-    imagedestroy($imagea);
-    $attached = base64_encode(file_get_contents($jpegfile));
-    unlink($jpegfile);
-    return $attached;
 }

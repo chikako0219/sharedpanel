@@ -1,31 +1,47 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_sharedpanel;
+
+defined('MOODLE_INTERNAL') || die();
 
 class card
 {
     protected $moduleinstance;
     protected $error;
 
-    function __construct($modinstance) {
+    public function __construct($modinstance) {
         $this->moduleinstance = $modinstance;
         $this->error = new \stdClass();
         $this->error->code = 0;
         $this->error->message = "";
     }
 
-    function get($cardid) {
+    public function get($cardid) {
         global $DB;
         return $DB->get_record('sharedpanel_cards', ['id' => $cardid]);
     }
 
-    function gets($order = 'like') {
+    public function gets($order = 'like') {
         global $DB, $USER;
 
         $sql = "
-            SELECT *, (select count(*) from {sharedpanel_card_likes} l where l.userid = :userid and l.ltype = :ltype and l.cardid = c.id) likes 
-              FROM {sharedpanel_cards} c WHERE c.hidden = 0 
-        ";
+SELECT *, (SELECT COUNT(*) FROM {sharedpanel_card_likes} l
+WHERE l.userid = :userid AND l.ltype = :ltype AND l.cardid = c.id) likes
+FROM {sharedpanel_cards} c WHERE c.hidden = 0";
 
         $ltype = 0;
         if ($order === 'like') {
@@ -41,19 +57,22 @@ class card
         return $DB->get_records_sql($sql, ['userid' => $USER->id, 'ltype' => $ltype]);
     }
 
-    function get_last_card($inputsrc) {
+    public function get_last_card($inputsrc) {
         global $DB;
-        $cards = $DB->get_records('sharedpanel_cards', ['sharedpanelid' => $this->moduleinstance->id, 'inputsrc' => $inputsrc], 'id DESC');
+        $cards = $DB->get_records('sharedpanel_cards',
+            ['sharedpanelid' => $this->moduleinstance->id, 'inputsrc' => $inputsrc],
+            'id DESC'
+        );
 
         return $cards ? current($cards) : false;
     }
 
-    static function get_tags($cardid) {
+    public static function get_tags($cardid) {
         global $DB;
         return $DB->get_records('sharedpanel_card_tags', ['cardid' => $cardid]);
     }
 
-    function add($content, $sender, $inputsrc = 'moodle', $messageid = "", $timeupdated = "") {
+    public function add($content, $sender, $inputsrc = 'moodle', $messageid = "", $timeupdated = "") {
         global $DB, $USER;
 
         $data = new \stdClass;
@@ -83,7 +102,7 @@ class card
         return $DB->insert_record('sharedpanel_cards', $data);
     }
 
-    function add_attachment($context, $cardid, $content, $filename) {
+    public function add_attachment($context, $cardid, $content, $filename) {
         global $DB;
 
         $fs = get_file_storage();
@@ -104,7 +123,7 @@ class card
         return $DB->update_record('sharedpanel_cards', $card);
     }
 
-    function add_attachment_by_pathname($context, $cardid, $filepath, $filename){
+    public function add_attachment_by_pathname($context, $cardid, $filepath, $filename) {
         global $DB;
 
         $fs = get_file_storage();
@@ -125,7 +144,7 @@ class card
         return $DB->update_record('sharedpanel_cards', $card);
     }
 
-    function update($cardid, $content) {
+    public function update($cardid, $content) {
         global $DB;
 
         $data = new \stdClass();
@@ -135,7 +154,7 @@ class card
         return $DB->update_record('sharedpanel_cards', $data);
     }
 
-    function delete($cardid) {
+    public function delete($cardid) {
         global $DB;
 
         $card = self::get($cardid);
@@ -144,7 +163,7 @@ class card
         return $DB->update_record('sharedpanel_cards', $card);
     }
 
-    function switch_hide_card($cardid) {
+    public function switch_hide_card($cardid) {
         global $DB;
 
         $card = $DB->get_record('sharedpanel_cards', ['id' => $cardid]);

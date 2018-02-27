@@ -29,7 +29,7 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/sharedpanel/lib.php');
 
 /**
- * @copyright  2017 Takayuki Fuwa
+ * @copyright  nagaoka, kita
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 class mod_sharedpanel_lib_testcase extends advanced_testcase
@@ -38,8 +38,7 @@ class mod_sharedpanel_lib_testcase extends advanced_testcase
     /**
      * Test deleting a sharedpanel instance.
      */
-    public function test_sharedpanel_delete_instance()
-    {
+    public function test_sharedpanel_delete_instance() {
         global $SITE, $DB;
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -72,8 +71,7 @@ class mod_sharedpanel_lib_testcase extends advanced_testcase
         $this->assertEquals(0, $count);
     }
 
-    public function test_sharedpanel_add_instance()
-    {
+    public function test_sharedpanel_add_instance() {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -86,42 +84,32 @@ class mod_sharedpanel_lib_testcase extends advanced_testcase
         $sharedpanel->introformat = 1;
         $sharedpanel->timecreated = 1486911049;
         $sharedpanel->timemodified = 1486911049;
-        //インポートするTweetのハッシュタグ
         $sharedpanel->hashtag1 = 'hashtagtest';
 
-        //FacebookグループID
         $sharedpanel->fbgroup1 = 'hashtagtest';
 
-        //インポート対象のメールアドレス
         $sharedpanel->emailadr1 = 'test1@example.com';
-        //パスワード
         $sharedpanel->emailpas1 = 'emailpassword';
-        //メール表題に含まれるキーワード
         $sharedpanel->emailkey1 = 'keyword1';
 
-        //メール表題に含まれるキーワード(Evernote用)
         $sharedpanel->emailkey2 = 'emailpassword';
-        //インポート対象のメールアドレス(Evernote用)
         $sharedpanel->emailadr2 = 'test2@example.com';
-        //パスワード(Evernote用)
         $sharedpanel->emailpas2 = 'keyword2';
 
-        //その他
         $sharedpanel->config0 = 'aaaa';
         $sharedpanel->config = 'aaaaaaa';
 
-        $sharedpanel_id = sharedpanel_add_instance($sharedpanel);
+        $sharedpanelid = sharedpanel_add_instance($sharedpanel);
 
-        $sharedpanel = $DB->get_record('sharedpanel', ['id' => $sharedpanel_id]);
+        $sharedpanel = $DB->get_record('sharedpanel', ['id' => $sharedpanelid]);
 
-        $count = $DB->count_records('sharedpanel', ['id' => $sharedpanel_id]);
+        $count = $DB->count_records('sharedpanel', ['id' => $sharedpanelid]);
         $this->assertEquals(1, $count);
 
         $this->assertNotNull($sharedpanel->encryptionkey);
     }
 
-    public function test_sharedpanel_update_instance()
-    {
+    public function test_sharedpanel_update_instance() {
         global $DB, $SITE;
 
         $this->resetAfterTest(true);

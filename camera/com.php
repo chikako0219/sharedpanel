@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Notice :
  * This page allows access to guests(no login users).
@@ -19,11 +34,11 @@ $name = optional_param('name', 'guest', PARAM_TEXT);
 if (!is_null($content)) {
     $instance = $DB->get_record('sharedpanel', ['id' => $instanceid]);
 
-    $cardObj = new card($instance);
-    $cardid = $cardObj->add($content, $name, 'camera');
+    $cardobj = new card($instance);
+    $cardid = $cardobj->add($content, $name, 'camera');
 
     if (array_key_exists('capture', $_FILES)) {
-        $cardObj->add_attachment_by_pathname($content, $cardid, $_FILES['tmp_name'], $_FILES['name']);
+        $cardobj->add_attachment_by_pathname($content, $cardid, $_FILES['tmp_name'], $_FILES['name']);
     }
 
     echo html_writer::div(get_string('msg_post_success', 'mod_sharedpanel'));
@@ -35,7 +50,6 @@ echo html_writer::start_tag('head');
 echo html_writer::empty_tag('meta', ['http-equiv' => 'Content-Type', 'content' => 'text/html; charset=utf-8']);
 echo html_writer::empty_tag('meta', ['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.2']);
 echo html_writer::tag('title', get_string('post_message', 'mod_sharedpanel'));
-//echo html_writer::empty_tag('link', ['href' => 'style-camera.css', 'rel' => 'stylesheet', 'type' => 'text/css']);
 echo html_writer::end_tag('head');
 
 echo html_writer::start_tag('body');

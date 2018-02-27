@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_sharedpanel;
 
@@ -8,16 +22,16 @@ class like
 {
     private $moduleinstance;
 
-    function __construct($modinstance) {
+    public function __construct($modinstance) {
         $this->moduleinstance = $modinstance;
     }
 
-    function get($cardid, $userid, $ltype) {
+    public function get($cardid, $userid, $ltype) {
         global $DB;
         return $DB->get_record('sharedpanel_card_likes', ['cardid' => $cardid, 'userid' => $userid, 'ltype' => $ltype]);
     }
 
-    function gets($cardid, $ltype = null, $userid = null, $rating = false) {
+    public function gets($cardid, $ltype = null, $userid = null, $rating = false) {
         global $DB;
 
         $cond = ['cardid' => $cardid];
@@ -34,7 +48,7 @@ class like
         return $DB->get_records('sharedpanel_card_likes', $cond);
     }
 
-    function set($cardid, $userid, $ltype = 0) {
+    public function set($cardid, $userid, $ltype = 0) {
         global $DB;
 
         $like = new \stdClass;
@@ -46,14 +60,14 @@ class like
         return $DB->insert_record('sharedpanel_card_likes', $like);
     }
 
-    function unset($cardid, $userid, $ltype) {
+    public function unset($cardid, $userid, $ltype) {
         global $DB;
 
         $like = $DB->get_record('sharedpanel_card_likes', ['cardid' => $cardid, 'userid' => $userid, 'ltype' => $ltype]);
         return $DB->delete_records('sharedpanel_card_likes', ['id' => $like->id]);
     }
 
-    function count($cardid, $userid = null, $ltype = null) {
+    public function count($cardid, $userid = null, $ltype = null) {
         global $DB;
 
         if (is_null($userid)) {
@@ -63,14 +77,14 @@ class like
         }
         if (!is_null($ltype) && $ltype == 0) {
             $cond['ltype'] = 0;
-        } elseif (!is_null($ltype) && $ltype == 1) {
+        } else if (!is_null($ltype) && $ltype == 1) {
             $cond['ltype'] = 1;
         }
 
         return $DB->count_records('sharedpanel_card_likes', $cond);
     }
 
-    function is_liked($cardid, $userid, $ltype = null) {
+    public function is_liked($cardid, $userid, $ltype = null) {
         global $DB;
         return $DB->record_exists('sharedpanel_card_likes', ['cardid' => $cardid, 'userid' => $userid, 'ltype' => $ltype]);
     }

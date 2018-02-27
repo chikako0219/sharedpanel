@@ -16,13 +16,11 @@
 
 
 /**
- * English strings for SharedPanel
+ * Japanese strings for SharedPanel
  *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
  *
  * @package    mod_SharedPanel
- * @copyright  2011 Your Name
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -38,7 +36,6 @@ $string['sharedpanelname_help'] = 'This is the content of the help tooltip assoc
 $string['sharedpanel'] = 'SharedPanel';
 $string['pluginadministration'] = 'SharedPanel管理';
 $string['pluginname'] = 'SharedPanel';
-//@TODO
 $string['requiremodintro'] = '活動説明を必須とするかどうか';
 $string['configrequiremodintro'] = '活動説明を必須とするかどうか';
 
@@ -66,13 +63,13 @@ $string['sort'] = '重要だね!の多い順でソート';
 $string['sortbylike1'] = '面白いね!の多い順でソート';
 $string['post_card'] = 'カードを投稿';
 
-$string['important'] =  '重要だね';
-$string['interesting'] =  '面白いね';
+$string['important'] = '重要だね';
+$string['interesting'] = '面白いね';
 
-$string['gcardcontent'] =  'グループカードの本文';
+$string['gcardcontent'] = 'グループカードの本文';
 
-$string['facebook'] =  'Facebook';
-$string['twitter'] =  'Twitter';
+$string['facebook'] = 'Facebook';
+$string['twitter'] = 'Twitter';
 
 $string['FBappID'] = 'Facebook app ID';
 $string['FBappID_help'] = '取得した Facebook app ID を書いてください.';
@@ -94,6 +91,10 @@ $string['TWaccessTokenSecret_help'] = 'Twitter accessTokenSecret';
 
 $string['line_your_line'] = 'あなたのLINE';
 $string['line_lineid_required'] = 'LINE IDは必須項目です。';
+$string['line_registered_id'] = 'LINE IDを登録しました。';
+$string['line_try_agein'] = 'もう一度入力してください。\n 例えば、ログインIDがb1007222の場合、"line_b1007222"と入力してください。';
+$string['line_added_user'] = 'ユーザーID{$a}を登録しました。';
+$string['line_post_message'] = 'メッセージを投稿しました';
 
 $string['upload_required_comment'] = 'コメントは必須です';
 $string['upload_optional_name'] = '名前(任意)';
@@ -108,6 +109,11 @@ $string['import_success'] = '{$a->source}:{$a->count}件インポートに成功
 $string['import_failed'] = '{$a}:インポートに失敗しました。';
 $string['import_no_authinfo'] = '{$a}:認証情報が設定されていないため、スキップします。';
 $string['import_finished'] = 'インポート処理が完了しました。インポートした件数は{$a}件です。';
+
+$string['facebook_no_authinfo'] = '認証情報が入力されていません。';
+
+$string['like_set_like'] = 'カード #${a}に いいね! しました。';
+$string['like_set_unlike'] = 'カード #${a}の いいね!を解除しました。';
 
 $string['form_import_tweet_hashtag'] = 'インポートするTweetのハッシュタグ';
 $string['form_emailadr1'] = 'インポート対象のメールアドレス';
@@ -125,3 +131,4 @@ $string['form_line_warning_https'] = 'LINEインポートはHTTPS環境下でし
 
 $string['post_cancel'] = 'キャンセルしました。';
 $string['post_saved'] = '保存されました。';
+$string['save'] = '保存する';

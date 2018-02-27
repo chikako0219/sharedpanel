@@ -1,15 +1,29 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_sharedpanel;
-
-global $DB, $PAGE, $USER;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
-$id = optional_param('id', 0, PARAM_INT); // course module id
-$cardid = optional_param('c', 0, PARAM_INT);  // ... card ID
-$ltype = optional_param('ltype', 0, PARAM_INT);  // like type
+global $DB, $PAGE, $USER;
+
+$id = optional_param('id', 0, PARAM_INT);
+$cardid = optional_param('c', 0, PARAM_INT);
+$ltype = optional_param('ltype', 0, PARAM_INT);
 
 confirm_sesskey();
 
@@ -29,25 +43,16 @@ $PAGE->set_title(format_string($sharedpanel->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-$likeObj = new like($sharedpanel);
+$likeobj = new like($sharedpanel);
 
 $msg = "";
-$like = $likeObj->is_liked($cardid, $USER->id, $ltype);
+$like = $likeobj->is_liked($cardid, $USER->id, $ltype);
 if (!$like) {
-    $like = $likeObj->set($cardid, $USER->id, $ltype);
-    $msg .= "カード #" . $cardid . " に いいね! しました。<br>";
+    $like = $likeobj->set($cardid, $USER->id, $ltype);
+    $msg .= get_string('like_set_like', 'mod_sharedpanel', $cardid);
 } else {
-    $like = $likeObj->unset($cardid, $USER->id, $ltype);
-    $msg .= "カード #" . $cardid . " の いいね! を解除しました。<br>";
+    $like = $likeobj->unset($cardid, $USER->id, $ltype);
+    $msg .= get_string('like_set_unlike', 'mod_sharedpanel', $cardid);
 }
-
-//if ($ltype == 0) {
-//    $likes = $likeObj->gets($cardid, $ltype, true);
-//    if ($like) {
-//        $card = $DB->get_record('sharedpanel_cards', ['sharedpanelid' => $sharedpanel->id, 'hidden' => 0, 'id' => $cardid]);
-//        $card->rating = count($likes);
-//        $card->id = $DB->update_record('sharedpanel_cards', $card);
-//    }
-//}
 
 redirect(new \moodle_url('view.php', ['id' => $id]), $msg, 2);

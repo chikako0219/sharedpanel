@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<libraries>
+    <library>
+        <location>lib/Facebook</location>
+        <name>graph-sdk</name>
+        <version>5.6.1</version>
+        <license>Facebook License</license>
+        <licenseversion>1.0</licenseversion>
+    </library>
+    <library>
+        <location>lib/twitteroauth</location>
+        <name>twitteroauth</name>
+        <version>0.7.4</version>
+        <license>MIT</license>
+        <licenseversion></licenseversion>
+    </library>
+    <library>
+        <location>lib/line</location>
+        <name>line-bot-sdk</name>
+        <version>2.3</version>
+        <license>Apache</license>
+        <licenseversion>2.0</licenseversion>
+    </library>
+</libraries>

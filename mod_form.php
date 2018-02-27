@@ -61,73 +61,54 @@ class mod_sharedpanel_mod_form extends moodleform_mod
             $this->add_intro_editor();
         }
 
-        /**
-         * Twitter
-         */
+        // Twitter.
         $mform->addElement('header', 'sharedpanelfieldset_twitter', 'Twitter');
         $mform->setExpanded('sharedpanelfieldset_twitter');
         $mform->addElement('text', 'hashtag1', get_string('form_import_tweet_hashtag', 'mod_sharedpanel'));
         $mform->setType('hashtag1', PARAM_TEXT);
 
-        /**
-         * Email
-         */
+        // Email.
         $mform->addElement('header', 'sharedpanelfieldset_email', 'Email');
         $mform->setExpanded('sharedpanelfieldset_email');
 
         $mform->addElement('text', 'emailadr1', get_string('form_emailadr1', 'mod_sharedpanel'));
         $mform->setType('emailadr1', PARAM_TEXT);
-
         $mform->addElement('text', 'emailkey1', get_string('form_emailkey1', 'mod_sharedpanel'));
         $mform->setType('emailkey1', PARAM_TEXT);
-
         $mform->addElement('text', 'emailhost', get_string('form_emailhost', 'mod_sharedpanel'));
         $mform->setType('emailhost', PARAM_TEXT);
-
         $mform->addElement('text', 'emailport', get_string('form_emailport', 'mod_sharedpanel'));
         $mform->setType('emailport', PARAM_INT);
-
         $mform->addElement('advcheckbox', 'emailisssl', get_string('form_emailisssl', 'mod_sharedpanel'));
-
         $mform->addElement('passwordunmask', 'emailpas1', get_string('password', 'core'));
         $mform->setType('emailpas1', PARAM_TEXT);
 
-        /**
-         * Facebook
-         */
+        // Facebook.
         $mform->addElement('header', 'sharedpanelfieldset_facebook', 'Facebook');
         $mform->setExpanded('sharedpanelfieldset_facebook');
 
         $mform->addElement('text', 'fbgroup1', get_string('form_fbgroup1', 'mod_sharedpanel'));
         $mform->setType('fbgroup1', PARAM_TEXT);
 
-        /**
-         * Evernote
-         */
+        // Evernote.
         $mform->addElement('header', 'sharedpanelfieldset_evernote', 'Evernote');
         $mform->setExpanded('sharedpanelfieldset_evernote');
 
         $mform->addElement('text', 'emailadr2', get_string('form_emailadr2', 'mod_sharedpanel'));
         $mform->setType('emailadr2', PARAM_TEXT);
-
         $mform->addElement('passwordunmask', 'emailpas2', get_string('form_emailpas2', 'mod_sharedpanel'));
         $mform->setType('emailpas2', PARAM_RAW);
-
         $mform->addElement('text', 'emailkey2', get_string('form_emailkey2', 'mod_sharedpanel'));
         $mform->setType('emailkey2', PARAM_TEXT);
 
-        /**
-         * LINE
-         */
+        // LINE.
         $mform->addElement('header', 'sharedpanelfieldset_line', 'LINE');
         $mform->setExpanded('sharedpanelfieldset_line');
 
         $mform->addElement('text', 'line_channel_id', 'Channel ID');
         $mform->setType('line_channel_id', PARAM_TEXT);
-
         $mform->addElement('text', 'line_channel_secret', 'Channel secret key');
         $mform->setType('line_channel_secret', PARAM_TEXT);
-
         $mform->addElement('text', 'line_channel_access_token', 'Channel access token');
         $mform->setType('line_channel_access_token', PARAM_TEXT);
 
@@ -135,9 +116,11 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         if ($instance) {
             $mform->addElement('html', '<h5>Webhook URL</h5>');
             if ((array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on')) {
-                $mform->addElement('html', '<div class="well">' . $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instance . '</div>');
+                $mform->addElement('html',
+                    '<div class="well">' . $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instance . '</div>');
             } else {
-                $mform->addElement('html', '<div class="well">' . get_string('form_line_warning_https', 'mod_sharedpanel') .'</div>');
+                $mform->addElement('html',
+                    '<div class="well">' . get_string('form_line_warning_https', 'mod_sharedpanel') . '</div>');
             }
         }
 

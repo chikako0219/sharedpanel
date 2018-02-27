@@ -56,6 +56,5 @@ function xmldb_sharedpanel_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2018022301, 'sharedpanel');
     }
 
-
     return true;
 }

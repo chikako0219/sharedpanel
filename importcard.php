@@ -30,7 +30,7 @@ require_once(dirname(__FILE__) . '/locallib.php');
 
 global $DB, $PAGE, $OUTPUT;
 
-$id = optional_param('id', 0, PARAM_INT); // course module id
+$id = optional_param('id', 0, PARAM_INT);
 
 if ($id) {
     $cm = get_coursemodule_from_id('sharedpanel', $id, 0, false, MUST_EXIST);
@@ -53,110 +53,100 @@ $PAGE->set_context($context);
 // Output starts here.
 echo $OUTPUT->header();
 
-$cardids_twitter = $cardids_emails = $cardids_evernote = $cardids_facebook = null;
+$cardidstwitter = $cardidsemails = $cardidsevernote = $cardidsfacebook = null;
 
-/**
- * Twitter
- */
-$twitterObj = new twitter($sharedpanel);
-if ($twitterObj->is_enabled()) {
-    $cardids_twitter = $twitterObj->import();
-    if ($cardids_twitter != false || is_null($cardids_twitter) || is_array($cardids_twitter)) {
-        if (count($cardids_twitter) == 0) {
+// Twitter.
+$twitterobj = new twitter($sharedpanel);
+if ($twitterobj->is_enabled()) {
+    $cardidstwitter = $twitterobj->import();
+    if ($cardidstwitter != false || is_null($cardidstwitter) || is_array($cardidstwitter)) {
+        if (count($cardidstwitter) == 0) {
             echo html_writer::message(notification::INFO, get_string('import_twitter_no_tweets', 'mod_sharedpanel'));
         } else {
             $str = new \stdClass();
             $str->source = 'Twitter';
-            $str->count = count($cardids_twitter);
+            $str->count = count($cardidstwitter);
             echo html_writer::message(notification::SUCCESS, get_string('import_success', 'mod_sharedpanel', $str));
         }
     } else {
         echo html_writer::message(notification::ERROR, get_string('import_failed', 'mod_sharedpanel', 'Twitter'));
-        $error = $twitterObj->get_error();
+        $error = $twitterobj->get_error();
         debugging($error->code . ":" . $error->message);
     }
 } else {
     echo html_writer::message(notification::INFO, get_string('import_no_authinfo', 'mod_sharedpanel', 'Twitter'));
 }
 
-/**
- * email
- */
-$emailObj = new email($sharedpanel);
-if ($emailObj->is_enabled()) {
-    $cardids_emails = $emailObj->import();
+// Email.
+$emailobj = new email($sharedpanel);
+if ($emailobj->is_enabled()) {
+    $cardidsemails = $emailobj->import();
 
-    if ($cardids_emails != false || is_null($cardids_emails) || is_array($cardids_emails)) {
-        if (count($cardids_emails) == 0) {
+    if ($cardidsemails != false || is_null($cardidsemails) || is_array($cardidsemails)) {
+        if (count($cardidsemails) == 0) {
             echo html_writer::message(notification::INFO, get_string('import_mail_no_mails', 'mod_sharedpanel'));
         } else {
             $str = new \stdClass();
-            $str->count = count($cardids_emails);
+            $str->count = count($cardidsemails);
             $str->source = 'email';
             echo html_writer::message(notification::SUCCESS, get_string('import_success', 'mod_sharedpanel', $str));
         }
     } else {
-        echo html_writer::message(notification::ERROR,  get_string('import_failed', 'mod_sharedpanel', 'mail'));
-        $error = $emailObj->get_error();
+        echo html_writer::message(notification::ERROR, get_string('import_failed', 'mod_sharedpanel', 'mail'));
+        $error = $emailobj->get_error();
         debugging($error->code . ":" . $error->message);
     }
 } else {
     echo html_writer::message(notification::INFO, get_string('import_no_authinfo', 'mod_sharedpanel', 'mail'));
 }
 
-/**
- * Evernote
- */
-$evernoteObj = new evernote($sharedpanel);
-if ($evernoteObj->is_enabled()) {
-    $cardids_evernote = $evernoteObj->import();
-    if ($cardids_evernote != false || is_null($cardids_evernote) || is_array($cardids_evernote)) {
-        if (count($cardids_evernote) == 0) {
+// Evernote.
+$evernoteobj = new evernote($sharedpanel);
+if ($evernoteobj->is_enabled()) {
+    $cardidsevernote = $evernoteobj->import();
+    if ($cardidsevernote != false || is_null($cardidsevernote) || is_array($cardidsevernote)) {
+        if (count($cardidsevernote) == 0) {
             echo html_writer::message(notification::INFO, 'Evernote:' . get_string('import_mail_no_mails', 'mod_sharedpanel'));
         } else {
             $str = new \stdClass();
-            $str->count = count($cardids_evernote);
+            $str->count = count($cardidsevernote);
             $str->source = 'Evernote';
             echo html_writer::message(notification::SUCCESS, get_string('import_success', 'mod_sharedpanel', $str));
         }
     } else {
-        echo html_writer::message(notification::ERROR,  get_string('import_failed', 'mod_sharedpanel', 'Evernote'));
-        $error = $emailObj->get_error();
+        echo html_writer::message(notification::ERROR, get_string('import_failed', 'mod_sharedpanel', 'Evernote'));
+        $error = $emailobj->get_error();
         debugging($error->code . ":" . $error->message);
     }
 } else {
     echo html_writer::message(notification::INFO, get_string('import_no_authinfo', 'mod_sharedpanel', 'Evernote'));
 }
 
-/**
- * Facebook
- */
-$facebookObj = new facebook($sharedpanel);
-if($facebookObj->is_enabled()){
-    $cardids_facebook = $facebookObj->import();
-    if ($cardids_facebook != false || is_null($cardids_facebook) || is_array($cardids_facebook)) {
-        if (count($cardids_facebook) == 0) {
+// Facebook.
+$facebookobj = new facebook($sharedpanel);
+if ($facebookobj->is_enabled()) {
+    $cardidsfacebook = $facebookobj->import();
+    if ($cardidsfacebook != false || is_null($cardidsfacebook) || is_array($cardidsfacebook)) {
+        if (count($cardidsfacebook) == 0) {
             echo html_writer::message(notification::INFO, get_string('import_no_new', 'mod_sharedpanel', 'Facebook'));
         } else {
             $str = new \stdClass();
-            $str->count = count($cardids_facebook);
+            $str->count = count($cardidsfacebook);
             $str->source = 'Facebook';
             echo html_writer::message(notification::SUCCESS, get_string('import_success', 'mod_sharedpanel', $str));
         }
     } else {
-        echo html_writer::message(notification::ERROR,  get_string('import_failed', 'mod_sharedpanel', 'Facebook'));
-        $error = $facebookObj->get_error();
+        echo html_writer::message(notification::ERROR, get_string('import_failed', 'mod_sharedpanel', 'Facebook'));
+        $error = $facebookobj->get_error();
         debugging($error->code . ":" . $error->message);
     }
-}else{
+} else {
     echo html_writer::message(notification::INFO, get_string('import_no_authinfo', 'mod_sharedpanel', 'Facebook'));
 }
 
-$total_count = count($cardids_twitter) + count($cardids_emails) + count($cardids_evernote) + count($cardids_facebook);
-echo html_writer::message(notification::SUCCESS, get_string('import_finished', 'mod_sharedpanel', $total_count));
+$totalcount = count($cardidstwitter) + count($cardidsemails) + count($cardidsevernote) + count($cardidsfacebook);
+echo html_writer::message(notification::SUCCESS, get_string('import_finished', 'mod_sharedpanel', $totalcount));
 
 echo html_writer::link(new \moodle_url('view.php', ['id' => $cm->id]), get_string('back', 'core'), ['class' => 'btn']);
 
-//----------------------------------------------------------------------------
-// Finish the page.
 echo $OUTPUT->footer();

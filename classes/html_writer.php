@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_sharedpanel;
 
@@ -40,7 +54,9 @@ class html_writer extends \html_writer
         global $OUTPUT;
 
         $user = \core_user::get_user($userid);
-        return $OUTPUT->user_picture($user) . html_writer::link(new \moodle_url('/user/profile.php', ['id' => $user->id]), fullname($user));
+        return $OUTPUT->user_picture($user) . self::link(
+            new \moodle_url('/user/profile.php', ['id' => $user->id]), fullname($user)
+            );
     }
 
     public static function card($instance, $context, $card) {
@@ -66,31 +82,31 @@ class html_writer extends \html_writer
                 break;
         }
 
-        $likeObj = new like($instance);
+        $likeobj = new like($instance);
 
         $html = \html_writer::start_div('card span3 col-md-3', ['id' => 'card' . $card->id]);
 
         $tags = card::get_tags($card->id);
-        $html .= html_writer::start_div('card-header card-header' . $class);
+        $html .= self::start_div('card-header card-header' . $class);
 
         if (has_capability('moodle/course:manageactivities', $context)) {
             $dellink = new \moodle_url('deletecard.php', ['id' => $context->instanceid, 'c' => $card->id, 'sesskey' => sesskey()]);
             $icon = $OUTPUT->action_icon($dellink, new \pix_icon('t/delete', ''));
 
-            $html .= html_writer::span($icon, 'card-icon-del');
+            $html .= self::span($icon, 'card-icon-del');
         }
 
         foreach ($tags as $tag) {
-            $html .= html_writer::span(\html_writer::link(new \moodle_url(''), $tag->tag));
+            $html .= self::span(self::link(new \moodle_url(''), $tag->tag));
         }
-        $html .= html_writer::end_div();
+        $html .= self::end_div();
 
-        $html .= html_writer::start_div('card-body card-body' . $class);
-        $html .= html_writer::span($card->content);
-        $html .= html_writer::span(
+        $html .= self::start_div('card-body card-body' . $class);
+        $html .= self::span($card->content);
+        $html .= self::span(
             '<br/><br/>' . userdate($card->timeposted) . "<br/>" . $card->sender . "<br/> from " . $card->inputsrc);
 
-        //If attachment exists
+        // If attachment exists.
         if (!is_null($card->attachment_filename) && !empty($card->attachment_filename)) {
             $fs = get_file_storage();
             $file = $fs->get_file(
@@ -102,8 +118,10 @@ class html_writer extends \html_writer
                 $card->attachment_filename
             );
 
-            //Output image attachment or make download link
-            if ($file->get_mimetype() === 'image/png' || $file->get_mimetype() === 'image/jpeg' || $file->get_mimetype() === 'image/gif') {
+            // Output image attachment or make download link.
+            if ($file->get_mimetype() === 'image/png' ||
+                $file->get_mimetype() === 'image/jpeg' ||
+                $file->get_mimetype() === 'image/gif') {
                 $url = \moodle_url::make_pluginfile_url(
                     $context->id,
                     $file->get_component(),
@@ -112,8 +130,8 @@ class html_writer extends \html_writer
                     $file->get_filepath(),
                     $file->get_filename()
                 );
-                $html .= html_writer::span(
-                    html_writer::empty_tag('img', ['src' => $url->out(), 'class' => 'card-body-attachment'])
+                $html .= self::span(
+                    self::empty_tag('img', ['src' => $url->out(), 'class' => 'card-body-attachment'])
                 );
             } else {
                 $url = \moodle_url::make_pluginfile_url(
@@ -125,53 +143,51 @@ class html_writer extends \html_writer
                     $file->get_filename(),
                     true
                 );
-                $html .= html_writer::span(html_writer::link($url, get_string('download'), ['class' => 'btn btn-success']));
+                $html .= self::span(self::link($url, get_string('download'), ['class' => 'btn btn-success']));
             }
         }
 
-        $html .= html_writer::end_div();
+        $html .= self::end_div();
 
-        $html .= html_writer::start_div('card-footer card-footer' . $class);
-        $like = $likeObj->get($card->id, $USER->id, 0);
+        $html .= self::start_div('card-footer card-footer' . $class);
+        $like = $likeobj->get($card->id, $USER->id, 0);
 
-        $like_count_0 = $likeObj->count($card->id, null, 0);
-        $like_count_0_all = $likeObj->count($card->id, $USER->id, 0);
-        $like_count_1 = $likeObj->count($card->id, $USER->id, 1);
-        $like_count_1_all = $likeObj->count($card->id, null, 1);
+        $likecount0 = $likeobj->count($card->id, null, 0);
+        $likecount0all = $likeobj->count($card->id, $USER->id, 0);
+        $likecount1 = $likeobj->count($card->id, $USER->id, 1);
+        $likecount1all = $likeobj->count($card->id, null, 1);
 
-        if ($like != false && $like_count_0 > 0) {
-            $like_icon_0 = html_writer::span('✓', '', ['style' => 'color:red;']);
+        if ($like != false && $likecount0 > 0) {
+            $likeicon0 = self::span('✓', '', ['style' => 'color:red;']);
         } else {
-            $like_icon_0 = html_writer::span('□', '', ['style' => 'color:red;']);
+            $likeicon0 = self::span('□', '', ['style' => 'color:red;']);
         }
 
-        if ($like != false && $like_count_1 > 0) {
-            $like_icon_1 = html_writer::span('✓', '', ['style' => 'color:red;']);
+        if ($like != false && $likecount1 > 0) {
+            $likeicon1 = self::span('✓', '', ['style' => 'color:red;']);
         } else {
-            $like_icon_1 = html_writer::span('□', '', ['style' => 'color:red;']);
+            $likeicon1 = self::span('□', '', ['style' => 'color:red;']);
         }
 
-        $link_like = html_writer::link(
+        $linklike = self::link(
             new \moodle_url('likes.php', ['id' => $context->instanceid, 'c' => $card->id, 'sesskey' => sesskey()]),
-            get_string('interesting', 'sharedpanel') . $like_icon_0
+            get_string('interesting', 'sharedpanel') . $likeicon0
         );
-        $link_unlike = html_writer::link(
+        $linkunlike = self::link(
             new \moodle_url('likes.php', ['id' => $context->instanceid, 'c' => $card->id, 'sesskey' => sesskey(), 'ltype' => 1]),
-            get_string('important', 'sharedpanel') . $like_icon_1
+            get_string('important', 'sharedpanel') . $likeicon1
         );
 
-        if ($like_count_0_all > 0) {
-            $link_like .= html_writer::empty_tag('img', ['src' => 'red.png']) . "($like_count_0)";
+        if ($likecount0all > 0) {
+            $linklike .= self::empty_tag('img', ['src' => 'red.png']) . "($likecount0)";
         }
-        $html .= html_writer::div($link_like);
-        if ($like_count_1_all > 0) {
-            $link_unlike .= html_writer::empty_tag('img', ['src' => 'blue.png']) . "($like_count_1)";
+        $html .= self::div($linklike);
+        if ($likecount1all > 0) {
+            $linkunlike .= self::empty_tag('img', ['src' => 'blue.png']) . "($likecount1)";
         }
-        $html .= html_writer::div($link_unlike);
-
-        $html .= html_writer::end_div();
-
-        $html .= html_writer::end_div();
+        $html .= self::div($linkunlike);
+        $html .= self::end_div();
+        $html .= self::end_div();
 
         return $html;
     }

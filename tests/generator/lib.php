@@ -19,14 +19,13 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Quiz module test data generator class
  *
- * @package mod_quiz
- * @copyright 2012 The Open University
+ * @package mod_sharedpanel
+ * @copyright  nagaoka, kita
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_sharedpanel_generator extends testing_module_generator
 {
-    public function create_instance($record = null, array $options = null)
-    {
+    public function create_instance($record = null, array $options = null) {
         global $CFG;
 
         require_once($CFG->dirroot . '/mod/sharedpanel/locallib.php');

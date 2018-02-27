@@ -22,7 +22,7 @@
  * if you like, and it can span multiple lines.
  *
  * @package    mod_SharedPanel
- * @copyright  2011 Your Name
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,7 +39,6 @@ $string['sharedpanelname_help'] = 'This is the content of the help tooltip assoc
 $string['sharedpanel'] = 'SharedPanel';
 $string['pluginadministration'] = 'SharedPanel administration';
 $string['pluginname'] = 'SharedPanel';
-//@TODO
 $string['requiremodintro'] = 'require module description';
 $string['configrequiremodintro'] = 'require module description';
 
@@ -58,8 +57,8 @@ $string['msg_post_success'] = '投稿しました。';
 $string['sortedas'] = 'Sorted by number of likes, and newer timestamp of posting.';
 $string['post'] = 'Post';
 $string['cardcontent'] = 'Card content';
-$string['cardsender'] =  'Card sender';
-$string['camera'] =  'Send camera image and text from smartphone/tablet';
+$string['cardsender'] = 'Card sender';
+$string['camera'] = 'Send camera image and text from smartphone/tablet';
 $string['groupcard'] = 'Add grouping frame';
 $string['postmessage'] = 'Post message';
 $string['postmessage_from_line'] = 'Post from LINE';
@@ -67,13 +66,13 @@ $string['sort'] = 'Sort by important!';
 $string['sortbylike1'] = 'Sort by interesting';
 $string['post_card'] = 'Add card';
 
-$string['important'] =  'Important';
-$string['interesting'] =  'Interesting';
+$string['important'] = 'Important';
+$string['interesting'] = 'Interesting';
 
-$string['gcardcontent'] =  'Content of group card';
+$string['gcardcontent'] = 'Content of group card';
 
-$string['facebook'] =  'Facebook';
-$string['twitter'] =  'Twitter';
+$string['facebook'] = 'Facebook';
+$string['twitter'] = 'Twitter';
 
 $string['FBappID'] = 'Facebook app ID';
 $string['FBappID_help'] = 'Write your Facebook app ID.';
@@ -95,6 +94,7 @@ $string['TWaccessTokenSecret_help'] = 'Twitter accessTokenSecret';
 
 $string['line_your_line'] = 'あなたのLINE';
 $string['line_lineid_required'] = 'LINE IDは必須項目です。';
+$string['line_registered_id'] = 'LINE IDを登録しました。';
 
 $string['upload_required_comment'] = 'コメントは必須です';
 $string['upload_optional_name'] = '名前(任意)';
@@ -109,6 +109,10 @@ $string['import_success'] = '{$a->source}:{$a->count}件インポートに成功
 $string['import_failed'] = '{$a}:インポートに失敗しました。';
 $string['import_no_authinfo'] = '{$a}:認証情報が設定されていないため、スキップします。';
 $string['import_finished'] = 'インポート処理が完了しました。インポートした件数は{$a}件です。';
+
+$string['facebook_no_authinfo'] = '認証情報が入力されていません。';
+$string['like_set_like'] = 'カード #${a}に いいね! しました。';
+$string['like_set_unlike'] = 'カード #${a}の いいね!を解除しました。';
 
 $string['form_import_tweet_hashtag'] = 'インポートするTweetのハッシュタグ';
 $string['form_emailadr1'] = 'インポート対象のメールアドレス';
@@ -126,3 +130,4 @@ $string['form_line_warning_https'] = 'LINEインポートはHTTPS環境下でし
 
 $string['post_cancel'] = 'キャンセルしました。';
 $string['post_saved'] = '保存されました。';
+$string['save'] = '保存する';

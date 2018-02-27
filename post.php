@@ -22,8 +22,6 @@
 
 namespace mod_sharedpanel;
 
-global $CFG, $DB, $PAGE, $OUTPUT, $USER;
-
 use mod_sharedpanel\form\post_form;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
@@ -32,12 +30,11 @@ require_once(dirname(__FILE__) . '/lib.php');
 require_once("$CFG->libdir/formslib.php");
 require_once("locallib.php");
 
+global $CFG, $DB, $PAGE, $OUTPUT, $USER;
+
 confirm_sesskey();
 
-// --------------------------------------------------------------------------------
-
-$id = optional_param('id', 0, PARAM_INT); // course module id
-$c = optional_param('c', 0, PARAM_INT);  // ... card ID
+$id = optional_param('id', 0, PARAM_INT);
 
 if ($id) {
     $cm = get_coursemodule_from_id('sharedpanel', $id, 0, false, MUST_EXIST);
@@ -57,27 +54,26 @@ $PAGE->set_context($context);
 
 $mform = new post_form(null, array('cm' => $cm));
 
-//Form processing and displaying is done here
 if ($mform->is_cancelled()) {
     redirect(new \moodle_url('view.php', ['id' => $id]), get_string('post_cancel', 'mod_sharedpanel'), 3);
 } else if ($data = $mform->get_data()) {
-    $cardObj = new card($sharedpanel);
+    $cardobj = new card($sharedpanel);
 
     $tag = $data->tag;
 
-    $cardid = $cardObj->add($data->content["text"], fullname($USER->id), 'moodle');
+    $cardid = $cardobj->add($data->content["text"], fullname($USER->id), 'moodle');
 
     // If attach file...
     if ($filecontent = $mform->get_file_content('attachment')) {
-        $cardObj->add_attachment($context, $cardid, $filecontent, $mform->get_new_filename('attachment'));
+        $cardobj->add_attachment($context, $cardid, $filecontent, $mform->get_new_filename('attachment'));
     }
 
     if ($tag) {
-        $tagObj = new tag($sharedpanel);
-        if (!$tagObj->is_exists($cardid)) {
-            $tagObj->set($cardid, $tag, $USER->id);
+        $tagobj = new tag($sharedpanel);
+        if (!$tagobj->is_exists($cardid)) {
+            $tagobj->set($cardid, $tag, $USER->id);
         } else {
-            $tagObj->update($cardid, $tag);
+            $tagobj->update($cardid, $tag);
         }
     }
 

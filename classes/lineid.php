@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_sharedpanel;
 
@@ -8,16 +22,16 @@ class lineid
 {
     private $moduleinstance;
 
-    function __construct($modinstance) {
+    public function __construct($modinstance) {
         $this->moduleinstance = $modinstance;
     }
 
-    function get_by_userid($userid) {
+    public function get_by_userid($userid) {
         global $DB;
         return $DB->get_record('sharedpanel_lineids', ['userid' => $userid, 'sharedpanelid' => $this->moduleinstance->id]);
     }
 
-    function get_by_line_userid($lineuserid) {
+    public function get_by_line_userid($lineuserid) {
         global $DB;
         $lineid = $DB->get_record_select(
             'sharedpanel_lineids',
@@ -31,7 +45,7 @@ class lineid
         }
     }
 
-    function set_line_id($userid, $lineid) {
+    public function set_line_id($userid, $lineid) {
         global $DB;
 
         $data = new \stdClass();
@@ -51,7 +65,7 @@ class lineid
         }
     }
 
-    function set_line_userid($username, $lineuserid) {
+    public function set_line_userid($username, $lineuserid) {
         global $DB;
 
         if (!$DB->record_exists('user', ['username' => $username])) {
@@ -69,7 +83,7 @@ class lineid
         }
     }
 
-    function delete($userid) {
+    public function delete($userid) {
         global $DB;
         return $DB->delete_records('sharedpanel_lineids', ['userid' => $userid, 'sharedpanelid' => $this->moduleinstance->id]);
     }
