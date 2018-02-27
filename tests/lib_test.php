@@ -88,6 +88,7 @@ class mod_sharedpanel_lib_testcase extends advanced_testcase
 
         $sharedpanel->fbgroup1 = 'hashtagtest';
 
+        $sharedpanel->emailisssl = '0';
         $sharedpanel->emailadr1 = 'test1@example.com';
         $sharedpanel->emailpas1 = 'emailpassword';
         $sharedpanel->emailkey1 = 'keyword1';
@@ -96,17 +97,16 @@ class mod_sharedpanel_lib_testcase extends advanced_testcase
         $sharedpanel->emailadr2 = 'test2@example.com';
         $sharedpanel->emailpas2 = 'keyword2';
 
-        $sharedpanel->config0 = 'aaaa';
-        $sharedpanel->config = 'aaaaaaa';
+        $sharedpanel->line_channel_id = '1234567890';
+        $sharedpanel->line_channel_secret = 'sadmfamcxmpoqw09-23jnmmf092knfdskfn029jp';
+        $sharedpanel->line_channel_access_token = 'jfpkjwq409ijpldfxv0i45j;pldfamjg42509j';
 
         $sharedpanelid = sharedpanel_add_instance($sharedpanel);
 
         $sharedpanel = $DB->get_record('sharedpanel', ['id' => $sharedpanelid]);
 
-        $count = $DB->count_records('sharedpanel', ['id' => $sharedpanelid]);
-        $this->assertEquals(1, $count);
-
-        $this->assertNotNull($sharedpanel->encryptionkey);
+        $this->assertTrue($DB->record_exists('sharedpanel', ['id' => $sharedpanelid]));
+        $this->assertEquals('0', $sharedpanel->emailisssl);
     }
 
     public function test_sharedpanel_update_instance() {
@@ -123,6 +123,7 @@ class mod_sharedpanel_lib_testcase extends advanced_testcase
         );
 
         $sharedpanel = $DB->get_record('sharedpanel', ['id' => $sharedpanel->id]);
+        $sharedpanel->instance = $sharedpanel->id;
 
         $update = sharedpanel_update_instance($sharedpanel);
 
