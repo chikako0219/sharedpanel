@@ -111,8 +111,8 @@ $string['import_finished'] = 'Import execution is successfuly finished. Imported
 
 $string['facebook_no_authinfo'] = 'No auth settings.';
 
-$string['like_set_like'] = 'Liked card #${a}';
-$string['like_set_unlike'] = 'Unliked #${a}';
+$string['like_set_like'] = 'Liked card #{$a}';
+$string['like_set_unlike'] = 'Unliked #{$a}';
 
 $string['form_import_tweet_hashtag'] = 'Hashtag';
 $string['form_emailadr1'] = 'Email address';
