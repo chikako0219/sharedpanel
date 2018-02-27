@@ -18,17 +18,14 @@
 /**
  * English strings for SharedPanel
  *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
- *
- * @package    mod_SharedPanel
+ * @package    mod_sharedpanel
  * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['sharedpanel:addinstance'] = 'SharedPanelを追加する';
+$string['sharedpanel:addinstance'] = 'Add Shared Panel';
 
 $string['modulename'] = 'SharedPanel';
 $string['modulenameplural'] = 'SharedPanels';
@@ -42,7 +39,6 @@ $string['pluginname'] = 'SharedPanel';
 $string['requiremodintro'] = 'require module description';
 $string['configrequiremodintro'] = 'require module description';
 
-
 $string['print'] = 'Print';
 $string['backtopanel'] = 'Back to Panel';
 $string['import'] = 'Import posts and email';
@@ -52,7 +48,7 @@ $string['post_message'] = 'Post message';
 $string['message'] = 'Message';
 $string['name'] = 'Name';
 
-$string['msg_post_success'] = '投稿しました。';
+$string['msg_post_success'] = 'Post successful.';
 
 $string['sortedas'] = 'Sorted by number of likes, and newer timestamp of posting.';
 $string['post'] = 'Post';
@@ -92,42 +88,46 @@ $string['TWaccessToken_help'] = 'Twitter accessToken';
 $string['TWaccessTokenSecret'] = 'Twitter accessTokenSecret';
 $string['TWaccessTokenSecret_help'] = 'Twitter accessTokenSecret';
 
-$string['line_your_line'] = 'あなたのLINE';
-$string['line_lineid_required'] = 'LINE IDは必須項目です。';
-$string['line_registered_id'] = 'LINE IDを登録しました。';
+$string['line_your_line'] = 'Your LINE ID';
+$string['line_lineid_required'] = 'Require LINE ID';
+$string['line_registered_id'] = 'Registered your LINE ID.';
+$string['line_try_agein'] = 'Sorry, please try again. For example, if your Moodle login id is "b1007222", please type "line_b1007222".';
+$string['line_added_user'] = 'Registered user id{$a}';
+$string['line_post_message'] = 'Your message is posted.';
 
-$string['upload_required_comment'] = 'コメントは必須です';
-$string['upload_optional_name'] = '名前(任意)';
+$string['upload_required_comment'] = 'Require comment';
+$string['upload_optional_name'] = 'Your Name(Optional)';
 
-$string['deletecard_no_permission'] = 'あなたはこのカードを削除することが出来ません。';
-$string['deletecard_delete_success'] = 'カード #{$a}を削除(非表示)にしました。';
+$string['deletecard_no_permission'] = "You don't have any permissions to delete.";
+$string['deletecard_delete_success'] = 'Delete(hide) #{$a}.';
 
-$string['import_twitter_no_tweets'] = '新規ツイートはありませんでした。';
-$string['import_mail_no_mails'] = '新規メールはありませんでした。';
-$string['import_no_new'] = '{$a}:新規はありませんでした。';
-$string['import_success'] = '{$a->source}:{$a->count}件インポートに成功しました。';
-$string['import_failed'] = '{$a}:インポートに失敗しました。';
-$string['import_no_authinfo'] = '{$a}:認証情報が設定されていないため、スキップします。';
-$string['import_finished'] = 'インポート処理が完了しました。インポートした件数は{$a}件です。';
+$string['import_twitter_no_tweets'] = 'No new tweets.';
+$string['import_mail_no_mails'] = 'No new emails.';
+$string['import_no_new'] = '{$a}:No new posts.';
+$string['import_success'] = '{$a->source}: {$a->count} posts are imported.';
+$string['import_failed'] = '{$a}:Failed to import.';
+$string['import_no_authinfo'] = '{$a}:Skipped. No auth settings.';
+$string['import_finished'] = 'Import execution is successfuly finished. Imported {$a} posts.';
 
-$string['facebook_no_authinfo'] = '認証情報が入力されていません。';
-$string['like_set_like'] = 'カード #${a}に いいね! しました。';
-$string['like_set_unlike'] = 'カード #${a}の いいね!を解除しました。';
+$string['facebook_no_authinfo'] = 'No auth settings.';
 
-$string['form_import_tweet_hashtag'] = 'インポートするTweetのハッシュタグ';
-$string['form_emailadr1'] = 'インポート対象のメールアドレス';
-$string['form_emailadr2'] = 'インポート対象のメールアドレス(Evernote用)';
-$string['form_emailkey1'] = 'メール表題に含まれるキーワード';
-$string['form_emailkey2'] = 'メール表題に含まれるキーワード(Evernote用)';
-$string['form_emailpas2'] = 'パスワード(Evernote用)';
-$string['form_emailhost'] = 'IMAPサーバURI';
-$string['form_emailport'] = 'IMAPサーバポート番号';
-$string['form_emailisssl'] = 'SSLを使用する';
-$string['form_password'] = 'パスワード';
-$string['form_fbgroup1'] = 'FacebookグループID';
+$string['like_set_like'] = 'Liked card #${a}';
+$string['like_set_unlike'] = 'Unliked #${a}';
 
-$string['form_line_warning_https'] = 'LINEインポートはHTTPS環境下でしか利用できません。MoodleサーバをHTTPS環境下で動作させる必要があります。';
+$string['form_import_tweet_hashtag'] = 'Hashtag';
+$string['form_emailadr1'] = 'Email address';
+$string['form_emailadr2'] = 'Email address(for Evernote)';
+$string['form_emailkey1'] = 'Keyword';
+$string['form_emailkey2'] = 'Keyword(for Evernote)';
+$string['form_emailpas2'] = 'Password(for Evernote)';
+$string['form_emailhost'] = 'IMAP server URI';
+$string['form_emailport'] = 'IMAP server port number';
+$string['form_emailisssl'] = 'Use SSL';
+$string['form_password'] = 'Password';
+$string['form_fbgroup1'] = 'Facebook group ID';
 
-$string['post_cancel'] = 'キャンセルしました。';
-$string['post_saved'] = '保存されました。';
-$string['save'] = '保存する';
+$string['form_line_warning_https'] = 'LINE import works on SSL only.';
+
+$string['post_cancel'] = 'Canceled.';
+$string['post_saved'] = 'Saved.';
+$string['save'] = 'Save';

@@ -18,19 +18,17 @@
 /**
  * Japanese strings for SharedPanel
  *
- *
- * @package    mod_SharedPanel
+ * @package    mod_sharedpanel
  * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['sharedpanel:addinstance'] = 'SharedPanelを追加する';
+$string['sharedpanel:addinstance'] = 'Shared Panelを追加する';
 $string['modulename'] = 'SharedPanel';
 $string['modulenameplural'] = 'SharedPanels';
 $string['modulename_help'] = 'Use the SharedPanel module for... | The SharedPanel module allows...';
-$string['sharedpanelfieldset'] = 'Custom example fieldset';
 $string['sharedpanelname'] = 'SharedPanel名';
 $string['sharedpanelname_help'] = 'This is the content of the help tooltip associated with the SharedPanelname field. Markdown syntax is supported.';
 $string['sharedpanel'] = 'SharedPanel';
