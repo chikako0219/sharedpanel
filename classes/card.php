@@ -14,15 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Classes for card
+ *
+ * @package    mod_sharedpanel
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
+
 namespace mod_sharedpanel;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Card controller class
+ *
+ * @package mod_sharedpanel
+ */
 class card
 {
     protected $moduleinstance;
     protected $error;
 
+    /**
+     * card constructor.
+     * @param $modinstance
+     */
     public function __construct($modinstance) {
         $this->moduleinstance = $modinstance;
         $this->error = new \stdClass();
@@ -30,11 +47,25 @@ class card
         $this->error->message = "";
     }
 
+    /**
+     * get card by cardid
+     *
+     * @param $cardid
+     * @return mixed
+     * @throws \dml_exception
+     */
     public function get($cardid) {
         global $DB;
         return $DB->get_record('sharedpanel_cards', ['id' => $cardid]);
     }
 
+    /**
+     * get cards
+     *
+     * @param string $order
+     * @return array
+     * @throws \dml_exception
+     */
     public function gets($order = 'like') {
         global $DB, $USER;
 

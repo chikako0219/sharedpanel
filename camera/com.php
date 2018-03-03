@@ -15,6 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Post form for guest users.
+ *
+ * @package    mod_sharedpanel
+ * @copyright  2016 NAGAOKA Chikako, KITA Toshihiro
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
+
+/**
  * Notice :
  * This page allows access to guests(no login users).
  * Guests can post only.
