@@ -42,8 +42,8 @@ class email extends card
     public function is_enabled() {
         if (empty($this->moduleinstance->emailhost) ||
             empty($this->moduleinstance->emailport) ||
-            empty($this->email_addr) ||
-            empty($this->email_password)) {
+            empty($this->emailaddr) ||
+            empty($this->emailpassword)) {
             return false;
         }
         return true;
