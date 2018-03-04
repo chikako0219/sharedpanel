@@ -110,6 +110,7 @@ $string['import_no_authinfo'] = '{$a}:Skipped. No auth settings.';
 $string['import_finished'] = 'Import execution is successfuly finished. Imported {$a} posts.';
 
 $string['facebook_no_authinfo'] = 'No auth settings.';
+$string['facebook_no_groupid'] = 'Please set facebook group id at setting page.';
 
 $string['like_set_like'] = 'Liked card #{$a}';
 $string['like_set_unlike'] = 'Unliked #{$a}';

@@ -16,7 +16,6 @@
 
 namespace mod_sharedpanel;
 
-use Facebook\Authentication\AccessToken;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 
@@ -46,6 +45,11 @@ class facebook extends card
             $this->error->message = get_string('facebook_no_authinfo', 'mod_sharedpanel');
             return false;
         }
+        if(empty($this->moduleinstance->fbgroup1)){
+            $this->error->code = 400;
+            $this->error->message = get_string('facebook_no_groupid', 'mod_sharedpanel');
+            return false;
+        }
 
         $fb = new \Facebook\Facebook([
             'app_id' => $config->FBappID,
@@ -60,9 +64,13 @@ class facebook extends card
             );
             $body = $response->getDecodedBody();
         } catch (FacebookResponseException $e) {
-            return $e->getMessage();
+            $this->error->code = $e->getCode();
+            $this->error->message = $e->getMessage();
+            return false;
         } catch (FacebookSDKException $e) {
-            return $e->getMessage();
+            $this->error->code = $e->getCode();
+            $this->error->message = $e->getMessage();
+            return false;
         }
 
         $cardobj = new card($this->moduleinstance);

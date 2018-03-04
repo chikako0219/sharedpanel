@@ -23,6 +23,7 @@
 namespace mod_sharedpanel;
 
 use core\notification;
+use Facebook\Exceptions\FacebookResponseException;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
@@ -94,6 +95,7 @@ if ($emailobj->is_enabled()) {
     } else {
         echo html_writer::message(notification::ERROR, get_string('import_failed', 'mod_sharedpanel', 'mail'));
         $error = $emailobj->get_error();
+        $cardidsemails = [];
         debugging($error->code . ":" . $error->message);
     }
 } else {
@@ -116,6 +118,7 @@ if ($evernoteobj->is_enabled()) {
     } else {
         echo html_writer::message(notification::ERROR, get_string('import_failed', 'mod_sharedpanel', 'Evernote'));
         $error = $emailobj->get_error();
+        $cardidsevernote = [];
         debugging($error->code . ":" . $error->message);
     }
 } else {
@@ -136,9 +139,9 @@ if ($facebookobj->is_enabled()) {
             echo html_writer::message(notification::SUCCESS, get_string('import_success', 'mod_sharedpanel', $str));
         }
     } else {
-        echo html_writer::message(notification::ERROR, get_string('import_failed', 'mod_sharedpanel', 'Facebook'));
         $error = $facebookobj->get_error();
-        debugging($error->code . ":" . $error->message);
+        echo html_writer::message(notification::ERROR, get_string('import_failed', 'mod_sharedpanel', 'Facebook') . '(' . $error->message . ')');
+        $cardidsfacebook = [];
     }
 } else {
     echo html_writer::message(notification::INFO, get_string('import_no_authinfo', 'mod_sharedpanel', 'Facebook'));

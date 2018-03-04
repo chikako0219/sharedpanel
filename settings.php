@@ -39,14 +39,6 @@ if ($ADMIN->fulltree) {
         get_string('FBsecret', 'sharedpanel'),
         get_string('FBsecret_help', 'sharedpanel'), ''));
 
-    $settings->add(new admin_setting_configtext('sharedpanel/FBredirectUrl',
-        get_string('FBredirectUrl', 'sharedpanel'),
-        get_string('FBredirectUrl_help', 'sharedpanel'), ''));
-
-    $settings->add(new admin_setting_configtext('sharedpanel/FBtoken',
-        get_string('FBtoken', 'sharedpanel'),
-        get_string('FBtoken_help', 'sharedpanel'), ''));
-
     $settings->add(new admin_setting_heading('sharedpanel/twitter',
         get_string('twitter', 'sharedpanel'), get_string('twitter', 'sharedpanel')));
     $settings->add(new admin_setting_configtext('sharedpanel/TWconsumerKey',

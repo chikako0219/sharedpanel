@@ -109,6 +109,7 @@ $string['import_no_authinfo'] = '{$a}:認証情報が設定されていないた
 $string['import_finished'] = 'インポート処理が完了しました。インポートした件数は{$a}件です。';
 
 $string['facebook_no_authinfo'] = '認証情報が入力されていません。';
+$string['facebook_no_groupid'] = 'Facebook グループIDが設定されていません。';
 
 $string['like_set_like'] = 'カード #{$a}に いいね! しました。';
 $string['like_set_unlike'] = 'カード #{$a}の いいね!を解除しました。';
