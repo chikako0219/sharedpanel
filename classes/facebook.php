@@ -21,7 +21,7 @@ use Facebook\Exceptions\FacebookSDKException;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . "/../lib/facebook/autoload.php");
+require_once(__DIR__ . "/../lib/Facebook/autoload.php");
 
 class facebook extends card
 {
