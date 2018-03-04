@@ -30,6 +30,7 @@ class email extends card
     private $cardobj;
 
     public function __construct($modinstance) {
+        $this->moduleinstance = $modinstance;
         $this->emailaddr = $modinstance->emailadr1;
         $this->emailpassword = $modinstance->emailpas1;
         $this->emailport = $modinstance->emailport;
