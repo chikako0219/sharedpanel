@@ -72,7 +72,7 @@ class card
         $sql = "
 SELECT *, (SELECT COUNT(*) FROM {sharedpanel_card_likes} l
 WHERE l.userid = :userid AND l.ltype = :ltype AND l.cardid = c.id) likes
-FROM {sharedpanel_cards} c WHERE c.hidden = 0";
+FROM {sharedpanel_cards} c WHERE c.hidden = 0 AND c.sharedpanelid = :moduleinstanceid";
 
         $ltype = 0;
         if ($order === 'like') {
@@ -85,7 +85,7 @@ FROM {sharedpanel_cards} c WHERE c.hidden = 0";
             $sql .= " ORDER BY likes DESC, c.timecreated DESC, c.gravity ASC";
         }
 
-        return $DB->get_records_sql($sql, ['userid' => $USER->id, 'ltype' => $ltype]);
+        return $DB->get_records_sql($sql, ['userid' => $USER->id, 'ltype' => $ltype, 'moduleinstanceid' => $this->moduleinstance->id]);
     }
 
     public function get_last_card($inputsrc) {
