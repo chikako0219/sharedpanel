@@ -45,7 +45,7 @@ class facebook extends card
             $this->error->message = get_string('facebook_no_authinfo', 'mod_sharedpanel');
             return false;
         }
-        if(empty($this->moduleinstance->fbgroup1)){
+        if (empty($this->moduleinstance->fbgroup1)) {
             $this->error->code = 400;
             $this->error->message = get_string('facebook_no_groupid', 'mod_sharedpanel');
             return false;
