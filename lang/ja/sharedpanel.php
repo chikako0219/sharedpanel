@@ -118,6 +118,7 @@ $string['facebook_get_user_access_token_msg'] = 'Facebookグループの管理�
 $string['facebook_get_user_access_token_expired'] = 'アクセストークンが失効しました。Shared Panelの設定画面で再度設定を行ってください。';
 $string['facebook_get_user_access_token_ok'] = '取得済です。';
 $string['facebook_get_user_access_token_notyet'] = 'まだ取得していません。';
+$string['facebook_get_user_access_token_msg_reload'] = '新規作成画面ではFacebookのユーザーアクセストークンを設定することが出来ません。一度Shared Panelを作成後、再度この画面に戻ってください。';
 
 $string['like_set_like'] = 'カード #{$a}に いいね! しました。';
 $string['like_set_unlike'] = 'カード #{$a}の いいね!を解除しました。';

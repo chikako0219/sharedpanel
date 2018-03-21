@@ -119,6 +119,7 @@ $string['facebook_get_user_access_token_msg'] = '';
 $string['facebook_get_user_access_token_expired'] = 'Your access token is expired. Please get token at setting page again.';
 $string['facebook_get_user_access_token_ok'] = 'Already got.';
 $string['facebook_get_user_access_token_notyet'] = 'Not yet.';
+$string['facebook_get_user_access_token_msg_reload'] = 'Please set access token after create Shared Panel instance.';
 
 $string['like_set_like'] = 'Liked card #{$a}';
 $string['like_set_unlike'] = 'Unliked #{$a}';

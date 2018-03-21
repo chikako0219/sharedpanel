@@ -105,10 +105,11 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->setType('fbgroup1', PARAM_TEXT);
 
         $mform->addElement('html', '<h5>Facebook User Access Token</h5>');
-        $mform->addElement('html',
-            '<div class="well">' . get_string('facebook_get_user_access_token_msg', 'mod_sharedpanel') . '</div>');
 
         if ($instance) {
+            $mform->addElement('html',
+                '<div class="well">' . get_string('facebook_get_user_access_token_msg', 'mod_sharedpanel') . '</div>');
+
             if ($instance->fbuseraccesstoken) {
                 $mform->addElement('html',
                     '<div class="well">' . get_string('facebook_get_user_access_token_ok', 'mod_sharedpanel') . '</div>');
@@ -126,6 +127,9 @@ class mod_sharedpanel_mod_form extends moodleform_mod
                     $action,
                     ["class" => "btn btn-success"])
             );
+        } else {
+            $mform->addElement('html',
+                '<div class="well">' . get_string('facebook_get_user_access_token_msg_reload', 'mod_sharedpanel') . '</div>');
         }
 
         // Evernote.
