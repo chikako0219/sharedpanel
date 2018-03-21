@@ -110,6 +110,14 @@ $string['import_finished'] = 'インポート処理が完了しました。イ�
 
 $string['facebook_no_authinfo'] = '認証情報が入力されていません。';
 $string['facebook_no_groupid'] = 'Facebook グループIDが設定されていません。';
+$string['facebook_user_access_token'] = 'ユーザーアクセストークン';
+$string['facebook_get_user_access_token'] = 'ユーザーアクセストークンを取得する';
+$string['facebook_get_user_access_token_success'] = 'ユーザーアクセストークンを取得しました。';
+$string['facebook_get_user_access_token_failed'] = 'ユーザーアクセストークンに失敗しました。{$a}';
+$string['facebook_get_user_access_token_msg'] = 'Facebookグループの管理者でFacebookにログインした状態で、「アクセストークンを取得する」ボタンをクリックしてください。';
+$string['facebook_get_user_access_token_expired'] = 'アクセストークンが失効しました。Shared Panelの設定画面で再度設定を行ってください。';
+$string['facebook_get_user_access_token_ok'] = '取得済です。';
+$string['facebook_get_user_access_token_notyet'] = 'まだ取得していません。';
 
 $string['like_set_like'] = 'カード #{$a}に いいね! しました。';
 $string['like_set_unlike'] = 'カード #{$a}の いいね!を解除しました。';

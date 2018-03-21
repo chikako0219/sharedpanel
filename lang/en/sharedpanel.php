@@ -111,6 +111,14 @@ $string['import_finished'] = 'Import execution is successfuly finished. Imported
 
 $string['facebook_no_authinfo'] = 'No auth settings.';
 $string['facebook_no_groupid'] = 'Please set facebook group id at setting page.';
+$string['facebook_user_access_token'] = 'User access token';
+$string['facebook_get_user_access_token'] = 'Get user access token';
+$string['facebook_get_user_access_token_success'] = 'Succeed to get User access token.';
+$string['facebook_get_user_access_token_failed'] = 'Failed to get User access token. {$a}';
+$string['facebook_get_user_access_token_msg'] = '';
+$string['facebook_get_user_access_token_expired'] = 'Your access token is expired. Please get token at setting page again.';
+$string['facebook_get_user_access_token_ok'] = 'Already got.';
+$string['facebook_get_user_access_token_notyet'] = 'Not yet.';
 
 $string['like_set_like'] = 'Liked card #{$a}';
 $string['like_set_unlike'] = 'Unliked #{$a}';

@@ -53,14 +53,23 @@ class facebook extends card
 
         $fb = new \Facebook\Facebook([
             'app_id' => $config->FBappID,
-            'app_secret' => $config->FBsecret,
-            'default_graph_version' => 'v2.10',
+            'app_secret' => $config->FBsecret
         ]);
-        $accesstoken = $fb->getApp()->getAccessToken();
+        $accesstoken = $this->moduleinstance->fbuseraccesstoken;
+        $fb->setDefaultAccessToken($accesstoken);
+
+        $token = $fb->getDefaultAccessToken();
+        if ($token->isExpired()) {
+            $this->error->code = 400;
+            $this->error->message = get_string('facebook_get_user_access_token_expired', 'mod_sharedpanel');
+
+            return false;
+        }
+
         try {
             $response = $fb->get(
                 '/' . $this->moduleinstance->fbgroup1 . '/feed',
-                $accesstoken->getValue()
+                $accesstoken
             );
             $body = $response->getDecodedBody();
         } catch (FacebookResponseException $e) {
@@ -87,7 +96,7 @@ class facebook extends card
                 try {
                     $response = $fb->get(
                         '/' . $data['id'] . '/attachments',
-                        $accesstoken->getValue()
+                        $accesstoken
                     );
                     $body = $response->getDecodedBody();
                 } catch (FacebookResponseException $e) {

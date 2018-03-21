@@ -26,6 +26,7 @@
                 <FIELD NAME="emailport" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailkey1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="fbgroup1" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
+                <FIELD NAME="fbuseraccesstoken" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailadr2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailpas2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>
                 <FIELD NAME="emailkey2" TYPE="char" LENGTH="255" SEQUENCE="false" NOTNULL="false"/>

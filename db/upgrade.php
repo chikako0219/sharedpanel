@@ -54,6 +54,20 @@ function xmldb_sharedpanel_upgrade($oldversion) {
         }
 
         upgrade_mod_savepoint(true, 2018022301, 'sharedpanel');
+
+        $field = new xmldb_field('fbuseraccesstoken', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, false, null, '443', 'emailisssl');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+    }
+    if ($oldversion < 2018031801) {
+        $table = new xmldb_table('sharedpanel');
+        $field = new xmldb_field('fbuseraccesstoken', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, false, null, '', 'fbgroup1');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2018031801, 'sharedpanel');
     }
 
     return true;

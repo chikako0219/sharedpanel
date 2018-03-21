@@ -66,7 +66,7 @@ class twitter extends card
             $cond['since_id'] = $latestcard->messageid;
         }
         $tweets = $connection->get("search/tweets", $cond);
-        if (!$tweets->statuses) {
+        if (property_exists($tweets, 'errors') || !$tweets->statuses) {
             return null;
         }
 

@@ -28,6 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
+require_once(__DIR__ . "/lib/Facebook/autoload.php");
 
 /**
  * Module instance settings form
@@ -39,9 +40,13 @@ class mod_sharedpanel_mod_form extends moodleform_mod
      * Defines forms elements
      */
     public function definition() {
-        global $CFG;
+        global $CFG, $DB, $OUTPUT;
 
         $mform = $this->_form;
+        $config = get_config('sharedpanel');
+
+        $instanceid = $this->get_instance();
+        $instance = $DB->get_record('sharedpanel', ['id' => $instanceid], '*', MUST_EXIST);
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
         $mform->addElement('text', 'name', get_string('sharedpanelname', 'sharedpanel'), array('size' => '64'));
@@ -84,11 +89,37 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->setType('emailpas1', PARAM_TEXT);
 
         // Facebook.
+        $fb = new \Facebook\Facebook([
+            'app_id' => $config->FBappID,
+            'app_secret' => $config->FBsecret
+        ]);
+
         $mform->addElement('header', 'sharedpanelfieldset_facebook', 'Facebook');
         $mform->setExpanded('sharedpanelfieldset_facebook');
 
         $mform->addElement('text', 'fbgroup1', get_string('form_fbgroup1', 'mod_sharedpanel'));
         $mform->setType('fbgroup1', PARAM_TEXT);
+
+        $mform->addElement('html', '<h5>Facebook User Access Token</h5>');
+        $mform->addElement('html',
+            '<div class="well">' . get_string('facebook_get_user_access_token_msg', 'mod_sharedpanel') . '</div>');
+        if ($instance->fbuseraccesstoken) {
+            $mform->addElement('html',
+                '<div class="well">' . get_string('facebook_get_user_access_token_ok', 'mod_sharedpanel') . '</div>');
+        } else {
+            $mform->addElement('html',
+                '<div class="well">' . get_string('facebook_get_user_access_token_notyet', 'mod_sharedpanel') . '</div>');
+        }
+        $callback = new moodle_url($CFG->wwwroot . '/mod/sharedpanel/facebook_login.php');
+        $helper = $fb->getRedirectLoginHelper();
+        $url = new moodle_url($helper->getLoginUrl($callback->out(true), ['user_managed_groups']));
+        $action = new \popup_action("click", $url, ["width" => "600px"]);
+        $mform->addElement('html',
+            $OUTPUT->action_link($url->out(),
+                get_string('facebook_get_user_access_token', 'mod_sharedpanel'),
+                $action,
+                ["class" => "btn btn-success"])
+        );
 
         // Evernote.
         $mform->addElement('header', 'sharedpanelfieldset_evernote', 'Evernote');
@@ -112,12 +143,12 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->addElement('text', 'line_channel_access_token', 'Channel access token');
         $mform->setType('line_channel_access_token', PARAM_TEXT);
 
-        $instance = $this->get_instance();
-        if ($instance) {
+        if ($instanceid) {
+            $_SESSION['sharedpanel_instanceid'] = $instanceid;
             $mform->addElement('html', '<h5>Webhook URL</h5>');
             if ((array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on')) {
                 $mform->addElement('html',
-                    '<div class="well">' . $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instance . '</div>');
+                    '<div class="well">' . $CFG->wwwroot . '/mod/sharedpanel/line_webhook.php?id=' . $instanceid . '</div>');
             } else {
                 $mform->addElement('html',
                     '<div class="well">' . get_string('form_line_warning_https', 'mod_sharedpanel') . '</div>');
