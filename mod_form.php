@@ -46,7 +46,11 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $config = get_config('sharedpanel');
 
         $instanceid = $this->get_instance();
-        $instance = $DB->get_record('sharedpanel', ['id' => $instanceid], '*', MUST_EXIST);
+        if ($instanceid) {
+            $instance = $DB->get_record('sharedpanel', ['id' => $instanceid], '*', MUST_EXIST);
+        } else {
+            $instance = null;
+        }
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
         $mform->addElement('text', 'name', get_string('sharedpanelname', 'sharedpanel'), array('size' => '64'));
@@ -103,23 +107,26 @@ class mod_sharedpanel_mod_form extends moodleform_mod
         $mform->addElement('html', '<h5>Facebook User Access Token</h5>');
         $mform->addElement('html',
             '<div class="well">' . get_string('facebook_get_user_access_token_msg', 'mod_sharedpanel') . '</div>');
-        if ($instance->fbuseraccesstoken) {
+
+        if ($instance) {
+            if ($instance->fbuseraccesstoken) {
+                $mform->addElement('html',
+                    '<div class="well">' . get_string('facebook_get_user_access_token_ok', 'mod_sharedpanel') . '</div>');
+            } else {
+                $mform->addElement('html',
+                    '<div class="well">' . get_string('facebook_get_user_access_token_notyet', 'mod_sharedpanel') . '</div>');
+            }
+            $callback = new moodle_url($CFG->wwwroot . '/mod/sharedpanel/facebook_login.php');
+            $helper = $fb->getRedirectLoginHelper();
+            $url = new moodle_url($helper->getLoginUrl($callback->out(true), ['user_managed_groups']));
+            $action = new \popup_action("click", $url, ["width" => "600px"]);
             $mform->addElement('html',
-                '<div class="well">' . get_string('facebook_get_user_access_token_ok', 'mod_sharedpanel') . '</div>');
-        } else {
-            $mform->addElement('html',
-                '<div class="well">' . get_string('facebook_get_user_access_token_notyet', 'mod_sharedpanel') . '</div>');
+                $OUTPUT->action_link($url->out(),
+                    get_string('facebook_get_user_access_token', 'mod_sharedpanel'),
+                    $action,
+                    ["class" => "btn btn-success"])
+            );
         }
-        $callback = new moodle_url($CFG->wwwroot . '/mod/sharedpanel/facebook_login.php');
-        $helper = $fb->getRedirectLoginHelper();
-        $url = new moodle_url($helper->getLoginUrl($callback->out(true), ['user_managed_groups']));
-        $action = new \popup_action("click", $url, ["width" => "600px"]);
-        $mform->addElement('html',
-            $OUTPUT->action_link($url->out(),
-                get_string('facebook_get_user_access_token', 'mod_sharedpanel'),
-                $action,
-                ["class" => "btn btn-success"])
-        );
 
         // Evernote.
         $mform->addElement('header', 'sharedpanelfieldset_evernote', 'Evernote');

@@ -36,7 +36,7 @@ class facebook extends card
     }
 
     public function import() {
-        global $DB;
+        global $CFG, $DB, $OUTPUT;
         $cm = get_coursemodule_from_instance('sharedpanel', $this->moduleinstance->id);
         $context = \context_module::instance($cm->id);
 
@@ -56,12 +56,38 @@ class facebook extends card
             'app_secret' => $config->FBsecret
         ]);
         $accesstoken = $this->moduleinstance->fbuseraccesstoken;
+
+        if (!$accesstoken) {
+            $callback = new \moodle_url($CFG->wwwroot . '/mod/sharedpanel/facebook_login.php');
+            $helper = $fb->getRedirectLoginHelper();
+            $url = new \moodle_url($helper->getLoginUrl($callback->out(true), ['user_managed_groups']));
+            $action = new \popup_action("click", $url, ["width" => "600px"]);
+            $btn = $OUTPUT->action_link($url->out(),
+                get_string('facebook_get_user_access_token', 'mod_sharedpanel'),
+                $action,
+                ["class" => "btn btn-success"]);
+
+            $this->error->code = 400;
+            $this->error->message = get_string('facebook_get_user_access_token_expired', 'mod_sharedpanel') . '<br>' . $btn;
+
+            return false;
+        }
+
         $fb->setDefaultAccessToken($accesstoken);
 
         $token = $fb->getDefaultAccessToken();
         if ($token->isExpired()) {
+            $callback = new \moodle_url($CFG->wwwroot . '/mod/sharedpanel/facebook_login.php');
+            $helper = $fb->getRedirectLoginHelper();
+            $url = new \moodle_url($helper->getLoginUrl($callback->out(true), ['user_managed_groups']));
+            $action = new \popup_action("click", $url, ["width" => "600px"]);
+            $btn = $OUTPUT->action_link($url->out(),
+                get_string('facebook_get_user_access_token', 'mod_sharedpanel'),
+                $action,
+                ["class" => "btn btn-success"]);
+
             $this->error->code = 400;
-            $this->error->message = get_string('facebook_get_user_access_token_expired', 'mod_sharedpanel');
+            $this->error->message = get_string('facebook_get_user_access_token_expired', 'mod_sharedpanel') . '<br>' . $btn;
 
             return false;
         }
